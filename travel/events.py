@@ -1,36 +1,52 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from .models import Destination, Comment
-from .forms import DestinationForm, CommentForm
+from .models import Event, Comment
+from .forms import EventForm, CommentForm
 from . import db
 import os
 from werkzeug.utils import secure_filename
 
-destbp = Blueprint('destination', __name__, url_prefix='/destinations')
+destbp = Blueprint('event', __name__, url_prefix='/events')
 
 @destbp.route('/<id>')
 def show(id):
-    destination = db.session.scalar(db.select(Destination).where(Destination.id==id))
+    event = db.session.scalar(db.select(Event).where(Event.id==id))
     # create the comment form
     cform = CommentForm()    
-    return render_template('destinations/show.html', destination=destination, form=cform)
+    return render_template('Events/show.html', event=event, form=cform)
+
+
+@destbp.route('/categorise')
+def categorise():
+    genre = request.args.get('genre', 'All')
+    if genre == "All":
+      events = db.session.scalars(db.select(Event)).all()
+    # create the comment form
+    else:
+       events = db.session.scalars(db.select(Event).where(Event.genre==genre)).all()
+    return render_template('index.html', events=events, genre=genre)
+
+
+
+
+
 
 @destbp.route('/create', methods=['GET', 'POST'])
 def create():
   print('Method type: ', request.method)
-  form = DestinationForm()
+  form = EventForm()
   if form.validate_on_submit():
     # call the function that checks and returns image
     db_file_path = check_upload_file(form)
-    destination = Destination(name=form.name.data,description=form.description.data, 
+    event = Event(name=form.name.data,description=form.description.data, genre=form.genre.data, 
     image = db_file_path,currency=form.currency.data)
     # add the object to the db session
-    db.session.add(destination)
+    db.session.add(event)
     # commit to the database
     db.session.commit()
-    print('Successfully created new travel destination', 'success')
+    print('Successfully created new travel event', 'success')
     # Always end with redirect when form is valid
-    return redirect(url_for('destination.create'))
-  return render_template('destinations/create.html', form=form)
+    return redirect(url_for('event.create'))
+  return render_template('events/create.html', form=form)
 
 def check_upload_file(form):
     # get file data from form  
@@ -50,19 +66,19 @@ def check_upload_file(form):
 @destbp.route('/<id>/comment', methods=['GET', 'POST'])  
 def comment(id):  
     form = CommentForm()  
-    # get the destination object associated to the page and the comment
-    destination = db.session.scalar(db.select(Destination).where(Destination.id==id))
+    # get the Event object associated to the page and the comment
+    event = db.session.scalar(db.select(Event).where(Event.id==id))
     if form.validate_on_submit():  
-      # read the comment from the form, associate the Comment's destination field
-      # with the destination object from the above DB query
-      comment = Comment(text=form.text.data, destination=destination) 
-      # here the back-referencing works - comment.destination is set
+      # read the comment from the form, associate the Comment's Event field
+      # with the Event object from the above DB query
+      comment = Comment(text=form.text.data, event=event) 
+      # here the back-referencing works - comment.Event is set
       # and the link is created
       db.session.add(comment) 
       db.session.commit() 
       # flashing a message which needs to be handled by the html
       # flash('Your comment has been added', 'success')  
       print('Your comment has been added', 'success') 
-    # using redirect sends a GET request to destination.show
-    return redirect(url_for('destination.show', id=id))
+    # using redirect sends a GET request to Event.show
+    return redirect(url_for('event.show', id=id))
 

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import TextAreaField,SubmitField, StringField, PasswordField
+from wtforms.fields import TextAreaField,SubmitField, StringField, PasswordField, SelectField
 from wtforms.validators import InputRequired, Email, EqualTo
 from flask_wtf.file import FileRequired, FileField, FileAllowed
 
@@ -7,19 +7,22 @@ from flask_wtf.file import FileRequired, FileField, FileAllowed
 ALLOWED_FILE = {'PNG','JPG','png','jpg'}
 
 
-class DestinationForm(FlaskForm):
+class EventForm(FlaskForm):
   name = StringField('Country', validators=[InputRequired()])
   # adding two validators, one to ensure input is entered and other to check if the 
   # description meets the length requirements
   description = TextAreaField('Description', validators = [InputRequired()])
+  genre = SelectField('Genre', choices=[('pop', 'Pop'), ('rap', 'Rap'), ('country', 'Country')])
+  # genre = SelectField('Genre', choices=[('Pop'), ('Rap'), ('Country')])
 
 
-  image = FileField('Destination Image', validators=[
+  image = FileField('Event Image', validators=[
     FileRequired(message='Image cannot be empty'),
     FileAllowed(ALLOWED_FILE, message='Only PNG or JPG files allowed')])
 
   currency = StringField('Currency', validators=[InputRequired()])
   submit = SubmitField("Create")
+
 
 
 class LoginForm(FlaskForm):

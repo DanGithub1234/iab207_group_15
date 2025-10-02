@@ -23,35 +23,57 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"Name: {self.name}"
 
-class Destination(db.Model):
-    __tablename__ = 'destinations'
+class Event(db.Model):
+    __tablename__ = 'Events'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
     description = db.Column(db.String(200))
     image = db.Column(db.String(400))
     currency = db.Column(db.String(3))
+    genre = db.Column(db.String(50))
     # ... Create the Comments db.relationship
-	# relation to call destination.comments and comment.destination
-    comments = db.relationship('Comment', backref='destination')
+	# relation to call event.comments and comment.event
+    comments = db.relationship('Comment', backref='event')
 	
     # string print method
     def __repr__(self):
         return f"Name: {self.name}"
     
 
-class Event(db.Model):
-    __tablename__ = 'event'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
-    description = db.Column(db.String(200))
-    image = db.Column(db.String(400))
-    # ... Create the Comments db.relationship
-	# relation to call destination.comments and comment.destination
-    comments = db.relationship('Comment', backref='event')
+
+# Uncomment later
+
+# class Booking(db.Model):
+#     __tablename__ = 'booking'
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(80))
+#     bookingDateTime = db.Column(db.Integer)
+#     numberOfTickets = db.Column(db.Integer)
+#     totalPrice = db.Column(db.Integer)
+#     # ... Create the Comments db.relationship
+# 	# relation to call event.comments and comment.Event
+#     # comments = db.relationship('Comment', backref='Event')
+#     # add the foreign key
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+#     Event_id = db.Column(db.Integer, db.ForeignKey('Events.id'))
 	
-    # string print method
-    def __repr__(self):
-        return f"Name: {self.name}"
+#     # string print method
+#     def __repr__(self):
+#         return f"Name: {self.name}"
+    
+# class Event(db.Model):
+#     __tablename__ = 'event'
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(80))
+#     description = db.Column(db.String(200))
+#     image = db.Column(db.String(400))
+#     # ... Create the Comments db.relationship
+# 	# relation to call Event.comments and comment.Event
+#     comments = db.relationship('Comment', backref='event')
+	
+#     # string print method
+#     def __repr__(self):
+#         return f"Name: {self.name}"
 
 class Comment(db.Model):
     __tablename__ = 'comments'
@@ -60,7 +82,7 @@ class Comment(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now())
     # add the foreign key
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    destination_id = db.Column(db.Integer, db.ForeignKey('destinations.id'))
+    Event_id = db.Column(db.Integer, db.ForeignKey('Events.id'))
 
     # string print method
     def __repr__(self):

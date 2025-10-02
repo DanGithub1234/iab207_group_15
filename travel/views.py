@@ -1,10 +1,19 @@
 from flask import Blueprint, render_template
+from flask import Blueprint,render_template, redirect, url_for, request, flash
+from .forms import EventForm, RegisterForm
+from . import db
+from .models import Event, User
+from flask_login import login_required, current_user
 
 mainbp = Blueprint('main', __name__)
 
+
 @mainbp.route('/')
 def index():
-    return render_template('index.html')
+    tag_line='You need a vacation'
+    Events = Event.query.all() #get the hotels
+    return render_template('index.html', tag_line=tag_line,
+                    Events=Events)
 
 
 
