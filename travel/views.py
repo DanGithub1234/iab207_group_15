@@ -11,9 +11,9 @@ mainbp = Blueprint('main', __name__)
 @mainbp.route('/')
 def index():
     tag_line='You need a vacation'
-    Events = Event.query.all() #get the hotels
+    events = Event.query.all() #get the hotels
     return render_template('index.html', tag_line=tag_line,
-                    Events=Events)
+                    events=events)
 
 
 

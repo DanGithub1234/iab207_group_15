@@ -1,18 +1,164 @@
-{% extends 'base.html' %}
-
-{% from 'bootstrap5/form.html' import render_form %}
-
+{% extends "base.html" %}
+{% block title %}Create Event | musicCloud{% endblock %}
 {% block content %}
 
-  <div class="container">
-    <div class="row mt-5">
-      <div class="col-md-12">
-        <h1>Add Event</h1>
-        <p>Enter a country that you will help clients travel to.</p>
-        {{render_form(form)}}
-        
-      </div>
-    </div>
+<form method="post" enctype="multipart/form-data">
+  {% if form.errors %}
+  <div class="alert alert-danger">
+    <strong>Please fix the errors below.</strong>
+    <ul class="mb-0">
+      {% for field, errors in form.errors.items() %}
+        {% for e in errors %}
+          <li>{{ field }}: {{ e }}</li>
+        {% endfor %}
+      {% endfor %}
+    </ul>
   </div>
+  {% endif %}
+  {{ form.csrf_token }}
+
+  <!-- Event creation container -->
+  <div class="container-fluid">
+    <div class="row">
+
+      <!-- Left side nav -->
+      <div class="tabsContainer col-md-3 p-0">
+        <h3 class="p-5"><strong>Create an Event</strong></h3>
+        <ul class="nav nav-pills flex-column">
+          <li class="stepper-active nav-item"><a class="navtext nav-link" href="#">Enter Event Details</a></li>
+          <li class="stepper nav-item"><a class="navtext nav-link" href="#">Choose a Poster Image</a></li>
+          <li class="stepper nav-item"><a class="navtext nav-link" href="#">Enter Ticket Information</a></li>
+          <li class="stepper nav-item"><a class="navtext nav-link" href="#">Add Event Images</a></li>
+        </ul>
+      </div>
+
+      <!-- Right side form content -->
+      <div class="col-md-9 mt-3">
+        <div class="p-4 mt-0">
+
+          <p class="h3"><strong>Event Details</strong></p>
+
+          <div class="text-section">
+            <h5>Event Title</h5>
+            <p>Add a descriptive title outlining the <strong>artist(s)</strong> involved.</p>
+            <div class="input-group mb-3">
+              {{ form.name(class="form-control", placeholder="Title") }}
+            </div>
+            {% for e in form.name.errors %}
+              <div class="text-danger small">{{ e }}</div>
+            {% endfor %}
+          </div>
+
+          <h5>Description</h5>
+          <p>Summarise the event into few paragraphs, ensure to include all relevant details about the music and artists.</p>
+          <div class="input-group">
+            {{ form.description(class="form-control", placeholder="Description") }}
+          </div>
+
+          <h5>Genre</h5>
+          <p>Which category or categories best describes the event.</p>
+          <div class="row g-3 mb-3">
+            <div class="col-sm-4">{{ form.genre(class="form-select") }}</div>
+            <div class="col-sm-8">{{ form.genre_other(class="form-control", placeholder="If Other, please specify") }}</div>
+          </div>
+
+          <h5>Location</h5>
+          <p>Provide the exact location of the event.</p>
+          <div class="input-group" style="max-width: 950px;">
+            {{ form.location(class="form-control", placeholder="Eg. Brisbane, Australia at Suncorp Stadium") }}
+          </div>
+
+          <div class="my-3" style="max-width: 950px;">
+            <img src="{{ url_for('static', filename='img/map.jpg') }}" class="img-fluid rounded-3" alt="">
+          </div>
+
+          <h5>Date</h5>
+          <p>When the event will occur.</p>
+          <div class="input-group">
+            {{ form.event_date(class="form-control") }}
+          </div>
+
+          <h5>Start and End Time</h5>
+          <p>Specify the event start and end times.</p>
+          <div class="d-flex flex-column flex-sm-row align-items-center gap-3">
+            <p class="mb-0">Start Time:</p>
+            <div class="input-group">{{ form.start_time(class="form-control form-control-sm", style="height: 50px;") }}</div>
+            <p class="mb-0">End Time:</p>
+            <div class="input-group">{{ form.end_time(class="form-control form-control-sm", style="height: 50px;") }}</div>
+          </div>
+
+          <hr class="rounded">
+
+          <!-- Poster image -->
+          <p class="h3"><strong>Poster Image</strong></p>
+          <div class="d-flex align-items-center my-3">
+            <p class="h4 mx-2">Select Image</p>
+            <button type="button" class="custom-button-categories-small" onclick="document.getElementById('posterInput').click()">Upload</button>
+          </div>
+          <div class="mx-2">
+            <label class="form-label">Upload input file for poster image</label>
+            {{ form.image(class="form-control", id="posterInput") }}
+          </div>
+          <div class="mx-auto my-3" style="max-width: 950px;">
+            <img src="{{ url_for('static', filename='img/concert2.jpg') }}" class="img-fluid rounded-3" alt="">
+          </div>
+
+          <hr class="rounded">
+
+          <!-- Ticket info -->
+          <p class="h3"><strong>Ticket Information</strong></p>
+          <div class="text-section">
+            <h5>Ticket Details</h5>
+            <p>Describe what is included with this ticket.</p>
+            <div class="input-group">
+              {{ form.ticket_details(class="form-control", placeholder="This ticket includes...") }}
+            </div>
+
+            <div class="mt-3 row">
+              <div class="col-md-6">
+                <h5>Ticket Availability</h5>
+                <p>Number of tickets available for sale for this event.</p>
+                <div class="input-group">
+                  {{ form.tickets_available(class="form-control", placeholder="Number of Tickets") }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <h5>Ticket Pricing ($)</h5>
+                <p>Choose the price of your tickets.</p>
+                <div class="input-group">
+                  {{ form.ticket_price(class="form-control", placeholder="Ticket Price") }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr class="rounded">
+
+          <!-- Optional images -->
+          <p class="h3"><strong>Optional: Event Images</strong></p>
+          <p style="color: black;">Upload more than one image to reveal a carousel of event images.</p>
+          <div class="d-flex align-items-center my-3">
+            <p class="h4 mx-2">Select Image</p>
+            <button type="button" class="custom-button-categories-small" onclick="document.getElementById('img2').click()">Upload</button>
+          </div>
+          <div class="mx-2">
+            <label class="form-label">Upload Image 1 of 3</label>
+            {{ form.image2(class="form-control", id="img2") }}
+            {{ form.image3(class="form-control mt-2") }}
+          </div>
+          <div class="mx-auto my-3" style="max-width: 950px;">
+            <img src="{{ url_for('static', filename='img/concert2.jpg') }}" class="img-fluid rounded-3" alt="">
+          </div>
+
+          <!-- Submit -->
+          <div class="d-flex justify-content-center mb-4">
+            {{ form.submit(class="custom-button-categories", style="width: 300px;") }}
+          </div>
+
+        </div> <!-- closes .p-4 -->
+      </div>   <!-- closes .col-md-9 -->
+    </div>     <!-- closes .row -->
+  </div>       <!-- closes .container-fluid -->
+</form>
 
 {% endblock %}
