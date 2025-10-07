@@ -4,6 +4,7 @@ from .forms import EventForm, CommentForm
 from . import db
 import os
 from werkzeug.utils import secure_filename
+from flask_login import current_user
 
 destbp = Blueprint('event', __name__, url_prefix='/events')
 
@@ -12,7 +13,13 @@ def show(id):
     event = db.session.scalar(db.select(Event).where(Event.id==id))
     # create the comment form
     cform = CommentForm()    
-    return render_template('Events/show.html', event=event, form=cform)
+    return render_template('events/show.html', event=event, form=cform, user=current_user)
+
+
+@destbp.route('/<id>/buyTickets')
+def buyTickets(id):
+    event = db.session.scalar(db.select(Event).where(Event.id==id))
+    return render_template('events/buyTickets.html', event=event)
 
 
 @destbp.route('/categorise')
@@ -71,7 +78,7 @@ def comment(id):
     if form.validate_on_submit():  
       # read the comment from the form, associate the Comment's Event field
       # with the Event object from the above DB query
-      comment = Comment(text=form.text.data, event=event) 
+      comment = Comment(text=form.text.data, event=event, user_id=current_user.id) 
       # here the back-referencing works - comment.Event is set
       # and the link is created
       db.session.add(comment) 
@@ -92,7 +99,17 @@ def create():
     # call the function that checks and returns image
     db_file_path = check_upload_file(form)
     event = Event(name=form.name.data,description=form.description.data, 
-    image = db_file_path)
+    image = db_file_path, 
+    genre = form.genre.data,
+    location = form.location.data,
+    event_date = form.event_date.data,
+    start_time = form.start_time.data,
+    end_time = form.end_time.data,
+    ticket_details=form.ticket_details.data, tickets_available=form.tickets_available.data,  ticket_price=form.ticket_price.data,
+    image2 = db_file_path,
+    image3 = db_file_path,
+    user = current_user )
+
     # add the object to the db session
     db.session.add(event)
     # commit to the database
@@ -103,4 +120,4 @@ def create():
     return redirect(url_for('event.create'))
   if request.method == 'POST':
         print("FORM ERRORS:", form.errors)
-  return render_template('events/create.html', form=form)
+  return render_template('events/create.html', form=form, user=current_user)

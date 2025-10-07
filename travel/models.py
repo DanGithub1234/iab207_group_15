@@ -2,6 +2,7 @@ from . import db
 from datetime import datetime
 from flask_login import UserMixin
 
+
 class User(db.Model, UserMixin):
     __tablename__ = 'users' # good practice to specify table name
     id = db.Column(db.Integer, primary_key=True)
@@ -17,7 +18,9 @@ class User(db.Model, UserMixin):
     # password_hash = db.Column(db.String(255), nullable=False)
 
     # relation to call user.comments and comment.created_by
+
     comments = db.relationship('Comment', backref='user')
+    events = db.relationship('Event', backref='user')
     
     # string print method
     def __repr__(self):
@@ -97,8 +100,8 @@ class Event(db.Model):
     name = db.Column(db.String(80))
     description = db.Column(db.String(200))
     image = db.Column(db.String(400))
-    currency = db.Column(db.String(3))
-
+    # currency = db.Column(db.String(3))
+    genre = db.Column(db.String(50))
     # new fields for event creation
     location = db.Column(db.String(200))
     event_date = db.Column(db.Date)
@@ -107,11 +110,12 @@ class Event(db.Model):
     ticket_details = db.Column(db.String(1000))
     tickets_available = db.Column(db.Integer)
     ticket_price = db.Column(db.Float)
-    image2 = db.Column(db.String(400))
-    image3 = db.Column(db.String(400))
+    image2 = db.Column(db.String(400), nullable=True)
+    image3 = db.Column(db.String(400), nullable=True)
 
     # relationship to comments
-    comments = db.relationship('Comment', backref='destination')
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    comments = db.relationship('Comment', backref='event')
 
     def __repr__(self):
         return f"Name: {self.name}"

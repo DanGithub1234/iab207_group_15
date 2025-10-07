@@ -45,7 +45,7 @@ class RegisterForm(FlaskForm):
 
 class CommentForm(FlaskForm):
   text = TextAreaField('Comment', validators=[InputRequired("Enter comment...")])
-  submit = SubmitField("Create")
+  submit = SubmitField("Submit")
 
 
 
@@ -60,10 +60,10 @@ class EventForm(FlaskForm):
 
     # Genre
     genre = SelectField('Genre', choices=[
-        ('Pop','Pop'),
-        ('Rap','Rap'),
-        ('Country','Country'),
-        ('Other','Other')
+        ('pop','Pop'),
+        ('rap','Rap'),
+        ('country','Country'),
+        ('other','Other')
     ], validators=[InputRequired()])
     genre_other = StringField('Custom Genre (if Other)', validators=[Length(max=60)])
 

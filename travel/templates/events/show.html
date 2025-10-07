@@ -3,60 +3,63 @@
 {% from 'bootstrap5/form.html' import render_form %}
 
 {% block content %}
-    <!-- Custom Jumbotron image only  -->
+<!-- Custom Jumbotron image only  -->
 
-    <div class="py-5">
-        <div class="myjumbotron2 d-flex justify-content-center align-items-center">
-
-
-            <img src="{{event.image}}" class="img-fluid" alt="..."
-                style="box-shadow: 20px; max-width: 80%; height: auto;">
+<div class="py-5">
+    <div class="myjumbotron2 d-flex justify-content-center align-items-center">
 
 
+        <img src="{{event.image}}" class="img-fluid" alt="..." style="box-shadow: 20px; max-width: 80%; height: auto;">
 
+
+
+    </div>
+
+</div>
+
+
+<!-- event details -->
+
+<div class="p-5 row">
+
+    <div class="col-md-7 p-5">
+        <div class="home-content">
+
+            <p class="h1">{{event.name}}</p>
+            <p class="card-text mb-1" style="color: black;"> {{event.description}}</p>
+            <p class="card-text mb-1" style="color: black;"><strong>Genre:</strong> {{event.genre|capitalize}}</p>
+            <p class="card-text mb-1" style="color: black;"><strong>Location:</strong> {{event.location}}</p>
+            <p class="card-text mb-1" style="color: black;"><strong>Date:</strong> {{event.event_date}}</p>
+            <p class="card-text mb-1" style="color: black;"><strong>Time:</strong> {{event.start_time}} to
+                {{event.end_time}}</p>
+
+
+
+            <h4 class="my-5">Event by {{event.user.username}}</h4>
         </div>
 
     </div>
 
-    
-    <!-- event details -->
 
-    <div class="p-5 row">
+    <!-- ticket information -->
 
-        <div class="col-md-7 p-5">
-            <div class="home-content">
-        
-                <p class="h1">{{event.name}}</p>
-                <p class="card-text mb-1" style="color: black;">{{event.description}}</p>
-                <p class="card-text mb-1" style="color: black;"><strong>Genre:</strong>{{event.genre}}</p>
-                <p class="card-text mb-1" style="color: black;"><strong>Location:</strong>{{event.location}}</p>
-                <p class="card-text mb-1" style="color: black;"><strong>Date:</strong>{{event.date}}</p>
-                <p class="card-text mb-1" style="color: black;"><strong>Time:</strong>{{event.start_time}} to {{event.end_time}}</p>
+    <div class="col-md-5 p-5">
 
-  
+        <div class="card custom-card-ticket mb-3 rounded-3 text-center" style="max-width: 30rem;">
+            <div class="card-header custom-card-ticket-header"><strong>Open:</strong> {{event.tickets_available}}</div>
+            <div class="card-body custom-card-ticket-header">
+                <h5 class="card-title">{{event.name}} Tickets</h5>
 
-                <h4 class="my-5">Event by user.username</h4>
-            </div>
+                <h1 style="font-weight: 600; font-size: 50px;">${{event.ticket_price}}</h1>
 
-        </div>
+                <a href="{{url_for('event.buyTickets', id=event.id)}}" type="button"
+                    class="custom-button-booking mt-2 p-3">
+                    <strong>Book now</strong> </a>
 
-
-        <!-- ticket information -->
-
-        <div class="col-md-5 p-5">
-
-            <div class="card custom-card-ticket mb-3 rounded-3 text-center" style="max-width: 30rem;">
-                <div class="card-header custom-card-ticket-header"><strong>Open:</strong> 12 Tickets Left</div>
-                <div class="card-body custom-card-ticket-header">
-                    <h5 class="card-title">Coldplay Tickets</h5>
-
-                    <h1 style="font-weight: 600; font-size: 50px;">$120</h1>
-
-                    <button type="button" class="custom-button-booking mt-2 p-3" data-bs-toggle="modal"
-                        data-bs-target="#exampleModal">
-                        <strong>Book now</strong> </button>
-
-                    <ul>
+                <p class="card-text text-start">
+                    {{event.ticket_details}}
+                </p>
+                <!-- <ul>
 
                         <li>
                             <p class="card-text text-start">See Coldplay live in action in the area.</p>
@@ -71,287 +74,192 @@
                         <li>
                             <p class="card-text text-start">Gain reduced prices for selected merchanise items.</p>
                         </li>
-                    </ul>
+                    </ul> -->
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Modal for booking tickets-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Booking Ticket Process</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <form>
+                        <div class="mb-3">
+
+
+                            <label for="exampleInputEmail1" class="form-label">Bank Details</label>
+                            <input type="email" class="form-control" id="exampleInputEmail1"
+                                aria-describedby="emailHelp">
+                            <div id="emailHelp" class="form-text">We'll never share your bank details with anyone
+                                else.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="exampleInputEmail2" class="form-label">Enter Number of Tickets</label>
+                            <input type="number" class="form-control" id="exampleInputEmail1"
+                                aria-describedby="emailHelp">
+                            <div id="n" class="form-number" aria-placeholder="Eg. 1"></div>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                            <label class="form-check-label" for="exampleCheck1">Agree to Terms & Conditions</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Confirm</button>
+                    </form>
+
 
                 </div>
-            </div>
 
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+{% if event.image2|length > 0 %}
+<!-- event images section -->
+<p class="h2 mt-5 text-center">Tour Photos</p>
+
+<div id="carouselExampleCaptions" class="carousel slide mx-auto" style="max-width: 1200px; max-height: 500px;">
+
+    <div class="carousel-indicators mx-auto">
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+            aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+            aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+            aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner rounded-3">
+        <div class="carousel-item active">
+            <img src="{{event.image1}}" class="d-block w-100" alt="..." style="max-width: 1200px; max-height: 500px;">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Night 1: Australia</h5>
+                <p>Playing Fix You at the Rod Laver Arena.</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="{{event.image2}}" class="d-block w-100" alt="..." style="max-width: 1200px; max-height: 500px;">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Night 2: New Zealand</h5>
+                <p>Playing Paradise at the Auckland Arena.</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="{{event.image3}}" class="d-block w-100" alt="..." style="max-width: 1200px; max-height: 500px;">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Night 3: New York</h5>
+                <p>Playing Yellow at the Madison Square Garden.</p>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+{% endif %}
+
+
+
+
+<!-- comment section -->
+<main class="container my-5">
+
+    <div class="align-items-center p-5">
+
+
+        <div class="d-flex align-items-center col-md-8 gap-3 my-3">
+
+            <p class="mb-0" style="color: black;">Share your thoughts about this event: <strong> {{event.name}}</strong>
+            </p>
 
         </div>
 
-        <!-- Modal for booking tickets-->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Booking Ticket Process</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-
-                        <form>
-                            <div class="mb-3">
 
 
-                                <label for="exampleInputEmail1" class="form-label">Bank Details</label>
-                                <input type="email" class="form-control" id="exampleInputEmail1"
-                                    aria-describedby="emailHelp">
-                                <div id="emailHelp" class="form-text">We'll never share your bank details with anyone
-                                    else.</div>
-                            </div>
+        <div class="custom-card-body">
 
-                            <div class="mb-3">
-                                <label for="exampleInputEmail2" class="form-label">Enter Number of Tickets</label>
-                                <input type="number" class="form-control" id="exampleInputEmail1"
-                                    aria-describedby="emailHelp">
-                                <div id="n" class="form-number" aria-placeholder="Eg. 1"></div>
-                            </div>
+            <div class="d-flex">
 
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                <label class="form-check-label" for="exampleCheck1">Agree to Terms & Conditions</label>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Confirm</button>
-                        </form>
+                <div class="date text-center">
+                    <div class="day-font"><i class="bi bi-person-circle" style="font-size: 3rem;"></i></div>
+                </div>
 
+                <div>
 
-                    </div>
+                    <h5 class="card-title mt-3">{{user.username}}</h5>
+                    <h5 class="card-body" style="font-size: 1rem;">{{user.email}}</h5>
 
                 </div>
+
+
             </div>
+
+        </div>
+
+        <div class="row border-bottom">
+            {{render_form(form,"/events/{0}/comment".format(event.id))}}
+            {% for comment in event.comments %}
+            <div class="col-md-12">
+                <b style="color: black;">{{comment.user.username}} <span class="ml-2 text-muted">{{comment.created_at.strftime("%d %b %Y %H:
+                        %M")}}</span></b>
+                <!-- comment time and dates -->
+                <p style="color: black;">{{comment.text}}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+
+
+
+<!-- footer -->
+
+<!-- <footer class="text-center mt-5">
+    <div class="text-center p-5 mb-2 custom-footer text-secondary-emphasis opacity-70" style="width: 100%;">
+
+        <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center">
+
+            <h5 class="mx-4">Home</h5>
+            <h5 class="mx-4">Features</h5>
+            <h5 class="mx-4">News</h5>
+            <h5 class="mx-4">About Us</h5>
+
+        </div>
+
+
+        <hr class="solid" style="color: rgb(203, 203, 203);">
+
+
+
+        <div class="d-flex justify-content-center">
+            <p> <i class="bi bi-cloudy-fill"></i> © 2025 musicCloud, Inc</p>
+
+
+
         </div>
 
 
 
     </div>
-
-
-    <!-- event images section -->
-    <p class="h2 mt-5 text-center">Tour Photos</p>
-
-    <div id="carouselExampleCaptions" class="carousel slide mx-auto" style="max-width: 1200px; max-height: 500px;">
-
-        <div class="carousel-indicators mx-auto">
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
-                aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
-                aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
-                aria-label="Slide 3"></button>
-        </div>
-        <div class="carousel-inner rounded-3">
-            <div class="carousel-item active">
-                <img src="{{event.image1}}" class="d-block w-100" alt="..."
-                    style="max-width: 1200px; max-height: 500px;">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Night 1: Australia</h5>
-                    <p>Playing Fix You at the Rod Laver Arena.</p>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img src="static/img/concert2.jpg" class="d-block w-100" alt="..."
-                    style="max-width: 1200px; max-height: 500px;">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Night 2: New Zealand</h5>
-                    <p>Playing Paradise at the Auckland Arena.</p>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img src="static/img/concert3.jpg" class="d-block w-100" alt="..."
-                    style="max-width: 1200px; max-height: 500px;">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Night 3: New York</h5>
-                    <p>Playing Yellow at the Madison Square Garden.</p>
-                </div>
-            </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
-            data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
-            data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div>
-
-
-
-
-    <!-- comment section -->
-    <main class="container my-5">
-
-        <div class="align-items-center p-5">
-
-
-            <div class="d-flex align-items-center col-md-8 gap-3 my-3">
-
-                <p class="mb-0" style="color: black;">Share your thoughts about this event: <strong>Coldplay: Music of
-                        the Spheres World Tour</strong></p>
-
-            </div>
-
-
-
-            <div class="custom-card-body">
-
-                <div class="d-flex">
-
-                    <div class="date text-center">
-                        <div class="day-font"><i class="bi bi-person-circle" style="font-size: 3rem;"></i></div>
-                    </div>
-
-                    <div>
-
-                        <h5 class="card-title mt-3">John Doe</h5>
-                        <h5 class="card-body" style="font-size: 1rem;">johndoe@gmail.com</h5>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
-            <div class="mb-5 form-floating">
-                <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2"
-                    style="height: 100px"></textarea>
-
-                <label for="floatingTextarea2">
-                    Comments
-                </label>
-
-                <div class="d-flex mt-3 mx-0 align-items-center">
-                    <button type="button" class="custom-button-categories-small mx-3">Cancel</button>
-                    <input class="custom-button-categories-small" type="submit" value="Submit">
-
-
-
-                </div>
-
-
-
-            </div>
-
-
-
-            <div class="comments-container">
-
-
-                <div class="d-flex">
-                    <h5 class="mx-1 mb-4">Comments:</h5>
-                    <h5><strong>2</strong></h5>
-
-                </div>
-
-
-                <!-- comment 1 -->
-                <div class="card">
-                    <div class="p-3 custom-card-body rounded-0">
-
-                        <div class="mx-4">
-
-                            <div class="date text-center">
-                                <div class="day-font"></i></div>
-                            </div>
-
-                            <div>
-
-                                <h5 class="card-title mt-3">Jane Doe</h5>
-                                <p>Posted: 15 August 2025</p>
-
-                            </div>
-
-                        </div>
-
-                        <div class="mx-4">
-                            <p>This was a very fun event would recommend this to fans of the show.</p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- comment 2 -->
-
-                <div class="card mb-2">
-
-                    <div class="p-3 custom-card-body">
-
-                        <div class="mx-4">
-
-                            <div class="date text-center">
-                                <div class="day-font"></i></div>
-                            </div>
-
-                            <div>
-
-                                <h5 class="card-title mt-3">Johnny Doz</h5>
-                                <p>Posted: 16 August 2025</p>
-
-                            </div>
-
-                        </div>
-
-                        <div class="mx-4">
-                            <p>Great show! Loved the lead singer he was so good</p>
-
-                        </div>
-
-
-                    </div>
-
-                </div>
-
-
-
-
-
-            </div>
-
-
-        </div>
-
-
-    </main>
-
-    </div>
-
-
-    <!-- footer -->
-
-    <footer class="text-center mt-5">
-        <div class="text-center p-5 mb-2 custom-footer text-secondary-emphasis opacity-70" style="width: 100%;">
-
-            <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center">
-
-                <h5 class="mx-4">Home</h5>
-                <h5 class="mx-4">Features</h5>
-                <h5 class="mx-4">News</h5>
-                <h5 class="mx-4">About Us</h5>
-
-            </div>
-
-
-            <hr class="solid" style="color: rgb(203, 203, 203);">
-
-
-
-            <div class="d-flex justify-content-center">
-                <p> <i class="bi bi-cloudy-fill"></i> © 2025 musicCloud, Inc</p>
-
-
-
-            </div>
-
-
-
-        </div>
-    </footer>
+</footer> -->
 </body>
 
 </html>
