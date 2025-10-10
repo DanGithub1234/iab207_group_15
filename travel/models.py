@@ -103,6 +103,7 @@ class Event(db.Model):
     image = db.Column(db.String(400))
     # currency = db.Column(db.String(3))
     genre = db.Column(db.String(50))
+    event_status = db.Column(db.String(50))
     # new fields for event creation
     location = db.Column(db.String(200))
     event_date = db.Column(db.Date)
@@ -118,5 +119,25 @@ class Event(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='event')
 
+
+    def statusUpdate(self):
+        current_date = date.current_date()
+        
+        if self.tickets_available <= 0:
+            self.status = "Open"
+        elif self.tickets_available >= 0:
+            self.status = "Sold Out"
+        elif self.event_date > current_date:
+            self.status = "Inactive"
+        else:
+             self.status = "Cancelled"
+
     def __repr__(self):
         return f"Name: {self.name}"
+<<<<<<< HEAD
+=======
+
+
+
+
+>>>>>>> e436277 (progress-tasks-daniel)

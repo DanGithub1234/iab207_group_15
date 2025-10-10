@@ -1,11 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from datetime import datetime
-from .models import Event, Comment, Booking
+from .models import Event, Comment
 from .forms import EventForm, CommentForm
 from . import db
 import os
 from werkzeug.utils import secure_filename
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 destbp = Blueprint('event', __name__, url_prefix='/events')
 
@@ -17,51 +16,20 @@ def show(id):
     return render_template('events/show.html', event=event, form=cform, user=current_user)
 
 
-@destbp.route('/<int:id>/buyTickets', methods=['GET', 'POST'])
+@destbp.route('/<id>/buyTickets')
+@login_required
 def buyTickets(id):
-    event = db.session.scalar(db.select(Event).where(Event.id == id))
-    if request.method == 'POST':
-        # read the posted fields (names match your HTML)
-        full_name = request.form.get('full_name')
-        email = request.form.get('email')
-        phone = request.form.get('buyer_phone')
-        quantity = int(request.form.get('quantity', 1))
-        billing_address = request.form.get('billing_address', '')
-
-        # compute total: (ticket price + $5 fee) * quantity
-        total_price = (float(event.ticket_price) + 5.0) * quantity
-
-        # save to DB
-        booking = Booking(
-            full_name=full_name,
-            email=email,
-            phone=phone,
-            num_tickets=quantity,
-            total_price=total_price,
-            billing_address=billing_address,
-            event_id=id,
-            date_booked=datetime.utcnow()
-        )
-        db.session.add(booking)
-        db.session.commit()
-        print(f" Saved booking id={booking.id}")
-
-        # re-render and open your modal
-        return render_template(
-            'events/buyTickets.html',
-            event=event,
-            show_modal=True,
-            modal_name=full_name,
-            modal_qty=quantity,
-            modal_total=total_price
-        )
-
-    # GET
+    event = db.session.scalar(db.select(Event).where(Event.id==id))
     return render_template('events/buyTickets.html', event=event)
 
 
 @destbp.route('/categorise')
 def categorise():
+
+    event = db.session.scalars(db.select(Event)).all()
+    for event in events:
+      event.statusUpdate
+    db.session.commit() 
     genre = request.args.get('genre', 'All')
     if genre == "All":
       events = db.session.scalars(db.select(Event)).all()
@@ -107,8 +75,8 @@ def check_upload_file(form):
     fp.save(upload_path)
     return db_upload_path
 
-
 @destbp.route('/<id>/comment', methods=['GET', 'POST'])  
+@login_required
 def comment(id):  
     form = CommentForm()  
     # get the Event object associated to the page and the comment
@@ -130,6 +98,7 @@ def comment(id):
 
 
 @destbp.route('/create', methods=['GET', 'POST'])
+@login_required
 def create():
   print('Method type: ', request.method)
   form = EventForm()
