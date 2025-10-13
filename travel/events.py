@@ -128,3 +128,23 @@ def create():
   if request.method == 'POST':
         print("FORM ERRORS:", form.errors)
   return render_template('events/create.html', form=form, user=current_user)
+
+# a rough booking history to see if bookings are saved
+@destbp.route('/bookingHistory')
+def booking_history():
+    from .models import Booking
+    rows = Booking.query.order_by(Booking.id.desc()).all()
+    html_rows = [
+        f"<tr><td>{b.id}</td><td>{b.full_name}</td><td>{b.email}</td>"
+        f"<td>{b.num_tickets}</td><td>${b.total_price:.2f}</td>"
+        f"<td>{b.event_id}</td><td>{b.date_booked}</td></tr>"
+        for b in rows
+    ]
+    return (
+        "<h2>Booking History</h2>"
+        "<table border='1' cellpadding='6'>"
+        "<tr><th>ID</th><th>Name</th><th>Email</th><th>Qty</th>"
+        "<th>Total</th><th>Event</th><th>Date</th></tr>"
+        + "".join(html_rows) + "</table>"
+    )
+  return render_template('events/create.html', form=form, user=current_user)
