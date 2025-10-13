@@ -89,3 +89,4 @@ class EventForm(FlaskForm):
     # Submit button
     submit = SubmitField('Create event')
 
+

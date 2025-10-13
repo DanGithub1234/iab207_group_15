@@ -52,10 +52,12 @@
    <button type="button" class="custom-button-categories" data-genre="RNB">RNB</button>
    <button type="button" class="custom-button-categories" data-genre="Indie/Alt">Indie/Alt</button>  -->
 
-  <h5 class="my-3">Filter by location:</h5>
+  <h5 class="my-3">Search Bar:</h5>
 
-  <input type="text" class="form-control" aria-label="Sizing example input" placeholder="Eg. Brisbane, Australia"
-    aria-describedby="inputGroup-sizing-default" style="max-width: 250px">
+  <form class="form-inline d-flex flex-nowrap" action="{{ url_for('main.search') }}" >
+    <input placeholder="Search events" type="text" name="search" class="form-control flex-grow-1 my-1 mr-sm-2" id="SearchForm">
+    <button type="submit" class="flex-shrink-1 btn btn-primary my-1">Submit</button>
+  </form>
 
 
 
