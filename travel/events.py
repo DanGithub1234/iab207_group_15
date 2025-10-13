@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from .models import Event, Comment, Booking
+from datetime import datetime
 from .forms import EventForm, CommentForm
 from . import db
 import os
@@ -38,7 +39,7 @@ def buyTickets(id):
             total_price=total_price,
             billing_address=billing_address,
             event_id=id,
-            date_booked=datetime.utcnow()
+            date_booked=datetime.now()
         )
         db.session.add(booking)
         db.session.commit()
@@ -182,4 +183,4 @@ def booking_history():
         "<th>Total</th><th>Event</th><th>Date</th></tr>"
         + "".join(html_rows) + "</table>"
     )
-  return render_template('events/create.html', form=form, user=current_user)
+  #return render_template('events/create.html', form=form, user=current_user)
