@@ -71,7 +71,37 @@
   </div>
 
   <hr class="my-4">
+    
+  <!-- payment information -->
+  <h4 class="mb-3">Payment Information</h4>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label for="card_name" class="form-label">Name on Card</label>
+      <input type="text" id="card_name" name="card_name" class="form-control" required>
+    </div>
+    <div class="col-md-6">
+      <label for="card_number" class="form-label">Card Number</label>
+      <input type="text" id="card_number" name="card_number" class="form-control" maxlength="19" required>
+    </div>
+    <div class="col-md-6">
+      <label for="card_expiry" class="form-label">Expiry (MM/YY)</label>
+      <input type="text" id="card_expiry" name="card_expiry" class="form-control" placeholder="MM/YY" required>
+    </div>
+    <div class="col-md-6">
+      <label for="card_cvv" class="form-label">CVV</label>
+      <input type="text" id="card_cvv" name="card_cvv" class="form-control" maxlength="4" required>
+    </div>
+  </div>
 
+  <div class="mt-3">
+    <label for="alt_method" class="form-label">Alternative Method (optional)</label>
+    <select id="alt_method" name="alt_method" class="form-control">
+      <option value="">— Select —</option>
+      <option value="paypal">PayPal</option>
+      <option value="applepay">Apple Pay</option>
+    </select>
+  </div>
+    
   <hr class="my-4">
 
   <!-- billing information -->
@@ -116,15 +146,6 @@
     </div>
   </div>
 </div>
-
-{% if show_modal %}
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var modal = new bootstrap.Modal(document.getElementById('thankYouModal'));
-    modal.show();
-  });
-</script>
-{% endif %}
 
     <!-- footer -->
 
