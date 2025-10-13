@@ -73,11 +73,20 @@ class Booking(db.Model):
 #     # comments = db.relationship('Comment', backref='Event')
 #     # add the foreign key
 #     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-#     Event_id = db.Column(db.Integer, db.ForeignKey('Events.id'))
+#     Event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
+#     event = db.relationship('Event', backref='bookings')
 	
 #     # string print method
-#     def __repr__(self):
-#         return f"Name: {self.name}"
+#     def ticket_count(self):
+#         if self.event:
+#             ticket_number = self.event.tickets_available - self.numberOfTickets
+#             return ticket_number
+#         return 0
+
+#         def __repr__(self):
+#             return f"Name: {self.name}"
+
+
     
 # class Event(db.Model):
 #     __tablename__ = 'event'
@@ -117,6 +126,7 @@ class Event(db.Model):
     image = db.Column(db.String(400))
     # currency = db.Column(db.String(3))
     genre = db.Column(db.String(50))
+    event_status = db.Column(db.String(50))
     # new fields for event creation
     location = db.Column(db.String(200))
     event_date = db.Column(db.Date)
@@ -131,6 +141,27 @@ class Event(db.Model):
     # relationship to comments
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='event')
+    # bookings = db.relationship('Booking', backref='event')
+
+
+    def statusUpdate(self):
+        current_date = date.current_date()
+        
+        if self.tickets_available <= 0:
+            self.status = "Open"
+        elif self.tickets_available >= 0:
+            self.status = "Sold Out"
+        elif self.event_date > current_date:
+            self.status = "Inactive"
+        else:
+             self.status = "Cancelled"
 
     def __repr__(self):
         return f"Name: {self.name}"
+<<<<<<< HEAD
+=======
+
+
+
+
+>>>>>>> e436277 (progress-tasks-daniel)

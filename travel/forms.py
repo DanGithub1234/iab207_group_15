@@ -32,14 +32,14 @@ class LoginForm(FlaskForm):
 
 
 class RegisterForm(FlaskForm):
-  username = StringField('Username', validators=[InputRequired('Enter username...')])
-  email = StringField('Email', validators=[InputRequired(),Email() ])
+  username = StringField('Username', validators=[InputRequired('Enter username...'), Length(max=50)])
+  email = StringField('Email', validators=[InputRequired(),Email(), Length(max=100) ])
   password = PasswordField('Password', validators=[InputRequired('Enter password...')])
   confirm = PasswordField('Confirm Password', 
           validators=[EqualTo('password', message='Re-enter same as Password')])
   
 
-  contactNumber = StringField('ContactNumber', validators=[InputRequired('Enter phone number...')])
+  contactNumber = IntegerField('ContactNumber', validators=[InputRequired('Enter phone number...') ])
   streetAddress = StringField('StreetAddress', validators=[InputRequired('Enter street address...')])
   submit = SubmitField("Register")
 
@@ -88,4 +88,5 @@ class EventForm(FlaskForm):
 
     # Submit button
     submit = SubmitField('Create event')
+
 

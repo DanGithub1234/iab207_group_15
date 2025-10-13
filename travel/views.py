@@ -10,10 +10,21 @@ mainbp = Blueprint('main', __name__)
 
 @mainbp.route('/')
 def index():
-    tag_line='You need a vacation'
+    tag_line='Event App'
     events = Event.query.all() #get the hotels
     return render_template('index.html', tag_line=tag_line,
                     events=events)
+
+
+@mainbp.route('/search')
+def search():
+    if request.args['search'] and request.args['search'] != "":
+        print(request.args['search'])
+        query = "%" + request.args['search'] + "%"
+        events = db.session.scalars(db.select(Event).where(Event.name.like(query))).all()
+        return render_template('index.html', events=events)
+    else:
+        return redirect(url_for('main.index'))
 
 
 
