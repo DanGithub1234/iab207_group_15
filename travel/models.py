@@ -56,7 +56,7 @@ class Booking(db.Model):
     total_price = db.Column(db.Float, nullable=False)
     billing_address = db.Column(db.String(255))
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
-    date_booked = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    date_booked = db.Column(db.DateTime, default=datetime.now(), nullable=False)
 
     def __repr__(self):
         return f'<Booking {self.full_name} x{self.num_tickets} (event={self.event_id})>'
