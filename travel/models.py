@@ -158,10 +158,3 @@ class Event(db.Model):
 
     def __repr__(self):
         return f"Name: {self.name}"
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> e436277 (progress-tasks-daniel)
