@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from .models import Event, Comment
+from datetime import datetime
+from .models import Event, Comment, Booking
 from .forms import EventForm, CommentForm
 from . import db
 import os
@@ -16,10 +17,46 @@ def show(id):
     return render_template('events/show.html', event=event, form=cform, user=current_user)
 
 
-@destbp.route('/<id>/buyTickets')
-@login_required
+@destbp.route('/<int:id>/buyTickets', methods=['GET', 'POST'])
 def buyTickets(id):
-    event = db.session.scalar(db.select(Event).where(Event.id==id))
+    event = db.session.scalar(db.select(Event).where(Event.id == id))
+    if request.method == 'POST':
+        # read the posted fields (names match your HTML)
+        full_name = request.form.get('full_name')
+        email = request.form.get('email')
+        phone = request.form.get('buyer_phone')
+        quantity = int(request.form.get('quantity', 1))
+        billing_address = request.form.get('billing_address', '')
+
+        # compute total: (ticket price + $5 fee) * quantity
+        total_price = (float(event.ticket_price) + 5.0) * quantity
+
+        # save to DB
+        booking = Booking(
+            full_name=full_name,
+            email=email,
+            phone=phone,
+            num_tickets=quantity,
+            total_price=total_price,
+            billing_address=billing_address,
+            event_id=id,
+            date_booked=datetime.utcnow()
+        )
+        db.session.add(booking)
+        db.session.commit()
+        print(f" Saved booking id={booking.id}")
+
+        # re-render and open your modal
+        return render_template(
+            'events/buyTickets.html',
+            event=event,
+            show_modal=True,
+            modal_name=full_name,
+            modal_qty=quantity,
+            modal_total=total_price
+        )
+
+    # GET
     return render_template('events/buyTickets.html', event=event)
 
 
@@ -122,3 +159,22 @@ def create():
   if request.method == 'POST':
         print("FORM ERRORS:", form.errors)
   return render_template('events/create.html', form=form, user=current_user)
+
+# a rough booking history to see if bookings are saved
+@destbp.route('/bookingHistory')
+def booking_history():
+    from .models import Booking
+    rows = Booking.query.order_by(Booking.id.desc()).all()
+    html_rows = [
+        f"<tr><td>{b.id}</td><td>{b.full_name}</td><td>{b.email}</td>"
+        f"<td>{b.num_tickets}</td><td>${b.total_price:.2f}</td>"
+        f"<td>{b.event_id}</td><td>{b.date_booked}</td></tr>"
+        for b in rows
+    ]
+    return (
+        "<h2>Booking History</h2>"
+        "<table border='1' cellpadding='6'>"
+        "<tr><th>ID</th><th>Name</th><th>Email</th><th>Qty</th>"
+        "<th>Total</th><th>Event</th><th>Date</th></tr>"
+        + "".join(html_rows) + "</table>"
+    )
