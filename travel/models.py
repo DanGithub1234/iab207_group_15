@@ -46,6 +46,22 @@ class User(db.Model, UserMixin):
 
 # Uncomment later
 
+class Booking(db.Model):
+    __tablename__ = 'booking'
+    id = db.Column(db.Integer, primary_key=True)
+    full_name = db.Column(db.String(100), nullable = False)
+    email = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(20))
+    num_tickets = db.Column(db.Integer, nullable=False)
+    total_price = db.Column(db.Float, nullable=False)
+    billing_address = db.Column(db.String(255))
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+    date_booked = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    def __repr__(self):
+        return f'<Booking {self.full_name} x{self.num_tickets} (event={self.event_id})>'
+
+
 # class Booking(db.Model):
 #     __tablename__ = 'booking'
 #     id = db.Column(db.Integer, primary_key=True)
