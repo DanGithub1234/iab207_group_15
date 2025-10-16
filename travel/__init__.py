@@ -1,12 +1,12 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
+app = Flask(__name__)
 db=SQLAlchemy()
 
 def create_app():
-    app = Flask(__name__)
 
      # A secret key for the session object
     app.secret_key = 'somerandomvalue'
@@ -47,5 +47,14 @@ def create_app():
     app.register_blueprint(events.destbp)
     from . import auth
     app.register_blueprint(auth.authbp)
+
+    # ERROR HANDLING
+    @app.errorhandler(404)
+    def not_found(e):
+      return render_template("404.html", error=e)
+
+    @app.errorhandler(500)
+    def internal_server_error(e):
+      return render_template("500.html", error=e), 500
 
     return app
