@@ -52,12 +52,14 @@
    <button type="button" class="custom-button-categories" data-genre="RNB">RNB</button>
    <button type="button" class="custom-button-categories" data-genre="Indie/Alt">Indie/Alt</button>  -->
 
-  <h5 class="my-3">Search Bar:</h5>
+  <h5 class="my-3">Search:</h5>
 
   <form class="form-inline d-flex flex-nowrap" action="{{ url_for('main.search') }}" >
     <input placeholder="Search events" type="text" name="search" class="form-control flex-grow-1 my-1 mr-sm-2" id="SearchForm">
     <button type="submit" class="flex-shrink-1 btn btn-primary my-1">Submit</button>
   </form>
+
+</div>
 
 
 
@@ -101,7 +103,22 @@
 
             <div class="position-relative">
               <img src="{{event.image}}" class="card-img-top" alt="..." style="height: 250px;">
-              <span class="badge text-bg-success position-absolute m-2 top-0 start-0 fs-5">Open</span>
+
+              {% if event.event_status == 'Open' %}
+                <span class="badge text-bg-success position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
+              {% endif %}
+
+              {% if event.event_status == 'Inactive' %}
+                <span class="badge text-bg-secondary position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
+              {% endif %}
+
+              {% if event.event_status == 'Sold Out' %}
+                <span class="badge text-bg-warning position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
+              {% endif %}
+
+              {% if event.event_status == 'Cancelled' %}
+                <span class="badge text-bg-danger position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
+              {% endif %}
             </div>
 
             <div class="p-3 custom-card-body">

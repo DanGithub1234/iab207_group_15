@@ -40,12 +40,12 @@
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                <ul class="navbar-nav mx-auto gap-3">
                   <li class="nav-item">
-                     <a class="nav-link" aria-current="page" href="/">home</a>
+                     <a class="nav-link" aria-current="page" href="{{ url_for('main.index') }}">home</a>
                   </li>
 
                   {% if current_user.is_authenticated %}
                   <li class="nav-item">
-                     <a class="nav-link" href="events/create">create event</a>
+                     <a class="nav-link" href="{{ url_for('event.create') }}">create event</a>
                   </li>
 
                   
@@ -85,12 +85,12 @@
 
 
 
-               <form class="d-flex" role="search">
+               <!-- <form class="d-flex" role="search">
                   <input class="form-control me-2" type="search" placeholder="Search events" aria-label="Search" />
                   <button class="btn btn-outline-light" type="submit" aria-label="search"><i
                         class="bi bi-search"></i></button>
+               </form> -->
 
-               </form>
             </div>
          </div>
       </nav>

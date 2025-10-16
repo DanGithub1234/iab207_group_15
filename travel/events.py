@@ -12,6 +12,7 @@ destbp = Blueprint('event', __name__, url_prefix='/events')
 @destbp.route('/<id>')
 def show(id):
     event = db.session.scalar(db.select(Event).where(Event.id==id))
+    event.statusUpdate()
     # create the comment form
     cform = CommentForm()    
     return render_template('events/show.html', event=event, form=cform, user=current_user)
@@ -41,10 +42,20 @@ def buyTickets(id):
             event_id=id,
             date_booked=datetime.now()
         )
+
+
+        event.tickets_available -= quantity
         db.session.add(booking)
         db.session.commit()
-        print(f" Saved booking id={booking.id}")
+        # if booking.ticket_count():
+        #     db.session.add(booking)
+        #     db.session.commit()
+        #     print(f"Saved booking id={booking.id}")
+        # else:
+        #     print(f"Not enough tickets")
 
+
+        
         # re-render and open your modal
         return render_template(
             'events/buyTickets.html',
@@ -62,16 +73,19 @@ def buyTickets(id):
 @destbp.route('/categorise')
 def categorise():
 
-    event = db.session.scalars(db.select(Event)).all()
-    for event in events:
-      event.statusUpdate
-    db.session.commit() 
+    events = db.session.scalars(db.select(Event)).all()
+    
     genre = request.args.get('genre', 'All')
     if genre == "All":
       events = db.session.scalars(db.select(Event)).all()
     # create the comment form
     else:
        events = db.session.scalars(db.select(Event).where(Event.genre==genre)).all()
+
+    for event in events:
+      event.statusUpdate()
+    db.session.commit() 
+
     return render_template('index.html', events=events, genre=genre)
 
 
@@ -134,28 +148,64 @@ def comment(id):
 
 
 @destbp.route('/create', methods=['GET', 'POST'])
+@destbp.route('/create/<int:id>', methods=['GET', 'POST'])
 @login_required
-def create():
-  print('Method type: ', request.method)
-  form = EventForm()
+def create(id=None):
+  if id:
+    event = db.session.get(Event, id)
+    form = EventForm(obj = event)
+  else:
+    print('Method type: ', request.method)
+    form = EventForm()
   if form.validate_on_submit():
-    # call the function that checks and returns image
-    db_file_path = check_upload_file(form)
-    event = Event(name=form.name.data,description=form.description.data, 
-    image = db_file_path, 
-    genre = form.genre.data,
-    location = form.location.data,
-    event_date = form.event_date.data,
-    start_time = form.start_time.data,
-    end_time = form.end_time.data,
-    ticket_details=form.ticket_details.data, tickets_available=form.tickets_available.data,  ticket_price=form.ticket_price.data,
-    image2 = db_file_path,
-    image3 = db_file_path,
-    user = current_user )
 
-    # add the object to the db session
-    db.session.add(event)
-    # commit to the database
+    if event:
+      db_file_path = check_upload_file(form)
+      event.name = form.name.data
+      event.description = form.description.data 
+      event.image = db_file_path
+      event.genre = form.genre.data 
+      event.location = form.location.data 
+      event.event_date = form.event_date.data 
+      event.start_time = form.start_time.data 
+      event.ticket_details = form.ticket_details.data 
+  
+       # add the others
+      # event = Event(name=form.name.data,description=form.description.data, 
+      # image = db_file_path, 
+      # genre = form.genre.data,
+      # location = form.location.data,
+      # event_date = form.event_date.data,
+      # start_time = form.start_time.data,
+      # end_time = form.end_time.data,
+      # ticket_details=form.ticket_details.data, tickets_available=form.tickets_available.data,  ticket_price=form.ticket_price.data,
+      # image2 = db_file_path,
+      # image3 = db_file_path,
+      # user = current_user )
+      # event.statusUpdate()
+
+      # add a cancel events button here?
+
+
+    else:
+    # call the function that checks and returns image
+      db_file_path = check_upload_file(form)
+      event = Event(name=form.name.data,description=form.description.data, 
+      image = db_file_path, 
+      genre = form.genre.data,
+      location = form.location.data,
+      event_date = form.event_date.data,
+      start_time = form.start_time.data,
+      end_time = form.end_time.data,
+      ticket_details=form.ticket_details.data, tickets_available=form.tickets_available.data,  ticket_price=form.ticket_price.data,
+      image2 = db_file_path,
+      image3 = db_file_path,
+      user = current_user )
+
+      event.statusUpdate()
+      # add the object to the db session
+      db.session.add(event)
+      # commit to the database
     db.session.commit()
     print(Event.query.all())
 

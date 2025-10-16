@@ -20,6 +20,12 @@
 
 <!-- event details -->
 
+{% if current_user.is_authenticated and current_user.id == event.user_id %}
+
+<a href="{{url_for('event.create', id=event.id)}}">Edit Event</a>
+
+{% endif %}
+
 <div class="p-5 row">
 
     <div class="col-md-7 p-5">
@@ -46,7 +52,7 @@
     <div class="col-md-5 p-5">
 
         <div class="card custom-card-ticket mb-3 rounded-3 text-center" style="max-width: 30rem;">
-            <div class="card-header custom-card-ticket-header"><strong>Open:</strong> {{event.tickets_available}}</div>
+            <div class="card-header custom-card-ticket-header"><strong>{{event.event_status}}:</strong> {{event.tickets_available}}</div>
             <div class="card-body custom-card-ticket-header">
                 <h5 class="card-title">{{event.name}} Tickets</h5>
 

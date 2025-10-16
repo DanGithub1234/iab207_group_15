@@ -58,33 +58,21 @@ class Booking(db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
     date_booked = db.Column(db.DateTime, default=datetime.now(), nullable=False)
 
+    event = db.relationship('Event', backref='bookings')
+
     def __repr__(self):
         return f'<Booking {self.full_name} x{self.num_tickets} (event={self.event_id})>'
-
-# class Booking(db.Model):
-#     __tablename__ = 'booking'
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(80))
-#     bookingDateTime = db.Column(db.Integer)
-#     numberOfTickets = db.Column(db.Integer)
-#     totalPrice = db.Column(db.Integer)
-#     # ... Create the Comments db.relationship
-# 	# relation to call event.comments and comment.Event
-#     # comments = db.relationship('Comment', backref='Event')
-#     # add the foreign key
-#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-#     Event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
-#     event = db.relationship('Event', backref='bookings')
 	
-#     # string print method
-#     def ticket_count(self):
-#         if self.event:
-#             ticket_number = self.event.tickets_available - self.numberOfTickets
-#             return ticket_number
-#         return 0
+    # string print method
+    def ticket_count(self):
+        if self.event and self.num_tickets <= self.event.tickets_available:
+            self.event.tickets_available -= self.num_tickets
+            db.session.commit()
+            return True
+        return False
 
-#         def __repr__(self):
-#             return f"Name: {self.name}"
+    def __repr__(self):
+        return f"Name: {self.name}"
 
 
     
@@ -145,16 +133,17 @@ class Event(db.Model):
 
 
     def statusUpdate(self):
-        current_date = date.current_date()
+        current_date = datetime.now().date()
         
         if self.tickets_available <= 0:
-            self.status = "Open"
-        elif self.tickets_available >= 0:
-            self.status = "Sold Out"
-        elif self.event_date > current_date:
-            self.status = "Inactive"
+            self.event_status = "Sold Out"
+        elif self.event_date < current_date:
+            self.event_status = "Inactive"
         else:
-             self.status = "Cancelled"
+             self.event_status = "Open"
+
+
+        db.session.commit()
 
     def __repr__(self):
         return f"Name: {self.name}"
