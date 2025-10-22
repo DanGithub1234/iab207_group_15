@@ -1,0 +1,47 @@
+<!-- templates/events/my_tickets.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>My Tickets</h2>
+    
+    {% if orders %}
+    <div class="row">
+        {% for order in orders %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ order.event.name }}</h5>
+                    <span class="badge bg-{% if order.status == 'Confirmed' %}success{% else %}warning{% endif %}">
+                        {{ order.status }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <img src="{{ order.event.image }}" class="card-img-top mb-3" alt="{{ order.event.name }}" style="height: 200px; object-fit: cover;">
+                    
+                    <p><strong>Description:</strong> {{ order.event.description }}</p>
+                    <p><strong>Genre:</strong> {{ order.event.genre }}</p>
+                    <p><strong>Event Date:</strong> {{ order.event.date.strftime('%Y-%m-%d %H:%M') if order.event.date else 'TBA' }}</p>
+                    <p><strong>Quantity:</strong> {{ order.quantity }}</p>
+                    <p><strong>Booked on:</strong> {{ order.booked_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('event.show', id=order.event.id) }}" class="btn btn-primary">View Event</a>
+                        {% if order.status == 'Confirmed' and order.event.status == 'Open' %}
+                        <button class="btn btn-outline-danger">Cancel Booking</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <h4>No tickets booked yet</h4>
+        <p>Explore events and book your first ticket!</p>
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">Browse Events</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

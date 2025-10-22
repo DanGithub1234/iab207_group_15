@@ -1,0 +1,423 @@
+body {
+    background: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    
+}
+
+
+p {
+    font-family: 'Poppins', sans-serif;
+}
+
+h1 h2 h3 h4 h5{
+    font-family: 'Poppins', sans-serif;
+}
+
+
+
+/* Gradients by CSS Gradients */
+
+.custom-navbar{
+    font-family: 'Outfit', sans-serif;
+    background: #000000;
+    border-bottom: 12px solid;  /* Chrome 10-25, Safari 5.1-6 */ /* fallback for old browsers */
+    border-image: linear-gradient(to right, #4B1248, #F0C27B) 1;
+   
+}
+
+.navbar-toggler-icon{
+    filter: invert(1);
+}
+
+.custom-navbar nav-item{
+    color:#203A43
+}
+
+
+
+.custom-footer
+{
+    background: #000000;
+    border-top: 12px solid;  /* Chrome 10-25, Safari 5.1-6 */ /* fallback for old browsers */
+    border-image: linear-gradient(to right, #4B1248, #F0C27B) 1;
+}
+
+
+.custom-navbar a{
+    color: white;
+
+}
+
+.custom-button {
+    background-color:transparent;
+    color: rgb(255, 255, 255);
+    border: 2px solid rgb(255, 255, 255);
+    transition: all 0.4s ease;
+    border-radius: 50px;
+    padding: 1rem 2rem;
+    font-weight: 700;
+    text-decoration: none;
+
+}
+
+.nav-link {
+    color: white;
+    transition: color 0.2s;
+}
+
+.navbar .nav-link:hover{
+    color: #F0C27B;
+}
+
+.custom-button:hover {
+    background-color: aliceblue;
+    color: #202643;
+}
+
+.custom-button-categories {
+
+    color: black;
+    background-color: white;
+    border: 2px solid #4B1248;
+    transition: all 0.4s ease;
+    border-radius: 50px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 700;
+}
+
+.custom-button-categories:hover {
+    background-color: #4B1248;
+    color: white;
+}
+
+.custom-button-categories-active {
+
+    color: rgb(255, 255, 255);
+    background-color: #4B1248;
+    border: 2px solid #4B1248;
+    transition: all 0.4s ease;
+    border-radius: 50px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 700;
+}
+
+
+.myjumbotron1 {
+    color: white;
+
+    background: url("../img/concert3.jpg") no-repeat;
+    background-size: cover;
+    max-width: 100%;
+
+    
+    justify-content: center;
+    align-items: center;
+
+}
+
+.custom-card {
+    background-color: white;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: 0.5s ease;
+    min-height: 500px;
+
+}
+
+.custom-card:hover {
+    border: 2px solid #4B1248;
+    transform: scale(1);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+    
+
+}
+
+.custom-card-body {
+    color:#000000;
+}
+
+.custom-card-body p{
+    color:#000000;
+}
+
+.myjumbotron1 h1, p {
+    
+    color: white;
+}
+
+.myjumbotron2 {
+    color: white;
+    background-size: cover;
+    max-width: 100%;
+    background: #000000;  /* fallback for old browsers */
+    
+    justify-content: center;
+    align-items: center;
+    border-bottom: 20px solid;  /* Chrome 10-25, Safari 5.1-6 */ /* fallback for old browsers */
+    border-image: linear-gradient(to right, #4B1248, #F0C27B) 1;
+
+
+}
+
+
+
+
+.myjumbotron p {
+    font-family: Poppins, sans-serif;
+    color: rgb(0, 0, 0);
+}
+
+.custom-badge {
+    color: rgb(214, 0, 0);
+    font-size: large;
+
+}
+
+.tabs {
+    display: none;
+}
+.tabs:target{
+    display: block;
+}
+
+.card-link {
+    text-decoration: none;
+}
+
+.card-link:hover{
+    text-decoration: none;
+}
+
+
+.custom-card-booking {
+    background-color: #0F2027;
+}
+
+
+.stepper {
+    background-color: transparent;
+    padding-block: 20px;
+    color: #0F2027;
+}
+
+.stepper-active {
+    background-color: white;
+    border-left: 10px solid #4B1248;
+    padding-block: 20px;
+    color: #0F2027;
+}
+
+
+.tabsContainer {
+    border-right: 1px solid #f3f8ff;;
+    background-color: rgb(255, 245, 245);
+    font-family: 'Outfit', sans-serif;
+}
+
+
+
+
+.nav-link.navtext {
+    font-size: large;
+    font-weight: 500;
+    color: #000000;
+}
+
+.formFile {
+    width: 100%;
+}
+
+.input-group .input-group-text {
+    width: 200px;
+}
+
+.date{
+    margin-right: 10px;
+    width: 100px;
+}
+
+.day-font{
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.month-font {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.card-title{
+    font-weight: 800;
+    font-size: 1.4rem;
+}
+
+.ticket-font{
+    font-weight: 800;
+    font-size: 1.4rem;
+
+}
+
+
+
+.card-footer .divider{
+    margin-right: 150px;
+    border-left: #000000;
+    height: 30px;
+
+}
+
+
+.text-section h5{
+    margin-top: 20px;
+    color: black;
+}
+
+.text-section p{
+    color: black;
+    margin-top: 0px;
+}
+
+hr.rounded {
+    border-top: 8px solid rgb(254, 226, 226);;
+    border-radius: 5px;
+  }
+
+.custom-footer h5{
+    color: white;
+    
+}
+
+.pagination .page-link{
+    border-color: #000000;
+    color: black;
+
+}
+
+.pagnination .page-item.active .page-link{
+    background-color: #F0C27B;
+
+}
+
+.custom-button-booking{
+    width: 60%;
+    max-width: 300px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+    border: 2px solid #fff9f0;
+    background-color: #F0C27B;
+    color: black;
+    margin-bottom: 20px;
+
+    transition: 1s;
+}
+
+.custom-button-booking:hover{
+    background: linear-gradient(90deg, #ecb057);
+    transform: scale(1.09);
+    color: white;
+}
+
+
+.custom-booking-card .card {
+
+    overflow: hidden;
+    transition: 0.5s ease;
+
+
+}
+
+.custom-booking-card .card:hover {
+    border: 2px solid #4B1248;
+    transform: scale(1);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+    
+}
+
+
+
+.card.custom-card-ticket{
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: 10px;
+    
+    border: 1px solid #c7c7c7;
+    transform: scale(1);
+    box-shadow: 0px 8px 20px rgba(143, 143, 143, 0.15);
+}
+
+.card-header.custom-card-ticket-header{
+    background-color: #F0C27B;
+
+}
+
+.card.custom-card-ticket p{
+    color: #000000;
+}
+
+
+.custom-button-categories-small {
+
+    color: black;
+    background-color: white;
+    border: 2px solid #4B1248;
+    transition: all 0.4s ease;
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+}
+
+.custom-button-categories-small:hover {
+    background-color: #4B1248;
+    color: white;
+}
+
+.comments-container .card {
+    margin-top:0;
+}
+
+
+.card.custom-booking-card{
+    background-color: white;
+    border: 1px solid rgb(171, 171, 171);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: 0.5s ease;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+    transition: 0.5s;
+
+}
+
+.card.custom-booking-card:hover{
+    transform: scale(1.005);
+}
+
+.pagination .page-link{
+    border: 2px solid #4B1248;
+    color: #000000;
+    background-color: rgb(255, 255, 255);
+
+}
+
+.pagination .page-item.active .page-link{
+    background-color:  #4B1248;;
+    color: #ffffff;
+    border-color: #000000;
+}
+
+.pagination .page-link:hover{
+    background:  #e8d8e7;
+    text-decoration: none;
+    border: 2px solid #4B1248;
+    color: #000000;
+
+}
+
+
+
+
+.container-fluid p h1 h2 h3 h4 h5{
+    font-family: 'Outfit', sans-serif;
+}
+
