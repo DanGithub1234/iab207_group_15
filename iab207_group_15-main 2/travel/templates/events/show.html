@@ -1,0 +1,119 @@
+<!-- templates/Events/show.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Event Details -->
+    <div class="card mb-4">
+        <img src="{{ event.image }}" class="card-img-top" alt="{{ event.name }}" style="max-height: 400px; object-fit: cover;">
+        <div class="card-body">
+            <h2 class="card-title">{{ event.name }}</h2>
+            <span class="badge 
+                {% if event.status == 'Open' %}bg-success
+                {% elif event.status == 'Sold Out' %}bg-danger
+                {% elif event.status == 'Cancelled' %}bg-info
+                {% elif event.status == 'Inactive' %}bg-secondary{% endif %}">
+                {{ event.status }}
+            </span>
+            
+            <p class="card-text mt-3">{{ event.description }}</p>
+            
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <p><strong>Genre:</strong> {{ event.genre }}</p>
+                    <p><strong>Event Date:</strong> {{ event.date.strftime('%Y-%m-%d %H:%M') if event.date else 'TBA' }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Capacity:</strong> {{ event.capacity }}</p>
+                    <p><strong>Tickets Sold:</strong> {{ event.orders|length }}</p>
+                </div>
+            </div>
+            
+<!-- Booking Section -->
+{% if current_user.is_authenticated %}
+    {% if event.status == 'Open' %}
+        {% if not user_has_booked %}
+        <form method="POST" action="{{ url_for('event.book', id=event.id) }}" class="mt-3">
+            {{ form.hidden_tag() }}
+            <button type="submit" class="btn btn-success btn-lg">Book Now</button>
+        </form>
+        {% else %}
+        <div class="alert alert-success mt-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="bi bi-check-circle-fill"></i>
+                    <strong>You have already booked this event!</strong>
+                </div>
+                <a href="{{ url_for('event.my_tickets') }}" class="btn btn-primary">
+                    View Your Tickets
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-warning mt-3">
+            This event is not available for booking (Status: {{ event.status }})
+        </div>
+    {% endif %}
+{% else %}
+    <div class="alert alert-info mt-3">
+        <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Login</a> to book this event.
+    </div>
+{% endif %}
+            
+            <!-- Event Owner Controls -->
+            {% if current_user.is_authenticated and current_user.id == event.user_id %}
+            <hr>
+            <div class="mt-3">
+                <h5>Event Management</h5>
+                <a href="{{ url_for('event.update', id=event.id) }}" class="btn btn-warning">Edit Event</a>
+                {% if event.status != 'Cancelled' %}
+                <a href="{{ url_for('event.cancel', id=event.id) }}" class="btn btn-danger" 
+                   onclick="return confirm('Are you sure you want to cancel this event?')">Cancel Event</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Comment Section -->
+    <div class="card">
+        <div class="card-header">
+            <h4>Comments ({{ comments|length }})</h4>
+        </div>
+        <div class="card-body">
+            {% if current_user.is_authenticated %}
+            <form method="POST" action="{{ url_for('event.comment', id=event.id) }}">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.text.label(class="form-label") }}
+                    {{ form.text(class="form-control", rows=3, placeholder="Share your thoughts about this event...") }}
+                </div>
+                <button type="submit" class="btn btn-primary">Post Comment</button>
+            </form>
+            {% else %}
+            <p><a href="{{ url_for('auth.login') }}">Login</a> to post a comment.</p>
+            {% endif %}
+            
+            <hr>
+            
+            <!-- Comments List -->
+            <div class="comments-section">
+                {% for comment in comments %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h6 class="card-subtitle mb-2 text-primary">{{ comment.user.username }}</h6>
+                            <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </div>
+                        <h6 class="card-subtitle mb-2 mt-2">{{ comment.text }}</h6>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">No comments yet. Be the first to comment!</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
