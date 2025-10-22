@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block title %}{{ event.name }} · musicCloud{% endblock %}
+
+{% block content %}
+
+<!-- Hero / cover image -->
+<section class="py-4">
+  {% if event.image %}
+    <div class="d-flex justify-content-center">
+      <img src="{{ event.image }}" class="img-fluid rounded-3 shadow" alt="{{ event.name }} cover" style="max-width: 80%; height: auto;" />
+    </div>
+  {% endif %}
+</section>
+
+<!-- Event details -->
+<section class="container py-4">
+  <div class="row g-4">
+
+    <div class="col-md-7">
+      <h1 class="h2 mb-3">{{ event.name }}</h1>
+      <p class="mb-2 text-body">{{ event.description }}</p>
+      <p class="mb-1"><strong>Genre:</strong> {{ event.genre }}</p>
+      <p class="mb-1"><strong>Location:</strong> {{ event.location }}</p>
+      <p class="mb-1"><strong>Date:</strong> {{ event.event_date.strftime('%d %B %Y') if event.event_date else '' }}</p>
+      <p class="mb-1"><strong>Time:</strong> Start: {{ event.start_time.strftime('%I:%M %p') if event.start_time else '' }}{% if event.end_time %}, End: {{ event.end_time.strftime('%I:%M %p') }}{% endif %}</p>
+      <h4 class="mt-4">Event by {{ event.user.username if event.user else 'Unknown' }}</h4>
+    </div>
+
+    <!-- Ticket card -->
+    <div class="col-md-5">
+      <div class="card text-center rounded-3" style="max-width: 30rem;">
+        <div class="card-header">
+          <strong>{{ event.event_status or 'Open' }}</strong>: {{ event.tickets_available }} Tickets Left
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{ event.name }} Tickets</h5>
+          <h1 class="fw-semibold display-5">{{ '%.2f'|format(event.ticket_price|float) }}</h1>
+
+          <a href="{{ url_for('event.buyTickets', id=event.id) }}" class="btn btn-primary mt-2 px-4 py-2">
+            <strong>Book now</strong>
+          </a>
+
+          <ul class="text-start mt-3 small">
+            <li>{{ event.ticket_details }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Photos carousel (optional) -->
+{% if event.image2 or event.image3 %}
+<section class="container pb-4">
+  <h2 class="h4 text-center">Tour Photos</h2>
+  <div id="eventCarousel" class="carousel slide mx-auto" style="max-width: 1200px; max-height: 500px;">
+    <div class="carousel-inner rounded-3">
+      {% set imgs = [event.image, event.image2, event.image3] %}
+      {% for img in imgs if img %}
+      <div class="carousel-item {% if loop.first %}active{% endif %}">
+        <img src="{{ img }}" class="d-block w-100" alt="photo {{ loop.index }}" style="max-height: 500px; object-fit: cover;">
+      </div>
+      {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</section>
+{% endif %}
+
+<!-- Comments -->
+<section class="container my-5" id="comments">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <i class="bi bi-chat-dots" style="font-size: 1.75rem;"></i>
+        <p class="mb-0">Share your thoughts about <strong>{{ event.name }}</strong></p>
+      </div>
+
+      <!-- New comment form -->
+      {% if current_user.is_authenticated %}
+      <form method="POST" action="{{ url_for('event.comment', id=event.id) }}" class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          {{ form.csrf_token }}
+          <div class="form-floating">
+            {{ form.text(class='form-control', id='commentText', placeholder='Leave a comment', rows='3', style='height: 120px;') }}
+            <label for="commentText">Comment</label>
+          </div>
+          {% if form.text.errors %}
+            <div class="mt-2 small text-danger">
+              {{ form.text.errors|join(', ') }}
+            </div>
+          {% endif %}
+          <div class="d-flex gap-2 mt-3">
+            <a href="{{ url_for('event.show', id=event.id) }}" class="btn btn-outline-secondary">Cancel</a>
+            {{ form.submit(class='btn btn-primary') }}
+          </div>
+        </div>
+      </form>
+      {% else %}
+      <div class="alert alert-info" role="alert">
+        <a href="{{ url_for('auth.login') }}">Log in</a> to post a comment.
+      </div>
+      {% endif %}
+
+      <!-- Existing comments -->
+      <div class="comments-container">
+        <div class="d-flex align-items-baseline gap-2 mb-3">
+          <h5 class="mb-0">Comments:</h5>
+          <span class="fw-bold">{{ comments|length if comments is defined else (event.comments|length if event.comments is defined else 0) }}</span>
+        </div>
+
+        {% set items = comments if comments is defined else event.comments %}
+        {% if items and items|length %}
+          {% for c in items %}
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="text-center" aria-hidden="true">
+                    <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
+                  </div>
+                  <div>
+                    <h6 class="mb-0">{{ c.user.username if c.user else 'User' }}</h6>
+                    <small class="text-muted">Posted: {{ c.created_at.strftime('%d %B %Y, %I:%M %p') if c.created_at else '' }}</small>
+                  </div>
+                </div>
+                <p class="mt-3 mb-0">{{ c.text | e }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted">No comments yet.</p>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}
