@@ -29,8 +29,7 @@
 <div class="home-content" id="eventSection">
 
   <p class="p-2 h1 text-center mb-0" style="color: #000000"><strong>Upcoming & Trending events</strong></p>
-  <p class="p-3 text-center mb-4" style="color: #000000">Discover music events from all of your favourite genres, near
-    or far.</p>
+  <p class="p-3 text-center mb-4" style="color: #000000">Discover music events from all of your favourite genres.</p>
 
 </div>
 
@@ -38,25 +37,29 @@
 
 {% block content %}
 <div class="d-flex flex-wrap justify-content-center gap-3">
-
-  <a class="custom-button-categories" style="text-decoration: none;"
+  <a class="custom-button-categories-small" style="text-decoration: none;"
     href="{{ url_for('event.categorise', genre='All') }}">Show All</a>
-  <a class="custom-button-categories" style="text-decoration: none;"
+  <a class="custom-button-categories-small" style="text-decoration: none;"
     href="{{ url_for('event.categorise', genre='pop') }}">Pop</a>
-  <a class="custom-button-categories" style="text-decoration: none;"
+  <a class="custom-button-categories-small" style="text-decoration: none;"
     href="{{ url_for('event.categorise', genre='rap') }}">Rap</a>
-  <a class="custom-button-categories" style="text-decoration: none;"
+  <a class="custom-button-categories-small" style="text-decoration: none;"
     href="{{ url_for('event.categorise', genre='country') }}">Country</a>
 
+</div>
   <!-- <button type="button" class="custom-button-categories" data-genre="Electronic">Electronic</button>
    <button type="button" class="custom-button-categories" data-genre="RNB">RNB</button>
    <button type="button" class="custom-button-categories" data-genre="Indie/Alt">Indie/Alt</button>  -->
 
+<div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
   <h5 class="my-3">Search:</h5>
 
   <form class="form-inline d-flex flex-nowrap" action="{{ url_for('main.search') }}" >
     <input placeholder="Search events" type="text" name="search" class="form-control flex-grow-1 my-1 mr-sm-2" id="SearchForm">
-    <button type="submit" class="flex-shrink-1 btn btn-primary my-1">Submit</button>
+    <div class="mx-2">
+      <button type="submit" class="custom-submit flex-shrink-1 my-1">Submit</button>
+    </div>
+    
   </form>
 
 </div>
@@ -95,7 +98,7 @@
   <!-- CARD1 -->
   <section class="pb-5">
     {% if events|length > 0 %}
-    <div class="row">
+    <div class="p-5 row">
       {% for event in events %}
         <div class="col-12 col-md-6 col-lg-3" data-genre="Pop">
         <a href="{{url_for('event.show', id=event.id)}}" alt="wjknjkewf" style="text-decoration: none;">
@@ -113,11 +116,11 @@
               {% endif %}
 
               {% if event.event_status == 'Sold Out' %}
-                <span class="badge text-bg-warning position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
+                <span class="badge text-bg-danger position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
               {% endif %}
 
               {% if event.event_status == 'Cancelled' %}
-                <span class="badge text-bg-danger position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
+                <span class="badge text-bg-secondary position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
               {% endif %}
             </div>
 

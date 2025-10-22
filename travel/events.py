@@ -9,6 +9,15 @@ from flask_login import current_user, login_required
 
 destbp = Blueprint('event', __name__, url_prefix='/events')
 
+
+# @destbp.route('/bookinghistory')
+# def bookinghistory(id):
+#     event = db.session.scalar(db.select(Event).where(Event.id==id))
+#     event.statusUpdate()
+#     # create the comment form
+#     cform = CommentForm()    
+#     return render_template('events/show.html', event=event, form=cform, user=current_user)
+
 @destbp.route('/<id>')
 def show(id):
     event = db.session.scalar(db.select(Event).where(Event.id==id))
@@ -40,6 +49,7 @@ def buyTickets(id):
             total_price=total_price,
             billing_address=billing_address,
             event_id=id,
+            user_id = current_user.id,
             date_booked=datetime.now()
         )
 
@@ -147,13 +157,35 @@ def comment(id):
 
 
 
+@destbp.route('/cancel/<int:id>', methods=['POST'])
+@login_required
+def cancel(id):
+    event = db.session.get(Event, id)
+    # form = EventForm(obj=event)
+    event.cancelEvent()
+    db.session.commit()
+    # flash("Event has been cancelled.")
+    return redirect(url_for('event.show', id=id))
+
+
+
 @destbp.route('/create', methods=['GET', 'POST'])
 @destbp.route('/create/<int:id>', methods=['GET', 'POST'])
 @login_required
 def create(id=None):
+  event = None
   if id:
     event = db.session.get(Event, id)
-    form = EventForm(obj = event)
+    form = EventForm(obj=event)
+    # form.name.data = event.name 
+    # form.description.data = event.description
+    # db_file_path = event.image 
+    # form.genre.data = event.genre 
+    # form.location.data = event.location 
+    # form.event_date.data = event.event_date 
+    # form.start_time.data = event.start_time 
+    # form.ticket_details.data = event.ticket_details 
+    
   else:
     print('Method type: ', request.method)
     form = EventForm()
@@ -198,7 +230,7 @@ def create(id=None):
       start_time = form.start_time.data,
       end_time = form.end_time.data,
       ticket_details=form.ticket_details.data, tickets_available=form.tickets_available.data,  ticket_price=form.ticket_price.data,
-      image2 = db_file_path,
+      image2 = db_file_path, # still need to get rid of these... but when i do they bugg
       image3 = db_file_path,
       user = current_user )
 
@@ -215,22 +247,21 @@ def create(id=None):
         print("FORM ERRORS:", form.errors)
   return render_template('events/create.html', form=form, user=current_user)
 
+
 # a rough booking history to see if bookings are saved
-@destbp.route('/bookingHistory')
-def booking_history():
-    from .models import Booking
-    rows = Booking.query.order_by(Booking.id.desc()).all()
-    html_rows = [
-        f"<tr><td>{b.id}</td><td>{b.full_name}</td><td>{b.email}</td>"
-        f"<td>{b.num_tickets}</td><td>${b.total_price:.2f}</td>"
-        f"<td>{b.event_id}</td><td>{b.date_booked}</td></tr>"
-        for b in rows
-    ]
-    return (
-        "<h2>Booking History</h2>"
-        "<table border='1' cellpadding='6'>"
-        "<tr><th>ID</th><th>Name</th><th>Email</th><th>Qty</th>"
-        "<th>Total</th><th>Event</th><th>Date</th></tr>"
-        + "".join(html_rows) + "</table>"
-    )
+# @destbp.route('/bookingHistory')
+# def booking_history():
+#     # from .models import Booking
+#     # event = db.session.scalar(db.select(Event).where(Event.id==id))
+#     rows = Booking.query.order_by(Booking.id.desc()).all()
+
+#     return render_template('events/bookingHistory.html', bookings=bookings, user=current_user)
+    
+    # return (
+    #     "<h2>Booking History</h2>"
+    #     "<table border='1' cellpadding='6'>"
+    #     "<tr><th>ID</th><th>Name</th><th>Email</th><th>Qty</th>"
+    #     "<th>Total</th><th>Event</th><th>Date</th></tr>"
+    #     + "".join(html_rows) + "</table>"
+    # )
   #return render_template('events/create.html', form=form, user=current_user)

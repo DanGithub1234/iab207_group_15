@@ -59,6 +59,7 @@ class Booking(db.Model):
     date_booked = db.Column(db.DateTime, default=datetime.now(), nullable=False)
 
     event = db.relationship('Event', backref='bookings')
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __repr__(self):
         return f'<Booking {self.full_name} x{self.num_tickets} (event={self.event_id})>'
@@ -70,9 +71,6 @@ class Booking(db.Model):
             db.session.commit()
             return True
         return False
-
-    def __repr__(self):
-        return f"Name: {self.name}"
 
 
     
@@ -134,7 +132,10 @@ class Event(db.Model):
 
     def statusUpdate(self):
         current_date = datetime.now().date()
-        
+        if self.event_status == "Cancelled":
+            return
+
+
         if self.tickets_available <= 0:
             self.event_status = "Sold Out"
         elif self.event_date < current_date:
@@ -143,6 +144,11 @@ class Event(db.Model):
              self.event_status = "Open"
 
 
+        db.session.commit()
+
+    def cancelEvent(self):
+        self.event_status = "Cancelled"
+        self.tickets_available = 0
         db.session.commit()
 
     def __repr__(self):

@@ -368,6 +368,23 @@ hr.rounded {
     font-weight: 700;
 }
 
+.custom-submit {
+
+    color: white;
+    background-color: #6f4b6e;
+    border: 2px solid #4B1248;
+    transition: all 0.4s ease;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+}
+
+.custom-submit:hover {
+    background-color: #4B1248;
+    color: white;
+}
+
+
 .custom-button-categories-small:hover {
     background-color: #4B1248;
     color: white;
@@ -420,4 +437,7 @@ hr.rounded {
 .container-fluid p h1 h2 h3 h4 h5{
     font-family: 'Outfit', sans-serif;
 }
+
+
+
 

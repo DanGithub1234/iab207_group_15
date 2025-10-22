@@ -73,7 +73,7 @@ class EventForm(FlaskForm):
     start_time = TimeField('Start Time', validators=[InputRequired()])
     end_time = TimeField('End Time', validators=[InputRequired()])
 
-    # Poster + optional images
+    # # Poster + optional images
     image = FileField('Poster Image', validators=[
         FileRequired(message='Please upload a poster image'),
         FileAllowed(ALLOWED_FILE, 'Only images are allowed!')

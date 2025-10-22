@@ -19,10 +19,22 @@
 
 
 <!-- event details -->
-
 {% if current_user.is_authenticated and current_user.id == event.user_id %}
 
-<a href="{{url_for('event.create', id=event.id)}}">Edit Event</a>
+<div class="p-5 row">
+    <div class="d-flex justify-content-center gap-3 p-3">
+
+        <form action="{{url_for('event.create', id=event.id)}}" method="POST">
+            <button type="submit" class="custom-button-categories">Edit</button>
+        </form>
+
+
+        <form action="{{url_for('event.cancel', id=event.id)}}" method="POST">
+            <button type="submit" class="custom-button-categories">Cancel</button>
+        </form>
+    </div>
+
+</div>
 
 {% endif %}
 
@@ -52,7 +64,8 @@
     <div class="col-md-5 p-5">
 
         <div class="card custom-card-ticket mb-3 rounded-3 text-center" style="max-width: 30rem;">
-            <div class="card-header custom-card-ticket-header"><strong>{{event.event_status}}:</strong> {{event.tickets_available}}</div>
+            <div class="card-header custom-card-ticket-header"><strong>{{event.event_status}}:</strong>
+                {{event.tickets_available}}</div>
             <div class="card-body custom-card-ticket-header">
                 <h5 class="card-title">{{event.name}} Tickets</h5>
 
@@ -133,9 +146,9 @@
 
 
 </div>
-
+<!-- 
 {% if event.image2|length > 0 %}
-<!-- event images section -->
+event images section
 <p class="h2 mt-5 text-center">Tour Photos</p>
 
 <div id="carouselExampleCaptions" class="carousel slide mx-auto" style="max-width: 1200px; max-height: 500px;">
@@ -180,10 +193,10 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
-{% endif %}
+{% endif %} -->
 
 
-
+<hr class="rounded">
 
 <!-- comment section -->
 <main class="container my-5">
@@ -224,7 +237,8 @@
             {{render_form(form,"/events/{0}/comment".format(event.id))}}
             {% for comment in event.comments %}
             <div class="col-md-12">
-                <b style="color: black;">{{comment.user.username}} <span class="ml-2 text-muted">{{comment.created_at.strftime("%d %b %Y %H:
+                <b style="color: black;">{{comment.user.username}} <span
+                        class="ml-2 text-muted">{{comment.created_at.strftime("%d %b %Y %H:
                         %M")}}</span></b>
                 <!-- comment time and dates -->
                 <p style="color: black;">{{comment.text}}</p>
