@@ -1,409 +1,147 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+{% block title %}{{ event.name }} · musicCloud{% endblock %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="description" content="My Travel App">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% block content %}
 
-    <!-- fonts  -->
+<!-- Hero / cover image -->
+<section class="py-4">
+  {% if event.image %}
+    <div class="d-flex justify-content-center">
+      <img src="{{ event.image }}" class="img-fluid rounded-3 shadow" alt="{{ event.name }} cover" style="max-width: 80%; height: auto;" />
+    </div>
+  {% endif %}
+</section>
 
+<!-- Event details -->
+<section class="container py-4">
+  <div class="row g-4">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet">
-
-
-    <link rel="stylesheet" href="static/style/stylesheet.css">
-    <title>My Music App</title>
-
-    <!-- bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-</head>
-
-<body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
-        crossorigin="anonymous"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-
-
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet">
-
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
-        integrity="sha384-7qAoOXltbVP82dhxHAUje59V5r2YsVfBafyUDxEdApLPmcdhBPg1DKg1ERo0BZlK"
-        crossorigin="anonymous"></script>
-
-
-    <header>
-        <!-- nav bar -->
-        <nav class="py-3 navbar sticky-top navbar-expand-lg custom-navbar">
-            <div class="container-fluid d-flex justify-content-between align-item-center">
-                <a class="px-3 navbar-brand" href="#"><i class="bi bi-cloudy-fill"></i></i> musicCloud</a>
-                <a img src="img/logo.png" alt="logo" class="logo" height="50" width="50"></a>
-
-
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul class="navbar-nav mx-auto gap-3">
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="index.html">home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="createEvent.html">create event</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">my events</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="bookingHistory.html">my tickets</a>
-                        </li>
-                        
-
-                    </ul>
-
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search events"
-                            aria-label="Search" />
-                        <button class="btn btn-outline-light" type="submit" aria-label="search"><i
-                                class="bi bi-search"></i></button>
-
-                    </form>
-                </div>
-            </div>
-        </nav>
-
-        </div>
-
-    </header>
-
-    
-
-
-    <!-- Custom Jumbotron image only  -->
-
-
-    <div class="py-5">
-        <div class="myjumbotron2 d-flex justify-content-center align-items-center">
-
-
-            <img src="static/img/concert1.jpg" class="img-fluid" alt="..."
-                style="box-shadow: 20px; max-width: 80%; height: auto;">
-
-
-
-        </div>
-
+    <div class="col-md-7">
+      <h1 class="h2 mb-3">{{ event.name }}</h1>
+      <p class="mb-2 text-body">{{ event.description }}</p>
+      <p class="mb-1"><strong>Genre:</strong> {{ event.genre }}</p>
+      <p class="mb-1"><strong>Location:</strong> {{ event.location }}</p>
+      <p class="mb-1"><strong>Date:</strong> {{ event.event_date.strftime('%d %B %Y') if event.event_date else '' }}</p>
+      <p class="mb-1"><strong>Time:</strong> Start: {{ event.start_time.strftime('%I:%M %p') if event.start_time else '' }}{% if event.end_time %}, End: {{ event.end_time.strftime('%I:%M %p') }}{% endif %}</p>
+      <h4 class="mt-4">Event by {{ event.user.username if event.user else 'Unknown' }}</h4>
     </div>
 
-    
-    <!-- event details -->
-
-    <div class="p-5 row">
-
-        <div class="col-md-7 p-5">
-            <div class="home-content">
-        
-                <p class="h1">Coldplay: Music of the Spheres World Tour</p>
-                <p class="card-text mb-1" style="color: black;">Coldplay embarks on the long-awaited "Music of the
-                    Spheres
-                    World Tour," to support their albums Music of the Spheres and Moon Music.</p>
-                <p class="card-text mb-1" style="color: black;"><strong>Genre:</strong> Pop</p>
-                <p class="card-text mb-1" style="color: black;"><strong>Location:</strong> Brisbane, Australia at Suncorp Stadium</p>
-                <p class="card-text mb-1" style="color: black;"><strong>Date:</strong> 22 August 2025</p>
-                <p class="card-text mb-1" style="color: black;"><strong>Time:</strong> Start: 9:00PM, End: 12:00AM</p>
-
-  
-
-                <h4 class="my-5">Event by John Doe</h4>
-            </div>
-
+    <!-- Ticket card -->
+    <div class="col-md-5">
+      <div class="card text-center rounded-3" style="max-width: 30rem;">
+        <div class="card-header">
+          <strong>{{ event.event_status or 'Open' }}</strong>: {{ event.tickets_available }} Tickets Left
         </div>
+        <div class="card-body">
+          <h5 class="card-title">{{ event.name }} Tickets</h5>
+          <h1 class="fw-semibold display-5">{{ '%.2f'|format(event.ticket_price|float) }}</h1>
 
+          <a href="{{ url_for('event.buyTickets', id=event.id) }}" class="btn btn-primary mt-2 px-4 py-2">
+            <strong>Book now</strong>
+          </a>
 
-        <!-- ticket information -->
-
-        <div class="col-md-5 p-5">
-
-            <div class="card custom-card-ticket mb-3 rounded-3 text-center" style="max-width: 30rem;">
-                <div class="card-header custom-card-ticket-header"><strong>Open:</strong> 12 Tickets Left</div>
-                <div class="card-body custom-card-ticket-header">
-                    <h5 class="card-title">Coldplay Tickets</h5>
-
-                    <h1 style="font-weight: 600; font-size: 50px;">$120</h1>
-
-                <a href="buyTickets.html" class="custom-button-booking mt-2 p-3" style="display:inline-block; text-decoration:none;">
-                    <strong>Book now</strong>
-                </a>
-
-                    <ul>
-
-                        <li>
-                            <p class="card-text text-start">See Coldplay live in action in the area.</p>
-                        </li>
-                        <li>
-                            <p class="card-text text-start">Gain access to the merchandise store early.</p>
-                        </li>
-                        <li>
-                            <p class="card-text text-start">Gain entry to pre-concert party and performance from opening
-                                act.</p>
-                        </li>
-                        <li>
-                            <p class="card-text text-start">Gain reduced prices for selected merchanise items.</p>
-                        </li>
-                    </ul>
-
-                </div>
-            </div>
+          <ul class="text-start mt-3 small">
+            <li>{{ event.ticket_details }}</li>
+          </ul>
         </div>
+      </div>
     </div>
 
+  </div>
+</section>
 
-    <!-- event images section -->
-    <p class="h2 mt-5 text-center">Tour Photos</p>
-
-    <div id="carouselExampleCaptions" class="carousel slide mx-auto" style="max-width: 1200px; max-height: 500px;">
-
-        <div class="carousel-indicators mx-auto">
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
-                aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
-                aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
-                aria-label="Slide 3"></button>
-        </div>
-        <div class="carousel-inner rounded-3">
-            <div class="carousel-item active">
-                <img src="static/img/concert1.jpg" class="d-block w-100" alt="..."
-                    style="max-width: 1200px; max-height: 500px;">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Night 1: Australia</h5>
-                    <p>Playing Fix You at the Rod Laver Arena.</p>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img src="static/img/concert2.jpg" class="d-block w-100" alt="..."
-                    style="max-width: 1200px; max-height: 500px;">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Night 2: New Zealand</h5>
-                    <p>Playing Paradise at the Auckland Arena.</p>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img src="static/img/concert3.jpg" class="d-block w-100" alt="..."
-                    style="max-width: 1200px; max-height: 500px;">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Night 3: New York</h5>
-                    <p>Playing Yellow at the Madison Square Garden.</p>
-                </div>
-            </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
-            data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
-            data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
+<!-- Photos carousel (optional) -->
+{% if event.image2 or event.image3 %}
+<section class="container pb-4">
+  <h2 class="h4 text-center">Tour Photos</h2>
+  <div id="eventCarousel" class="carousel slide mx-auto" style="max-width: 1200px; max-height: 500px;">
+    <div class="carousel-inner rounded-3">
+      {% set imgs = [event.image, event.image2, event.image3] %}
+      {% for img in imgs if img %}
+      <div class="carousel-item {% if loop.first %}active{% endif %}">
+        <img src="{{ img }}" class="d-block w-100" alt="photo {{ loop.index }}" style="max-height: 500px; object-fit: cover;">
+      </div>
+      {% endfor %}
     </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</section>
+{% endif %}
 
+<!-- Comments -->
+<section class="container my-5" id="comments">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <i class="bi bi-chat-dots" style="font-size: 1.75rem;"></i>
+        <p class="mb-0">Share your thoughts about <strong>{{ event.name }}</strong></p>
+      </div>
 
-
-
-    <!-- comment section -->
-    <main class="container my-5">
-
-        <div class="align-items-center p-5">
-
-
-            <div class="d-flex align-items-center col-md-8 gap-3 my-3">
-
-                <p class="mb-0" style="color: black;">Share your thoughts about this event: <strong>Coldplay: Music of
-                        the Spheres World Tour</strong></p>
-
+      <!-- New comment form -->
+      {% if current_user.is_authenticated %}
+      <form method="POST" action="{{ url_for('event.comment', id=event.id) }}" class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          {{ form.csrf_token }}
+          <div class="form-floating">
+            {{ form.text(class='form-control', id='commentText', placeholder='Leave a comment', rows='3', style='height: 120px;') }}
+            <label for="commentText">Comment</label>
+          </div>
+          {% if form.text.errors %}
+            <div class="mt-2 small text-danger">
+              {{ form.text.errors|join(', ') }}
             </div>
+          {% endif %}
+          <div class="d-flex gap-2 mt-3">
+            <a href="{{ url_for('event.show', id=event.id) }}" class="btn btn-outline-secondary">Cancel</a>
+            {{ form.submit(class='btn btn-primary') }}
+          </div>
+        </div>
+      </form>
+      {% else %}
+      <div class="alert alert-info" role="alert">
+        <a href="{{ url_for('auth.login') }}">Log in</a> to post a comment.
+      </div>
+      {% endif %}
 
-
-
-            <div class="custom-card-body">
-
-                <div class="d-flex">
-
-                    <div class="date text-center">
-                        <div class="day-font"><i class="bi bi-person-circle" style="font-size: 3rem;"></i></div>
-                    </div>
-
-                    <div>
-
-                        <h5 class="card-title mt-3">John Doe</h5>
-                        <h5 class="card-body" style="font-size: 1rem;">johndoe@gmail.com</h5>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
-            <div class="mb-5 form-floating">
-                <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2"
-                    style="height: 100px"></textarea>
-
-                <label for="floatingTextarea2">
-                    Comments
-                </label>
-
-                <div class="d-flex mt-3 mx-0 align-items-center">
-                    <button type="button" class="custom-button-categories-small mx-3">Cancel</button>
-                    <input class="custom-button-categories-small" type="submit" value="Submit">
-
-
-
-                </div>
-
-
-
-            </div>
-
-
-
-            <div class="comments-container">
-
-
-                <div class="d-flex">
-                    <h5 class="mx-1 mb-4">Comments:</h5>
-                    <h5><strong>2</strong></h5>
-
-                </div>
-
-
-                <!-- comment 1 -->
-                <div class="card">
-                    <div class="p-3 custom-card-body rounded-0">
-
-                        <div class="mx-4">
-
-                            <div class="date text-center">
-                                <div class="day-font"></i></div>
-                            </div>
-
-                            <div>
-
-                                <h5 class="card-title mt-3">Jane Doe</h5>
-                                <p>Posted: 15 August 2025</p>
-
-                            </div>
-
-                        </div>
-
-                        <div class="mx-4">
-                            <p>This was a very fun event would recommend this to fans of the show.</p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- comment 2 -->
-
-                <div class="card mb-2">
-
-                    <div class="p-3 custom-card-body">
-
-                        <div class="mx-4">
-
-                            <div class="date text-center">
-                                <div class="day-font"></i></div>
-                            </div>
-
-                            <div>
-
-                                <h5 class="card-title mt-3">Johnny Doz</h5>
-                                <p>Posted: 16 August 2025</p>
-
-                            </div>
-
-                        </div>
-
-                        <div class="mx-4">
-                            <p>Great show! Loved the lead singer he was so good</p>
-
-                        </div>
-
-
-                    </div>
-
-                </div>
-
-
-
-
-
-            </div>
-
-
+      <!-- Existing comments -->
+      <div class="comments-container">
+        <div class="d-flex align-items-baseline gap-2 mb-3">
+          <h5 class="mb-0">Comments:</h5>
+          <span class="fw-bold">{{ comments|length if comments is defined else (event.comments|length if event.comments is defined else 0) }}</span>
         </div>
 
-
-    </main>
+        {% set items = comments if comments is defined else event.comments %}
+        {% if items and items|length %}
+          {% for c in items %}
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="text-center" aria-hidden="true">
+                    <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
+                  </div>
+                  <div>
+                    <h6 class="mb-0">{{ c.user.username if c.user else 'User' }}</h6>
+                    <small class="text-muted">Posted: {{ c.created_at.strftime('%d %B %Y, %I:%M %p') if c.created_at else '' }}</small>
+                  </div>
+                </div>
+                <p class="mt-3 mb-0">{{ c.text | e }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted">No comments yet.</p>
+        {% endif %}
+      </div>
 
     </div>
+  </div>
+</section>
 
-
-    <!-- footer -->
-
-    <footer class="text-center mt-5">
-        <div class="text-center p-5 mb-2 custom-footer text-secondary-emphasis opacity-70" style="width: 100%;">
-
-            <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center">
-
-                <h5 class="mx-4">Home</h5>
-                <h5 class="mx-4">Features</h5>
-                <h5 class="mx-4">News</h5>
-                <h5 class="mx-4">About Us</h5>
-
-            </div>
-
-
-            <hr class="solid" style="color: rgb(203, 203, 203);">
-
-
-
-            <div class="d-flex justify-content-center">
-                <p> <i class="bi bi-cloudy-fill"></i> © 2025 musicCloud, Inc</p>
-
-
-
-            </div>
-
-
-
-        </div>
-    </footer>
-</body>
-
-</html>
+{% endblock %}

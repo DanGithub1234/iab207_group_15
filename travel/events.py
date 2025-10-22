@@ -1,46 +1,70 @@
-from flask import Blueprint, render_template, request, redirect, url_for
-from .models import Event, Comment, Booking
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from datetime import datetime
-from .forms import EventForm, CommentForm
-from . import db
-import os
 from werkzeug.utils import secure_filename
 from flask_login import current_user, login_required
+from .models import Event, Comment, Booking, db
+from .forms import EventForm, CommentForm
+import os
 
-destbp = Blueprint('event', __name__, url_prefix='/events')
+# Blueprint
+destbp = Blueprint("event", __name__, url_prefix="/events")
 
+# -------------------- SHOW EVENT --------------------
+@destbp.route("/<int:id>")
+def show(id: int):
+    event = db.session.get(Event, id)
+    if not event:
+        flash("Event not found.", "warning")
+        return redirect(url_for("main.index"))
 
-# @destbp.route('/bookinghistory')
-# def bookinghistory(id):
-#     event = db.session.scalar(db.select(Event).where(Event.id==id))
-#     event.statusUpdate()
-#     # create the comment form
-#     cform = CommentForm()    
-#     return render_template('events/show.html', event=event, form=cform, user=current_user)
-
-@destbp.route('/<id>')
-def show(id):
-    event = db.session.scalar(db.select(Event).where(Event.id==id))
     event.statusUpdate()
-    # create the comment form
-    cform = CommentForm()    
-    return render_template('events/show.html', event=event, form=cform, user=current_user)
+    cform = CommentForm()
 
-@destbp.route('/<int:id>/buyTickets', methods=['GET', 'POST'])
-def buyTickets(id):
-    event = db.session.scalar(db.select(Event).where(Event.id == id))
-    if request.method == 'POST':
-        # read the posted fields (names match your HTML)
-        full_name = request.form.get('full_name')
-        email = request.form.get('email')
-        phone = request.form.get('buyer_phone')
-        quantity = int(request.form.get('quantity', 1))
-        billing_address = request.form.get('billing_address', '')
+    comments = (
+        db.session.execute(
+            db.select(Comment)
+              .where(Comment.event_id == id)
+              .order_by(Comment.created_at.desc())
+        ).scalars().all()
+    )
 
-        # compute total: (ticket price + $5 fee) * quantity
-        total_price = (float(event.ticket_price) + 5.0) * quantity
+    return render_template(
+        "events/show.html",
+        event=event,
+        form=cform,
+        comments=comments,
+        user=current_user
+    )
 
-        # save to DB
+
+# -------------------- BUY TICKETS --------------------
+@destbp.route("/<int:id>/buyTickets", methods=["GET", "POST"])
+@login_required
+def buyTickets(id: int):
+    event = db.session.get(Event, id)
+    if not event:
+        flash("Event not found.", "warning")
+        return redirect(url_for("main.index"))
+
+    if request.method == "POST":
+        full_name = (request.form.get("full_name") or "").strip()
+        email = (request.form.get("email") or "").strip()
+        phone = (request.form.get("buyer_phone") or "").strip()
+        billing_address = (request.form.get("billing_address") or "").strip()
+        try:
+            quantity = int(request.form.get("quantity") or 1)
+        except ValueError:
+            quantity = 1
+
+        if quantity < 1:
+            flash("Quantity must be at least 1.", "warning")
+            return redirect(url_for("event.buyTickets", id=id))
+        if event.tickets_available is None or event.tickets_available < quantity:
+            flash("Not enough tickets available.", "warning")
+            return redirect(url_for("event.buyTickets", id=id))
+
+        total_price = (float(event.ticket_price or 0) + 5.0) * quantity
+
         booking = Booking(
             full_name=full_name,
             email=email,
@@ -48,220 +72,165 @@ def buyTickets(id):
             num_tickets=quantity,
             total_price=total_price,
             billing_address=billing_address,
-            event_id=id,
-            user_id = current_user.id,
-            date_booked=datetime.now()
+            event_id=event.id,
+            user_id=current_user.id,
+            date_booked=datetime.utcnow(),
         )
 
+        event.tickets_available = (event.tickets_available or 0) - quantity
 
-        event.tickets_available -= quantity
         db.session.add(booking)
         db.session.commit()
-        # if booking.ticket_count():
-        #     db.session.add(booking)
-        #     db.session.commit()
-        #     print(f"Saved booking id={booking.id}")
-        # else:
-        #     print(f"Not enough tickets")
 
-
-        
-        # re-render and open your modal
         return render_template(
-            'events/buyTickets.html',
+            "events/buyTickets.html",
             event=event,
             show_modal=True,
             modal_name=full_name,
             modal_qty=quantity,
-            modal_total=total_price
+            modal_total=total_price,
+            modal_order_id=getattr(booking, "order_code", None) or booking.id,
         )
 
-    # GET
-    return render_template('events/buyTickets.html', event=event)
+    return render_template("events/buyTickets.html", event=event)
 
 
-@destbp.route('/categorise')
+# -------------------- FILTER BY GENRE --------------------
+@destbp.route("/categorise")
 def categorise():
-
-    events = db.session.scalars(db.select(Event)).all()
-    
-    genre = request.args.get('genre', 'All')
+    genre = request.args.get("genre", "All")
     if genre == "All":
-      events = db.session.scalars(db.select(Event)).all()
-    # create the comment form
+        events = db.session.scalars(db.select(Event)).all()
     else:
-       events = db.session.scalars(db.select(Event).where(Event.genre==genre)).all()
+        events = db.session.scalars(
+            db.select(Event).where(Event.genre == genre)
+        ).all()
 
     for event in events:
-      event.statusUpdate()
-    db.session.commit() 
+        event.statusUpdate()
+    db.session.commit()
 
-    return render_template('index.html', events=events, genre=genre)
+    return render_template("index.html", events=events, genre=genre)
 
-
-
-
-
-
-# @destbp.route('/create', methods=['GET', 'POST'])
-# def create():
-#   print('Method type: ', request.method)
-#   form = EventForm()
-#   if form.validate_on_submit():
-#     # call the function that checks and returns image
-#     db_file_path = check_upload_file(form)
-#     event = Event(name=form.name.data,description=form.description.data, genre=form.genre.data, 
-#     image = db_file_path,currency=form.currency.data)
-#     # add the object to the db session
-#     db.session.add(event)
-#     # commit to the database
-#     db.session.commit()
-#     print('Successfully created new travel event', 'success')
-#     # Always end with redirect when form is valid
-#     return redirect(url_for('event.create'))
-#   return render_template('events/create.html', form=form)
-
+# -------------------- FILE UPLOAD HELPER --------------------
 def check_upload_file(form):
-    # get file data from form  
     fp = form.image.data
     filename = fp.filename
-    # get the current path of the module file… store image file relative to this path  
+
     BASE_PATH = os.path.dirname(__file__)
-    # upload file location – directory of this file/static/image
-    upload_path = os.path.join(BASE_PATH,'static/image',secure_filename(filename))
-    # store relative path in DB as image location in HTML is relative
-    db_upload_path = '/static/image/' + secure_filename(filename)
-    # save the file and return the db upload path  
+    upload_path = os.path.join(BASE_PATH, "static/image", secure_filename(filename))
+    db_upload_path = "/static/image/" + secure_filename(filename)
+
     fp.save(upload_path)
     return db_upload_path
 
-@destbp.route('/<id>/comment', methods=['GET', 'POST'])  
+
+# -------------------- COMMENTS --------------------
+@destbp.route("/<int:id>/comment", methods=["POST"])
 @login_required
-def comment(id):  
-    form = CommentForm()  
-    # get the Event object associated to the page and the comment
-    event = db.session.scalar(db.select(Event).where(Event.id==id))
-    if form.validate_on_submit():  
-      # read the comment from the form, associate the Comment's Event field
-      # with the Event object from the above DB query
-      comment = Comment(text=form.text.data, event=event, user_id=current_user.id) 
-      # here the back-referencing works - comment.Event is set
-      # and the link is created
-      db.session.add(comment) 
-      db.session.commit() 
-      # flashing a message which needs to be handled by the html
-      # flash('Your comment has been added', 'success')  
-      print('Your comment has been added', 'success') 
-    # using redirect sends a GET request to Event.show
-    return redirect(url_for('event.show', id=id))
-
-
-
-@destbp.route('/cancel/<int:id>', methods=['POST'])
-@login_required
-def cancel(id):
+def comment(id: int):
+    form = CommentForm()
     event = db.session.get(Event, id)
-    # form = EventForm(obj=event)
-    event.cancelEvent()
-    db.session.commit()
-    # flash("Event has been cancelled.")
-    return redirect(url_for('event.show', id=id))
+    if not event:
+        flash("Event not found.", "warning")
+        return redirect(url_for("main.index"))
 
-
-
-@destbp.route('/create', methods=['GET', 'POST'])
-@destbp.route('/create/<int:id>', methods=['GET', 'POST'])
-@login_required
-def create(id=None):
-  event = None
-  if id:
-    event = db.session.get(Event, id)
-    form = EventForm(obj=event)
-    # form.name.data = event.name 
-    # form.description.data = event.description
-    # db_file_path = event.image 
-    # form.genre.data = event.genre 
-    # form.location.data = event.location 
-    # form.event_date.data = event.event_date 
-    # form.start_time.data = event.start_time 
-    # form.ticket_details.data = event.ticket_details 
-    
-  else:
-    print('Method type: ', request.method)
-    form = EventForm()
-  if form.validate_on_submit():
-
-    if event:
-      db_file_path = check_upload_file(form)
-      event.name = form.name.data
-      event.description = form.description.data 
-      event.image = db_file_path
-      event.genre = form.genre.data 
-      event.location = form.location.data 
-      event.event_date = form.event_date.data 
-      event.start_time = form.start_time.data 
-      event.ticket_details = form.ticket_details.data 
-  
-       # add the others
-      # event = Event(name=form.name.data,description=form.description.data, 
-      # image = db_file_path, 
-      # genre = form.genre.data,
-      # location = form.location.data,
-      # event_date = form.event_date.data,
-      # start_time = form.start_time.data,
-      # end_time = form.end_time.data,
-      # ticket_details=form.ticket_details.data, tickets_available=form.tickets_available.data,  ticket_price=form.ticket_price.data,
-      # image2 = db_file_path,
-      # image3 = db_file_path,
-      # user = current_user )
-      # event.statusUpdate()
-
-      # add a cancel events button here?
-
-
+    if form.validate_on_submit():
+        new_comment = Comment(
+            body=form.body.data.strip(),
+            event=event,
+            user_id=current_user.id,
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+        flash("Your comment has been added.", "success")
     else:
-    # call the function that checks and returns image
-      db_file_path = check_upload_file(form)
-      event = Event(name=form.name.data,description=form.description.data, 
-      image = db_file_path, 
-      genre = form.genre.data,
-      location = form.location.data,
-      event_date = form.event_date.data,
-      start_time = form.start_time.data,
-      end_time = form.end_time.data,
-      ticket_details=form.ticket_details.data, tickets_available=form.tickets_available.data,  ticket_price=form.ticket_price.data,
-      image2 = db_file_path, # still need to get rid of these... but when i do they bugg
-      image3 = db_file_path,
-      user = current_user )
+        for field, errs in form.errors.items():
+            for e in errs:
+                flash(f"{field}: {e}", "warning")
 
-      event.statusUpdate()
-      # add the object to the db session
-      db.session.add(event)
-      # commit to the database
-    db.session.commit()
-    print(Event.query.all())
+    return redirect(url_for("event.show", id=id))
 
-    # Always end with redirect when form is valid
-    return redirect(url_for('event.create'))
-  if request.method == 'POST':
+
+# -------------------- CREATE / EDIT EVENT --------------------
+@destbp.route("/create", methods=["GET", "POST"])
+@destbp.route("/create/<int:id>", methods=["GET", "POST"])
+@login_required
+def create(id: int | None = None):
+    event = db.session.get(Event, id) if id else None
+    form = EventForm(obj=event) if event else EventForm()
+
+    if form.validate_on_submit():
+        db_file_path = check_upload_file(form)
+
+        if event:
+            event.name = form.name.data
+            event.description = form.description.data
+            event.image = db_file_path
+            event.genre = form.genre.data
+            event.location = form.location.data
+            event.event_date = form.event_date.data
+            event.start_time = form.start_time.data
+            event.ticket_details = form.ticket_details.data
+        else:
+            event = Event(
+                name=form.name.data,
+                description=form.description.data,
+                image=db_file_path,
+                genre=form.genre.data,
+                location=form.location.data,
+                event_date=form.event_date.data,
+                start_time=form.start_time.data,
+                end_time=form.end_time.data,
+                ticket_details=form.ticket_details.data,
+                tickets_available=form.tickets_available.data,
+                ticket_price=form.ticket_price.data,
+                image2=db_file_path,
+                image3=db_file_path,
+                user=current_user,
+            )
+            event.statusUpdate()
+            db.session.add(event)
+
+        db.session.commit()
+        flash("Event saved.", "success")
+        return redirect(url_for("event.create"))
+
+    if request.method == "POST":
         print("FORM ERRORS:", form.errors)
-  return render_template('events/create.html', form=form, user=current_user)
+
+    return render_template("events/create.html", form=form, user=current_user)
 
 
-# a rough booking history to see if bookings are saved
-# @destbp.route('/bookingHistory')
-# def booking_history():
-#     # from .models import Booking
-#     # event = db.session.scalar(db.select(Event).where(Event.id==id))
-#     rows = Booking.query.order_by(Booking.id.desc()).all()
+# -------------------- MY TICKETS --------------------
+@destbp.route("/my-tickets")
+@login_required
+def my_tickets():
+    bookings = (
+        db.session.execute(
+            db.select(Booking)
+              .where(Booking.user_id == current_user.id)
+              .order_by(Booking.date_booked.desc())
+        ).scalars().all()
+    )
+    return render_template("events/my_ticket.html", bookings=bookings)
 
-#     return render_template('events/bookingHistory.html', bookings=bookings, user=current_user)
-    
-    # return (
-    #     "<h2>Booking History</h2>"
-    #     "<table border='1' cellpadding='6'>"
-    #     "<tr><th>ID</th><th>Name</th><th>Email</th><th>Qty</th>"
-    #     "<th>Total</th><th>Event</th><th>Date</th></tr>"
-    #     + "".join(html_rows) + "</table>"
-    # )
-  #return render_template('events/create.html', form=form, user=current_user)
+
+# -------------------- BOOKING HISTORY DEBUG --------------------
+@destbp.route("/bookingHistory")
+@login_required
+def booking_history():
+    rows = Booking.query.filter_by(user_id=current_user.id).order_by(Booking.id.desc()).all()
+    html_rows = [
+        f"<tr><td>{b.id}</td><td>{b.order_code or ''}</td><td>{b.full_name}</td><td>{b.email}</td>"
+        f"<td>{b.num_tickets}</td><td>${b.total_price:.2f}</td>"
+        f"<td>{b.event_id}</td><td>{b.date_booked}</td></tr>"
+        for b in rows
+    ]
+    return (
+        "<h2>My Booking History</h2>"
+        "<table border='1' cellpadding='6'>"
+        "<tr><th>ID</th><th>Order</th><th>Name</th><th>Email</th><th>Qty</th>"
+        "<th>Total</th><th>Event</th><th>Date</th></tr>"
+        + "".join(html_rows) + "</table>"
+    )

@@ -1,30 +1,27 @@
 from . import db
 from datetime import datetime
+from uuid import uuid4
 from flask_login import UserMixin
 
 
+# --- User ---
 class User(db.Model, UserMixin):
-    __tablename__ = 'users' # good practice to specify table name
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), index=True, unique=True, nullable=False)
     email = db.Column(db.String(100), index=True, nullable=False)
-	# password should never stored in the DB, an encrypted password is stored
-	# the storage should be at least 255 chars long, depending on your hashing algorithm
-    password = db.Column(db.String(100), index=True, nullable=False) # later have to make hashed
+    password = db.Column(db.String(100), index=True, nullable=False)
 
     contactNumber = db.Column(db.String(100), index=True, nullable=False, unique=True)
     streetAddress = db.Column(db.String(100), index=True, nullable=False)
-    
-    # password_hash = db.Column(db.String(255), nullable=False)
 
-    # relation to call user.comments and comment.created_by
-
+    # relations (these are fine)
     comments = db.relationship('Comment', backref='user')
     events = db.relationship('Event', backref='user')
-    
-    # string print method
+    bookings = db.relationship('Booking', backref='user', cascade='all, delete-orphan')  # <-- add
+
     def __repr__(self):
-        return f"Name: {self.name}"
+        return f"<User id={self.id} username={self.username}>"
 
 # class Event(db.Model):
 #     __tablename__ = 'Events'
@@ -46,31 +43,38 @@ class User(db.Model, UserMixin):
 
 # Uncomment later
 
+# --- Booking ---
 class Booking(db.Model):
     __tablename__ = 'booking'
     id = db.Column(db.Integer, primary_key=True)
-    full_name = db.Column(db.String(100), nullable = False)
+    # optional human-friendly order code
+    order_code = db.Column(db.String(16), unique=True, nullable=False, default=lambda: uuid4().hex[:8].upper())
+
+    # who & what
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)  # <-- add
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id', ondelete='CASCADE'), nullable=False)
+
+    # details
+    full_name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     phone = db.Column(db.String(20))
     num_tickets = db.Column(db.Integer, nullable=False)
     total_price = db.Column(db.Float, nullable=False)
     billing_address = db.Column(db.String(255))
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
-    date_booked = db.Column(db.DateTime, default=datetime.now(), nullable=False)
+    date_booked = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)  # utcnow
 
     event = db.relationship('Event', backref='bookings')
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    def __repr__(self):
-        return f'<Booking {self.full_name} x{self.num_tickets} (event={self.event_id})>'
-	
-    # string print method
     def ticket_count(self):
         if self.event and self.num_tickets <= self.event.tickets_available:
             self.event.tickets_available -= self.num_tickets
             db.session.commit()
             return True
         return False
+
+    def __repr__(self):
+        return f"<Booking id={self.id} order={self.order_code} user={self.user_id} event={self.event_id}>"
+
 
 
     
@@ -88,19 +92,25 @@ class Booking(db.Model):
 #     def __repr__(self):
 #         return f"Name: {self.name}"
 
+# --- Comment ---
 class Comment(db.Model):
-    __tablename__ = 'comments'
+    __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(400))
-    created_at = db.Column(db.DateTime, default=datetime.now())
-    # add the foreign key
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    Event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
 
-    # string print method
+    body = db.Column(db.Text, nullable=False)   # <- keep as body
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey("events.id", ondelete="CASCADE"), nullable=False)
+
+    user = db.relationship("User", backref=db.backref("comments", cascade="all, delete-orphan"))
+    event = db.relationship(
+        "Event",
+        backref=db.backref("comments", cascade="all, delete-orphan", order_by="Comment.created_at.desc()")
+    )
+
     def __repr__(self):
-        return f"Comment: {self.text}"
-    
+        return f"<Comment id={self.id} user_id={self.user_id} event_id={self.event_id}>"
 
 
 
@@ -110,10 +120,8 @@ class Event(db.Model):
     name = db.Column(db.String(80))
     description = db.Column(db.String(200))
     image = db.Column(db.String(400))
-    # currency = db.Column(db.String(3))
     genre = db.Column(db.String(50))
     event_status = db.Column(db.String(50))
-    # new fields for event creation
     location = db.Column(db.String(200))
     event_date = db.Column(db.Date)
     start_time = db.Column(db.Time)
@@ -123,33 +131,18 @@ class Event(db.Model):
     ticket_price = db.Column(db.Float)
     image2 = db.Column(db.String(400), nullable=True)
     image3 = db.Column(db.String(400), nullable=True)
-
-    # relationship to comments
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    comments = db.relationship('Comment', backref='event')
-    # bookings = db.relationship('Booking', backref='event')
-
 
     def statusUpdate(self):
         current_date = datetime.now().date()
-        if self.event_status == "Cancelled":
-            return
+        available = self.tickets_available or 0  # safe default
 
-
-        if self.tickets_available <= 0:
+        if available <= 0:
             self.event_status = "Sold Out"
-        elif self.event_date < current_date:
+        elif self.event_date and self.event_date < current_date:
             self.event_status = "Inactive"
         else:
-             self.event_status = "Open"
+            self.event_status = "Open"
 
+    db.session.commit()
 
-        db.session.commit()
-
-    def cancelEvent(self):
-        self.event_status = "Cancelled"
-        self.tickets_available = 0
-        db.session.commit()
-
-    def __repr__(self):
-        return f"Name: {self.name}"

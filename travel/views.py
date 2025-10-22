@@ -2,7 +2,7 @@ from flask import Blueprint, render_template
 from flask import Blueprint,render_template, redirect, url_for, request, flash
 from .forms import EventForm, RegisterForm
 from . import db
-from .models import Event, User, Booking
+from .models import Event, User
 from flask_login import login_required, current_user
 
 mainbp = Blueprint('main', __name__)
@@ -27,15 +27,6 @@ def search():
         return redirect(url_for('main.index'))
 
 
-@mainbp.route('/bookingHistory')
-def booking_history():
-    # from .models import Booking
-    # event = db.session.scalar(db.select(Event).where(Event.id==id))
-
-    bookings = Booking.query.filter_by(user_id=current_user.id).order_by(Booking.id.desc()).all()
-
-    totalBookings = len(bookings)
-    return render_template('bookingHistory.html', bookings=bookings, totalBookings=totalBookings, user=current_user)
 
 # from flask import Blueprint,render_template, redirect, url_for, request, flash
 # from .forms import ContactForm, HotelForm, RegisterForm
