@@ -246,6 +246,46 @@ event images section
             {% endfor %}
         </div>
     </div>
+
+    <!-- Comment Section -->
+    <div class="card">
+        <div class="card-header">
+            <h4>Comments ({{ comments|length }})</h4>
+        </div>
+        <div class="card-body">
+            {% if current_user.is_authenticated %}
+            <form method="POST" action="{{ url_for('event.comment', id=event.id) }}">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.text.label(class="form-label") }}
+                    {{ form.text(class="form-control", rows=3, placeholder="Share your thoughts about this event...") }}
+                </div>
+                <button type="submit" class="btn btn-primary">Post Comment</button>
+            </form>
+            {% else %}
+            <p><a href="{{ url_for('auth.login') }}">Login</a> to post a comment.</p>
+            {% endif %}
+            
+            <hr>
+            
+            <!-- Comments List -->
+            <div class="comments-section">
+                {% for comment in comments %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h6 class="card-subtitle mb-2 text-primary">{{ comment.user.username }}</h6>
+                            <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </div>
+                        <h6 class="card-subtitle mb-2 mt-2">{{ comment.text }}</h6>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">No comments yet. Be the first to comment!</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </main>
 
 
