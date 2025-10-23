@@ -51,20 +51,20 @@ l{% extends "base.html" %}
           </div>
 
           <h5>Description</h5>
-          <p>Summarise the event into few paragraphs, ensure to include all relevant details about the music and artists.</p>
-          <div class="input-group">
+          <p class="description-font">Summarise the event into few paragraphs, ensure to include all relevant details about the music and artists.</p>
+          <div class="input-group mb-3">
             {{ form.description(class="form-control", placeholder="Description") }}
           </div>
 
           <h5>Genre</h5>
-          <p>Which category or categories best describes the event.</p>
+          <p class="description-font">Which category or categories best describes the event.</p>
           <div class="row g-3 mb-3">
             <div class="col-sm-4">{{ form.genre(class="form-select") }}</div>
             <div class="col-sm-8">{{ form.genre_other(class="form-control", placeholder="If Other, please specify") }}</div>
           </div>
 
           <h5>Location</h5>
-          <p>Provide the exact location of the event.</p>
+          <p class="description-font">Provide the exact location of the event.</p>
           <div class="input-group" style="max-width: 950px;">
             {{ form.location(class="form-control", placeholder="Eg. Brisbane, Australia at Suncorp Stadium") }}
           </div>
@@ -74,17 +74,17 @@ l{% extends "base.html" %}
           </div>
 
           <h5>Date</h5>
-          <p>When the event will occur.</p>
-          <div class="input-group">
+          <p class="description-font">When the event will occur.</p>
+          <div class="input-group mb-4">
             {{ form.event_date(class="form-control") }}
           </div>
 
           <h5>Start and End Time</h5>
-          <p>Specify the event start and end times.</p>
+          <p class="description-font">Specify the event start and end times.</p>
           <div class="d-flex flex-column flex-sm-row align-items-center gap-3">
-            <p class="mb-0">Start Time:</p>
+            <p class="mb-0" style="color:black">Start Time:</p>
             <div class="input-group">{{ form.start_time(class="form-control form-control-sm", style="height: 50px;") }}</div>
-            <p class="mb-0">End Time:</p>
+            <p class="mb-0" style="color:black">End Time:</p>
             <div class="input-group">{{ form.end_time(class="form-control form-control-sm", style="height: 50px;") }}</div>
           </div>
 
