@@ -39,8 +39,8 @@ class RegisterForm(FlaskForm):
           validators=[EqualTo('password', message='Re-enter same as Password')])
   
 
-  contactNumber = IntegerField('ContactNumber', validators=[InputRequired('Enter phone number...') ])
-  streetAddress = StringField('StreetAddress', validators=[InputRequired('Enter street address...')])
+  contactNumber = IntegerField('Contact Number', validators=[InputRequired('Enter phone number...') ])
+  streetAddress = StringField('Street Address', validators=[InputRequired('Enter street address...')])
   submit = SubmitField("Register")
 
 class CommentForm(FlaskForm):
