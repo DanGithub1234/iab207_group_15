@@ -38,8 +38,8 @@ def buyTickets(id):
         quantity = int(request.form.get('quantity', 1))
         billing_address = request.form.get('billing_address', '')
 
-        # compute total: (ticket price + $5 fee) * quantity
-        total_price = (float(event.ticket_price) + 5.0) * quantity
+        # Total = (ticket price × quantity) + $5 one-time booking fee
+        total_price = (float(event.ticket_price) * quantity) + 5.0
 
         # save to DB
         booking = Booking(
