@@ -438,6 +438,48 @@ hr.rounded {
     font-family: 'Outfit', sans-serif;
 }
 
+.create-event-section h3 {
+    margin-top: 0;
+    margin-bottom: 1.2rem;
+  }
+  
+  .create-event-section h5 {
+    margin-top: 1.2rem;    
+    margin-bottom: 0.6rem; 
+  }
+  
+  .create-event-section p {
+    margin: 0.2rem 0 1rem; 
+  }
+  
+  .create-event-section .form-control,
+  .create-event-section .form-select,
+  .create-event-section textarea {
+    margin-bottom: 1rem;   
+  }
+  
+  .create-event-section .form-group {
+    margin-bottom: 1.25rem;
+  }
+  
+  
+  .create-event-section .tabsContainer .nav .nav-link {
+    padding: 1rem 1.25rem;
+  }
+  
+  .create-event-section .tabsContainer h3 {
+    margin-bottom: 0.5rem;
+  }
 
+  .create-event-section .tabs {
+    display: block;
+  }
+  
+  html { scroll-behavior: smooth; }
+  
+  #details, #poster, #tickets, #images {
+    scroll-margin-top: 100px;
+    margin-top: 24px;
+  }
 
 
