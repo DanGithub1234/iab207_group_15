@@ -64,11 +64,12 @@
                         {% set status = booking.event.event_status if booking.event else None %}
     {% set badge_class = 'success' if status=='Open' else ('danger' if status=='Sold Out' else ('info' if status=='Cancelled' else 'secondary')) %}
 
-    {# numbers for display #}
+    {# numbers for display (fee is one-time) #}
     {% set qty = booking.num_tickets or 1 %}
     {% set per_ticket = booking.event.ticket_price if booking.event else 0 %}
-    {% set fee_total = 5 * qty %}
-    {% set display_total = booking.total_price if booking.total_price is not none else ((per_ticket + 5) * qty) %}
+    {% set fee_total = 5 %}
+    {% set computed_total = (per_ticket * qty) + fee_total %}
+    {% set display_total = booking.total_price if booking.total_price is not none else computed_total %}
 
     <div class="custom-booking-card card mx-auto">
 
