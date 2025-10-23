@@ -27,6 +27,7 @@ def show(id):
     return render_template('events/show.html', event=event, form=cform, user=current_user)
 
 @destbp.route('/<int:id>/buyTickets', methods=['GET', 'POST'])
+@login_required
 def buyTickets(id):
     event = db.session.scalar(db.select(Event).where(Event.id == id))
     if request.method == 'POST':
