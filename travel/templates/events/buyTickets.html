@@ -42,9 +42,30 @@
     </div>
     <div class="col-md-6">
       <label for="quantity" class="form-label">Number of Tickets</label>
-      <input type="number" id="quantity" name="quantity" class="form-control" min="1" value="1" required>
-    </div>
+{# Compute a safe max (also passed from view) #}
+{# qty_max is provided by the route; fallback to 10 if missing #}
+{% set qty_max_val = qty_max if qty_max is defined else 10 %}
+
+<input
+  type="number"
+  id="quantity"
+  name="quantity"
+  class="form-control {% if qty_error %}is-invalid{% endif %}"
+  min="1"
+  max="{{ qty_max_val }}"
+  value="{{ qty_value if qty_value is defined else 1 }}"
+  required
+>
+
+{% if qty_error %}
+  <!-- Bootstrap inline error; d-block ensures it shows under the field -->
+  <div class="invalid-feedback d-block">
+    {{ qty_error }}
   </div>
+{% else %}
+  <div class="form-text">Max {{ qty_max_val }} per order.</div>
+{% endif %}    </div>
+  </div>    
 
   <!-- simple price note -->
   <!-- <div class="mt-2">
