@@ -9,6 +9,8 @@ from flask_login import current_user, login_required
 
 destbp = Blueprint('event', __name__, url_prefix='/events')
 
+MAX_PER_ORDER = 10
+
 
 # @destbp.route('/bookinghistory')
 # def bookinghistory(id):
@@ -38,6 +40,26 @@ def buyTickets(id):
         quantity = int(request.form.get('quantity', 1))
         billing_address = request.form.get('billing_address', '')
 
+        # adds an order limit to prevent overbooking
+        remaining = event.tickets_available or 0
+        qty_error = None
+        if quantity < 1:
+            qty_error = "Please enter at least 1 ticket."
+        elif quantity > MAX_PER_ORDER:
+            qty_error = f"You can buy a maximum of {MAX_PER_ORDER} tickets per order."
+        elif quantity > remaining:
+            qty_error = f"Only {remaining} ticket(s) remaining."
+
+        if qty_error:
+            qty_max = min(MAX_PER_ORDER, remaining) if remaining else MAX_PER_ORDER
+            return render_template(
+                'events/buyTickets.html',
+                event=event,
+                qty_error=qty_error,
+                qty_value=quantity,
+                qty_max=qty_max
+            )
+            
         # Total = (ticket price × quantity) + $5 one-time booking fee
         total_price = (float(event.ticket_price) * quantity) + 5.0
 
@@ -78,8 +100,9 @@ def buyTickets(id):
         )
 
     # GET
-    return render_template('events/buyTickets.html', event=event)
-
+    remaining = event.tickets_available or 0
+    qty_max = min(MAX_PER_ORDER, remaining) if remaining else MAX_PER_ORDER
+    return render_template('events/buyTickets.html', event=event, qty_max=qty_max)
 
 @destbp.route('/categorise')
 def categorise():
