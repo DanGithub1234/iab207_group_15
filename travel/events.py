@@ -32,6 +32,30 @@ def show(id):
 @login_required
 def buyTickets(id):
     event = db.session.scalar(db.select(Event).where(Event.id == id))
+    if not event:
+        return render_template('events/unavailable_modal.html',
+                               title="Not found",
+                               message="This event no longer exists.",
+                               redirect_url=url_for('event.categorise'))
+
+    status_is_open = (getattr(event, "event_status", "Open") == "Open")
+    has_tickets    = (event.tickets_available or 0) > 0
+    is_bookable    = status_is_open and has_tickets
+
+    # If user tries to book tickets for unavailable event this modal appears
+    if request.method == 'GET' and not is_bookable:
+        return render_template('events/unavailable_modal.html',
+                               title="Not available",
+                               message=f"Sorry, “{event.name}” is not available for booking.",
+                               redirect_url=url_for('event.categorise'))
+
+    if request.method == 'POST':
+        if not is_bookable:
+            return render_template('events/unavailable_modal.html',
+                                   title="Not available",
+                                   message=f"Sorry, “{event.name}” is not available for booking.",
+                                   redirect_url=url_for('event.categorise'))
+            
     if request.method == 'POST':
         # read the posted fields (names match your HTML)
         full_name = request.form.get('full_name')
