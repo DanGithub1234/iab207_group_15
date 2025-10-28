@@ -5,7 +5,6 @@
 {% block content %}
     
     <!-- event details -->
-
     <div class="p-5 row">
 
         <div class="col-md-7 p-5">
@@ -29,15 +28,12 @@
 <!-- ticket purchase form -->
 <form method="POST" action="#" onsubmit="showThankYouModal(event)">
 
-  <!--ticket types -->
+  <!--ticket details -->
   <h4 class="mb-3">Ticket Details</h4>
   <div class="row g-3">
     <div class="col-md-6">
       <label for="ticket_type" class="form-label">Ticket Price: ${{event.ticket_price}}</label>
-      <!-- <select id="ticket_type" name="ticket_type" class="form-control" required>
-        <option value="adult">Adult</option>
-        <option value="student">Student</option>
-        <option value="vip">VIP</option>
+
       </select> -->
     </div>
     <div class="col-md-6">
@@ -58,7 +54,7 @@
 >
 
 {% if qty_error %}
-  <!-- Bootstrap inline error; d-block ensures it shows under the field -->
+  <!-- if there's an error in quantity it shows under the field -->
   <div class="invalid-feedback d-block">
     {{ qty_error }}
   </div>
@@ -67,10 +63,6 @@
 {% endif %}    </div>
   </div>    
 
-  <!-- simple price note -->
-  <!-- <div class="mt-2">
-    <small class="text-muted">Ticket Price: ${{event.ticket_price}}</small>
-  </div> -->
 
   <hr class="my-4">
 
