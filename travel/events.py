@@ -57,14 +57,14 @@ def buyTickets(id):
                                    redirect_url=url_for('event.categorise'))
             
     if request.method == 'POST':
-        # read the posted fields (names match your HTML)
+        # fields users need to fill in to buy a ticket
         full_name = request.form.get('full_name')
         email = request.form.get('email')
         phone = request.form.get('buyer_phone')
         quantity = int(request.form.get('quantity', 1))
         billing_address = request.form.get('billing_address', '')
 
-        # adds an order limit to prevent overbooking
+        # adds an order limit to prevent overbooking and negative booking
         remaining = event.tickets_available or 0
         qty_error = None
         if quantity < 1:
@@ -87,7 +87,7 @@ def buyTickets(id):
         # Total = (ticket price × quantity) + $5 one-time booking fee
         total_price = (float(event.ticket_price) * quantity) + 5.0
 
-        # save to DB
+        # save to user's booking to database
         booking = Booking(
             full_name=full_name,
             email=email,
@@ -104,16 +104,8 @@ def buyTickets(id):
         event.tickets_available -= quantity
         db.session.add(booking)
         db.session.commit()
-        # if booking.ticket_count():
-        #     db.session.add(booking)
-        #     db.session.commit()
-        #     print(f"Saved booking id={booking.id}")
-        # else:
-        #     print(f"Not enough tickets")
 
-
-        
-        # re-render and open your modal
+        # re-render and open the modal
         return render_template(
             'events/buyTickets.html',
             event=event,
@@ -296,20 +288,4 @@ def create(id=None):
   return render_template('events/create.html', form=form, user=current_user)
 
 
-# a rough booking history to see if bookings are saved
-# @destbp.route('/bookingHistory')
-# def booking_history():
-#     # from .models import Booking
-#     # event = db.session.scalar(db.select(Event).where(Event.id==id))
-#     rows = Booking.query.order_by(Booking.id.desc()).all()
-
-#     return render_template('events/bookingHistory.html', bookings=bookings, user=current_user)
-    
-    # return (
-    #     "<h2>Booking History</h2>"
-    #     "<table border='1' cellpadding='6'>"
-    #     "<tr><th>ID</th><th>Name</th><th>Email</th><th>Qty</th>"
-    #     "<th>Total</th><th>Event</th><th>Date</th></tr>"
-    #     + "".join(html_rows) + "</table>"
-    # )
   #return render_template('events/create.html', form=form, user=current_user)
