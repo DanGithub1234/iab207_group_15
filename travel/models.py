@@ -44,8 +44,6 @@ class User(db.Model, UserMixin):
     
 
 
-# Uncomment later
-
 class Booking(db.Model):
     __tablename__ = 'booking'
     id = db.Column(db.Integer, primary_key=True)
