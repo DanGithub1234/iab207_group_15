@@ -20,6 +20,8 @@
 
 <!-- event details -->
 {% if current_user.is_authenticated and current_user.id == event.user_id %}
+{% set is_bookable = (event.event_status == 'Open') and (event.tickets_available or 0) > 0 %}
+
 
 <div class="p-5 row">
     <div class="d-flex justify-content-center gap-3 p-3">
@@ -70,10 +72,22 @@
                 <h5 class="card-title">{{event.name}} Tickets</h5>
 
                 <h1 style="font-weight: 600; font-size: 50px;">${{event.ticket_price}}</h1>
-
-                <a href="{{url_for('event.buyTickets', id=event.id)}}" type="button"
-                    class="custom-button-booking mt-2 p-3">
-                    <strong>Book now</strong> </a>
+                
+                {% if is_bookable %}
+                <!-- Take users to booking form -->
+                 <a href="{{ url_for('event.buyTickets', id=event.id) }}" class="custom-button-booking mt-2 p-3" style="display:inline-block; text-decoration:none;"
+                 ><strong>Book now</strong></a>
+                 
+                {% else %}
+                 <!-- Stay on event page and show unavailable modal -->
+                  <button
+                  type="button"
+                  class="custom-button-booking mt-2 p-3"
+                  data-bs-toggle="modal"
+                  data-bs-target="#notAvail"
+                  style="display:inline-block;"
+                  ><strong>Book now</strong></button>
+                  {% endif %}
 
                 <p class="card-text text-start">
                     {{event.ticket_details}}
@@ -288,7 +302,39 @@ event images section
     </div>
 </main>
 
+{% if not is_bookable %}
+<style>
+  .modal-backdrop.show {
+    background-color: rgba(0,0,0,.55) !important;
+    backdrop-filter: blur(3px) saturate(90%);
+  }
+  .mc-modal .modal-content { border:0; border-radius:1rem; box-shadow:0 20px 50px rgba(0,0,0,.25); }
+  .mc-modal .modal-header { background:linear-gradient(135deg,#ffffff,#ffffff); border:0; border-top-left-radius:1rem; border-top-right-radius:1rem; }
+  .mc-modal .modal-title { font-weight:800; letter-spacing:.2px; }
+  .mc-modal .modal-body { padding:1.5rem 1.75rem; font-size:1.05rem; }
+  .mc-modal .modal-footer { border:0; padding:1rem 1.75rem 1.5rem; }
+</style>
 
+<div class="modal fade mc-modal" id="notAvail" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content custom-card-ticket">
+      <div class="modal-header custom-card-ticket-header">
+        <h5 class="modal-title">Not available</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body custom-card-body text-center">
+        <div class="mb-3"><i class="bi bi-exclamation-octagon" style="font-size:2rem;"></i></div>
+        <p class="mb-0">Sorry, “{{ event.name }}” is not available for booking.</p>
+      </div>
+      <div class="modal-footer d-flex justify-content-center gap-2">
+        <a href="{{ url_for('event.categorise', genre='All') }}" class="custom-button-categories-small px-4">
+          Back to Events
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
 
 <!-- footer -->
 
