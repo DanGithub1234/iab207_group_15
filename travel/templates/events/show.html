@@ -71,23 +71,22 @@
             <div class="card-body custom-card-ticket-header">
                 <h5 class="card-title">{{event.name}} Tickets</h5>
 
-                <h1 style="font-weight: 600; font-size: 50px;">${{event.ticket_price}}</h1>
-                
-                {% if is_bookable %}
-                <!-- Take users to booking form -->
-                 <a href="{{ url_for('event.buyTickets', id=event.id) }}" class="custom-button-booking mt-2 p-3" style="display:inline-block; text-decoration:none;"
-                 ><strong>Book now</strong></a>
-                 
+                <h1 style="font-weight: 600; font-size: 50px;">${{"{:.2f}".format(event.ticket_price | float)}}</h1>
+
+
+                {% if event.event_status in ['Sold Out', 'Cancelled', 'Inactive'] %}
+
+                <a type="button"
+                class="custom-button-booking-disabled mt-2 p-3">
+                <strong>Book now</strong> </a>
+
                 {% else %}
-                 <!-- Stay on event page and show unavailable modal -->
-                  <button
-                  type="button"
-                  class="custom-button-booking mt-2 p-3"
-                  data-bs-toggle="modal"
-                  data-bs-target="#notAvail"
-                  style="display:inline-block;"
-                  ><strong>Book now</strong></button>
-                  {% endif %}
+
+                <a href="{{url_for('event.buyTickets', id=event.id)}}" type="button"
+                    class="custom-button-booking mt-2 p-3">
+                    <strong>Book now</strong> </a>
+
+                {% endif %}
 
                 <p class="card-text text-start">
                     {{event.ticket_details}}
@@ -249,18 +248,18 @@ event images section
 
         <div class="row border-bottom">
             {{render_form(form,"/events/{0}/comment".format(event.id))}}
-            {% for comment in event.comments %}
+            <!-- {% for comment in event.comments %}
             <div class="col-md-12">
                 <b style="color: black;">{{comment.user.username}} <span
                         class="ml-2 text-muted">{{comment.created_at.strftime("%d %b %Y %H:
-                        %M")}}</span></b>
+                        %M")}}</span></b> -->
                 <!-- comment time and dates -->
-                <p style="color: black;">{{comment.text}}</p>
+                <!-- <p style="color: black;">{{comment.text}}</p>
             </div>
-            {% endfor %}
+            {% endfor %} -->
         </div>
 
-        
+
 
 
 
@@ -268,7 +267,7 @@ event images section
     </div>
 
     <!-- Comment Section -->
-    <div class="card">
+    <!-- <div class="card">
         <div class="card-header">
             <h4>Comments ({{ comments|length }})</h4>
         </div>
@@ -285,16 +284,16 @@ event images section
             {% else %}
             <p><a href="{{ url_for('auth.login') }}">Login</a> to post a comment.</p>
             {% endif %}
-            
-            <hr>
-            
+
+            <hr> -->
+
             <!-- Comments List -->
             <div class="comments-section">
-                {% for comment in comments %}
-                <div class="card mb-3">
+                {% for comment in event.comments %}
+                <div class="card mb-3 mx-auto" style="max-width: 93%;">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <h6 class="card-subtitle mb-2 text-primary">{{ comment.user.username }}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="card-subtitle mb-2">{{ comment.user.username }}</h6>
                             <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
                         </div>
                         <h6 class="card-subtitle mb-2 mt-2">{{ comment.text }}</h6>
@@ -306,9 +305,12 @@ event images section
             </div>
         </div>
     </div>
+
+
+
 </main>
 
-{% if not is_bookable %}
+<!-- {% if not is_bookable %}
 <style>
   .modal-backdrop.show {
     background-color: rgba(0,0,0,.55) !important;
@@ -340,7 +342,7 @@ event images section
     </div>
   </div>
 </div>
-{% endif %}
+{% endif %} -->
 
 <!-- footer -->
 

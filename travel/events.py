@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from .models import Event, Comment, Booking
 from datetime import datetime
 from .forms import EventForm, CommentForm
@@ -28,7 +28,10 @@ def show(id):
     cform = CommentForm()    
     return render_template('events/show.html', event=event, form=cform, user=current_user)
 
+
+
 @destbp.route('/<int:id>/buyTickets', methods=['GET', 'POST'])
+@login_required
 @login_required
 def buyTickets(id):
     event = db.session.scalar(db.select(Event).where(Event.id == id))
@@ -63,6 +66,12 @@ def buyTickets(id):
         phone = request.form.get('buyer_phone')
         quantity = int(request.form.get('quantity', 1))
         billing_address = request.form.get('billing_address', '')
+        
+        if quantity > event.tickets_available:#this returns true when user is not None
+          flash('Exceeded tickets available. Please order less tickets.')
+          return redirect(url_for('event.buyTickets', id=id))
+
+        
 
         # adds an order limit to prevent overbooking and negative booking
         remaining = event.tickets_available or 0
@@ -93,6 +102,9 @@ def buyTickets(id):
             email=email,
             phone=phone,
             num_tickets=quantity,
+
+
+
             total_price=total_price,
             billing_address=billing_address,
             event_id=id,
@@ -124,6 +136,7 @@ def buyTickets(id):
 def categorise():
 
     events = db.session.scalars(db.select(Event)).all()
+    event.statusUpdate()
     
     genre = request.args.get('genre', 'All')
     if genre == "All":

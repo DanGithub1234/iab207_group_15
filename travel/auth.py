@@ -45,11 +45,28 @@ def register():
       #get username, password and email from the form
       username =form.username.data
       email=form.email.data
+
+      #check if a user exists
+      user = db.session.scalar(db.select(User).where(User.username==username))
+      if user:#this returns true when user is not None
+          flash('Username already exists, please try another')
+          return redirect(url_for('auth.register'))
+      
+      user = db.session.scalar(db.select(User).where(User.email==email))
+      if user:#this returns true when user is not None
+          flash('Email already in use, please try another')
+          return redirect(url_for('auth.register'))
+      
+
       pwd = form.password.data
       contactNumber = form.contactNumber.data
-      streetAddress = form.streetAddress.data
 
-      
+      user = db.session.scalar(db.select(User).where(User.contactNumber==contactNumber))
+      if user:#this returns true when user is not None
+          flash('Contact number already in use, please try another')
+          return redirect(url_for('auth.register'))
+
+      streetAddress = form.streetAddress.data
       passwordHash = generate_password_hash(pwd)
       #create a new user model object
       new_user = User(username=username, password=passwordHash, email=email, contactNumber=contactNumber, streetAddress=streetAddress)
@@ -90,7 +107,9 @@ def login():
 @authbp.route('/logout')
 def logout():
   logout_user()
-  return 'Successfully logged out user'
+  # return 'Successfully logged out user'
+  return redirect(url_for('main.index'))
+  
 
 
 

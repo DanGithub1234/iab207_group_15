@@ -21,7 +21,7 @@
 
             <!-- user information -->
 
-            <div class="p-2 custom-card-body">
+            <div class="p-3 custom-card-body">
 
                 <div class="d-flex">
 
@@ -55,72 +55,61 @@
     <section>
         <div class="row py-5">
             {% if bookings|length > 0 %}
-            
-                {% for booking in bookings %}
 
-                <div class="p-4 align-items-center">
+            {% for booking in bookings %}
 
-                    <a href="{{url_for('event.show', id=booking.event.id) }}" alt="wjknjkewf" style="text-decoration: none;">
-                        {% set status = booking.event.event_status if booking.event else None %}
-    {% set badge_class = 'success' if status=='Open' else ('danger' if status=='Sold Out' else ('info' if status=='Cancelled' else 'secondary')) %}
+            <!-- <div class="p-4"> -->
+            <div class="py-4">
+                <a href="{{url_for('event.show', id=booking.event.id) }}" alt="wjknjkewf"
+                    style="text-decoration: none;">
 
-    {# numbers for display (fee is one-time) #}
-    {% set qty = booking.num_tickets or 1 %}
-    {% set per_ticket = booking.event.ticket_price if booking.event else 0 %}
-    {% set fee_total = 5 %}
-    {% set computed_total = (per_ticket * qty) + fee_total %}
-    {% set display_total = booking.total_price if booking.total_price is not none else computed_total %}
+                    <div class="custom-booking-card card mx-auto">
 
-    <div class="custom-booking-card card mx-auto">
+                        <div class="position-relative">
+                            <span class="badge text-bg-success position-absolute m-2 top-0 start-0 fs-5">Open</span>
+                        </div>
 
-      <div class="position-relative">
-        {% if status %}
-          <span class="badge text-bg-{{ badge_class }} position-absolute m-2 top-0 start-0 fs-5">{{ status }}</span>
-        {% endif %}
-      </div>
+                        <div class="row g-0">
+                            <div class="col-12 col-sm-6 col-lg-5 d-flex rounded-start align-item-center justify-content-center"
+                                style="background-color: black;">
+                                <img src="{{booking.event.image}}" class="img-fluid" style="object-fit:contain;"
+                                    alt="...">
+                            </div>
+                            <div class="col-12 col-sm-6 col-lg-5">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{booking.event.name}}</h5>
 
-      <div class="row g-0">
-        <div class="col-12 col-sm-6 col-lg-5 d-flex rounded-start align-item-center justify-content-center" style="background-color:black;">
-          {% if booking.event and booking.event.image %}
-            <img src="{{ booking.event.image }}" class="img-fluid" style="object-fit:contain;" alt="{{ booking.event.name }}">
-          {% else %}
-            <div class="text-white-50 py-5">No image</div>
-          {% endif %}
-        </div>
+                                    <p class="card-text mb-1" style="color: black;"><strong>Genre:</strong>
+                                        {{booking.event.genre}}</p>
+                                    <p class="card-text mb-1" style="color: black;"><strong>Location:</strong>
+                                        {{booking.event.location}}</p>
+                                    <p class="card-text mb-1" style="color: black;"><strong>Date:</strong>
+                                        {{booking.event.event_date}} ({{booking.event.start_time}})</p>
+                                    <p class="card-text mb-1" style="color: black;"><strong>Ticket Price:</strong>
+                                       ${{"{:.2f}".format(booking.event.ticket_price | float)}}
+                                    </p>
+                                    <p class="card-text mb-1" style="color: black;"><strong>Total Price:</strong>
+                                        ${{"{:.2f}".format(booking.total_price | float)}}
+                                    </p>
 
-        <div class="col-12 col-sm-6 col-lg-5">
-          <div class="card-body">
-            <h5 class="card-title">{{ booking.event.name if booking.event else 'Event' }}</h5>
-
-            {% if booking.event %}
-              <p class="card-text mb-1" style="color:black;"><strong>Genre:</strong> {{ booking.event.genre }}</p>
-              <p class="card-text mb-1" style="color:black;"><strong>Location:</strong> {{ booking.event.location }}</p>
-              <p class="card-text mb-1" style="color:black;"><strong>Date:</strong> {{ booking.event.event_date }} ({{ booking.event.start_time }})</p>
-              <p class="card-text mb-2" style="color:black;"><strong>Ticket Price:</strong> ${{ '%.2f'|format(per_ticket) }}</p>
-            {% endif %}
-
-            <hr class="my-3">
-
-            <p class="card-text mb-0" style="color:black;"><strong>Booking ID:</strong> {{ booking.id }}</p>
-            <p class="card-text mb-0" style="color:black;"><strong>Quantity:</strong> {{ qty }}</p>
-            <p class="card-text mb-0" style="color:black;"><strong>Booking Fee:</strong> ${{ '%.2f'|format(fee_total) }} (one-time)</p>
-            <p class="card-text mb-0" style="color:black;"><strong>Total Paid:</strong> ${{ '%.2f'|format(display_total) }}</p>
-
-            <p class="card-text mt-3" style="color:black;">
-              <strong>Ticket was purchased on:</strong>
-              {{ booking.date_booked.strftime('%d %b %Y %H:%M') if booking.date_booked else '—' }}
-                                            </p>
-                                        </div>
-
+                                    <div>
+                                        <p class="card-text mb-0" style="color: black;"><strong>Booking ID:</strong> {{booking.id}}
+                                        </p>
+                                        <p class="card-text mb-0" style="color: black;">Ticket was purchased on:
+                                            {{booking.date_booked.strftime("%d %b %Y")}}</p>
+                                        <p class="card-text mb-0" style="color: black;">Purchase Time: {{booking.date_booked.strftime("%I:%M %p")}}
+                                        </p>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
-                    </a>
                     </div>
-                    {% endfor %}
-                {% endif %}
+                </a>
+                {% endfor %}
             </div>
+            {% endif %}
+        </div>
     </section>
 
     <!-- booking 2  -->
@@ -221,7 +210,7 @@
 
 <!-- pagination -->
 
-<nav aria-label="Page navigation example">
+<!-- <nav aria-label="Page navigation example">
     <ul class="pagination pagination justify-content-center mt-5">
         <li class="page-item"><a class="page-link" href="#">Previous</a></li>
         <li class="page-item active"><a class="page-link" href="#">1</a></li>
@@ -229,7 +218,7 @@
         <li class="page-item"><a class="page-link" href="#">3</a></li>
         <li class="page-item"><a class="page-link" href="#">Next</a></li>
     </ul>
-</nav>
+</nav> -->
 
 
 </div>

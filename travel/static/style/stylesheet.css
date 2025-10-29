@@ -206,6 +206,7 @@ h1 h2 h3 h4 h5{
     border-left: 10px solid #4B1248;
     padding-block: 20px;
     color: #0F2027;
+    font-weight: 20px;
 }
 
 
@@ -311,6 +312,7 @@ hr.rounded {
     margin-bottom: 20px;
 
     transition: 1s;
+    text-decoration: none;
 }
 
 .custom-button-booking:hover{
@@ -318,6 +320,23 @@ hr.rounded {
     transform: scale(1.09);
     color: white;
 }
+
+
+.custom-button-booking-disabled {
+    width: 60%;
+    max-width: 300px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+    border: 2px solid #dcdcdc;
+    background-color: #dfdfdf;
+    color: rgb(128, 128, 128);
+    margin-bottom: 20px;
+    text-decoration: none;
+
+}
+
+
 
 
 .custom-booking-card .card {
@@ -486,5 +505,37 @@ hr.rounded {
     color:#000000
 }
 
+.navbar.nav {
+    justify-content: center;
+    align-items: center;
 
+}
+
+
+.navbar-brand,
+.nav-link:hover
+.navbar-brand:active {
+    color: white, !important;
+}
+
+
+.custom-auth-card {
+    background-color: white;
+    border: 2px solid #b18db0;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: 0.5s ease;
+
+    transform: scale(1);
+    box-shadow: 2px 8px 20px rgba(0, 0, 0, 0.15);
+    
+
+
+}
+
+
+
+.flash-info {
+    background-color: #F0C27B;
+}
 

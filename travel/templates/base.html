@@ -29,77 +29,82 @@
    <header>
       <nav class="py-3 navbar sticky-top navbar-expand-lg custom-navbar">
          <div class="container-fluid d-flex justify-content-between align-item-center">
-            <a class="px-3 navbar-brand" href="#"><i class="bi bi-cloudy-fill"></i></i> musicCloud</a>
-            <a img src="{{ url_for('static', filename='img/logo.png')}}" alt="logo" class="logo" height="50"
-               width="50"></a>
+
+            <a class="px-3 navbar-brand" href="#" style="color: white;">
+               <i class="bi bi-cloudy-fill" style="color: white;"></i></i> musicCloud</a>
+            <!-- <a img src="{{ url_for('static', filename='img/logo.png')}}" alt="logo" class="logo" height="50"
+               width="50"></a> -->
 
             <!-- Nav bar and collapsable burger menu -->
 
-            <button class="custom-toggler navbar-toggler" type="button" data-bs-toggle="collapse"
-               data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
-               aria-label="Toggle navigation">
-               <span class="navbar-toggler-icon"></span>
-            </button>
+
+               <button class="custom-toggler navbar-toggler" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+                  aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+               </button>
 
 
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNavDropdown">
-               <ul class="navbar-nav mx-auto gap-3">
-                  <li class="nav-item">
-                     <a class="nav-link" aria-current="page" href="{{ url_for('main.index') }}">home</a>
-                  </li>
+               <div class="collapse navbar-collapse flex-column" id="navbarNavDropdown">
+                  <ul class="navbar-nav mx-auto gap-3">
+                     <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{{ url_for('main.index') }}">home</a>
+                     </li>
 
-                  {% if current_user.is_authenticated %}
-                  <li class="nav-item">
-                     <a class="nav-link" href="{{ url_for('event.create') }}">create event</a>
-                  </li>
+                     {% if current_user.is_authenticated %}
+                     <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('event.create') }}">create event</a>
+                     </li>
 
 
-                  <!-- <li class="nav-item">
+                     <!-- <li class="nav-item">
                      <a class="nav-link" href="#">my events</a>
                   </li> -->
 
-                  <li class="nav-item">
-                     <a class="nav-link" href="{{ url_for('main.booking_history')}}">my tickets</a>
-           
-                  </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.booking_history')}}">my bookings</a>
 
-                  {% endif %}
+                     </li>
+
+                     {% endif %}
 
 
 
-                  <!-- <ul class="navbar-nav ms-auto mb-2 mb-lg-0"> -->
-                  {% if current_user.is_authenticated %}
-                  <li><a class="nav-item nav-link disabled text-muted" href="#" style="color:rgb(255, 255, 255)"><span
-                           style="color: white;">welcome, {{ current_user.username
-                           }}</span></a></li>
-                  <li><a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">logout</a></li>
-                  {% else %}
-                  <li><a class="nav-item nav-link" href="{{ url_for('auth.register') }}">register</a></li>
-                  <li><a class="nav-item nav-link" href="{{ url_for('auth.login') }}">login</a></li>
-                  {% endif %}
-               </ul>
+                     <!-- <ul class="navbar-nav ms-auto mb-2 mb-lg-0"> -->
+                     {% if current_user.is_authenticated %}
+                     <li><a class="nav-item nav-link disabled text-muted" href="#"
+                           style="color:rgb(255, 255, 255)"><span style="color: white;">welcome, {{
+                              current_user.username
+                              }}</span></a></li>
+                     <li><a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">logout</a></li>
+                     {% else %}
+                     <li><a class="nav-item nav-link" href="{{ url_for('auth.register') }}">register</a></li>
+                     <li><a class="nav-item nav-link" href="{{ url_for('auth.login') }}">login</a></li>
+                     {% endif %}
+                  </ul>
 
-               <!-- </div> -->
-               <!-- <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">login</a>
+                  <!-- </div> -->
+                  <!-- <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">login</a>
                   </li>
                   <li class="nav-item">
                      <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">register</a>
                   </li> -->
 
 
-            </div>
+               </div>
 
-            <!-- Register/Login/Logout and welcome -->
-
-
+               <!-- Register/Login/Logout and welcome -->
 
 
-            <!-- <form class="d-flex" role="search">
+
+
+               <!-- <form class="d-flex" role="search">
                   <input class="form-control me-2" type="search" placeholder="Search events" aria-label="Search" />
                   <button class="btn btn-outline-light" type="submit" aria-label="search"><i
                         class="bi bi-search"></i></button>
                </form> -->
 
+   
          </div>
          </div>
       </nav>
