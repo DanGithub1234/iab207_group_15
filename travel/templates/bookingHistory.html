@@ -18,7 +18,7 @@
 
         <div class="col-md-6">
 
-            # user information
+            <!-- user information -->
             # displays logged in users username, email and total number of bookings
 
             <div class="p-3 custom-card-body">
@@ -51,8 +51,9 @@
         </div>
     </div>
 
-    #displays a list of all user bookings, displaying event details for each
-    #if no bookings are found, this section will not appear
+    <!-- bookings -->
+    # displays a list of all user bookings, displaying event details for each
+    # if no bookings are found, this section will not appear
     <section>
         <div class="row py-5">
             {% if bookings|length > 0 %}
