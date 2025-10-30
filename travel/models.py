@@ -45,7 +45,8 @@ class User(db.Model, UserMixin):
 
 
 class Booking(db.Model):
-    __tablename__ = 'booking'
+    __tablename__ = 'booking' #table name in DB
+	# fields that appear in the DB and also the booking form for users to fill in
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String(100), nullable = False)
     email = db.Column(db.String(100), nullable=False)
