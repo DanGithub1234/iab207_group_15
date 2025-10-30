@@ -2,8 +2,7 @@
 
 {% block header %}
 
-<!-- Booking history titles etc -->
-
+# booking history titles etc
 
 <div class="container-fluid">
 
@@ -19,7 +18,8 @@
 
         <div class="col-md-6">
 
-            <!-- user information -->
+            # user information
+            # displays logged in users username, email and total number of bookings
 
             <div class="p-3 custom-card-body">
 
@@ -51,14 +51,15 @@
         </div>
     </div>
 
-    <!-- booking 1  -->
+    #displays a list of all user bookings, displaying event details for each
+    #if no bookings are found, this section will not appear
     <section>
         <div class="row py-5">
             {% if bookings|length > 0 %}
 
             {% for booking in bookings %}
-
-            <!-- <div class="p-4"> -->
+            
+            # each booking card links to its corresponding event detail page
             <div class="py-4">
                 <a href="{{url_for('event.show', id=booking.event.id) }}" alt="wjknjkewf"
                     style="text-decoration: none;">
@@ -66,25 +67,31 @@
                     <div class="custom-booking-card card mx-auto">
 
                         <div class="position-relative">
+                            # “Open” badge indicates event is active and able to be booked
                             <span class="badge text-bg-success position-absolute m-2 top-0 start-0 fs-5">Open</span>
                         </div>
 
                         <div class="row g-0">
+                        # left column: displays the event image
                             <div class="col-12 col-sm-6 col-lg-5 d-flex rounded-start align-item-center justify-content-center"
                                 style="background-color: black;">
                                 <img src="{{booking.event.image}}" class="img-fluid" style="object-fit:contain;"
                                     alt="...">
                             </div>
+                            # right column: displays event and booking details
                             <div class="col-12 col-sm-6 col-lg-5">
                                 <div class="card-body">
                                     <h5 class="card-title">{{booking.event.name}}</h5>
 
+                                    # event details
                                     <p class="card-text mb-1" style="color: black;"><strong>Genre:</strong>
                                         {{booking.event.genre}}</p>
                                     <p class="card-text mb-1" style="color: black;"><strong>Location:</strong>
                                         {{booking.event.location}}</p>
                                     <p class="card-text mb-1" style="color: black;"><strong>Date:</strong>
                                         {{booking.event.event_date}} ({{booking.event.start_time}})</p>
+                                    
+                                    # ticket price displayed - two decimals 
                                     <p class="card-text mb-1" style="color: black;"><strong>Ticket Price:</strong>
                                        ${{"{:.2f}".format(booking.event.ticket_price | float)}}
                                     </p>
@@ -92,9 +99,11 @@
                                         ${{"{:.2f}".format(booking.total_price | float)}}
                                     </p>
 
+                                    # booking infomation 
                                     <div>
                                         <p class="card-text mb-0" style="color: black;"><strong>Booking ID:</strong> {{booking.id}}
                                         </p>
+                                        # display the booking date and time 
                                         <p class="card-text mb-0" style="color: black;">Ticket was purchased on:
                                             {{booking.date_booked.strftime("%d %b %Y")}}</p>
                                         <p class="card-text mb-0" style="color: black;">Purchase Time: {{booking.date_booked.strftime("%I:%M %p")}}
