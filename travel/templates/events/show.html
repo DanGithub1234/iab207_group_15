@@ -216,7 +216,7 @@ event images section
 
     <div class="align-items-center p-5">
 
-
+        # prompt line: shows what event the user is commenting on
         <div class="d-flex align-items-center col-md-8 gap-3 my-3">
 
             <p class="mb-0" style="color: black;">Share your thoughts about this event: <strong> {{event.name}}</strong>
@@ -225,11 +225,11 @@ event images section
         </div>
 
 
-
+        # shows current user's username and emai
         <div class="custom-card-body">
 
             <div class="d-flex">
-
+                
                 <div class="date text-center">
                     <div class="day-font"><i class="bi bi-person-circle" style="font-size: 3rem;"></i></div>
                 </div>
@@ -246,6 +246,7 @@ event images section
 
         </div>
 
+        #  display the comment submission form for this event
         <div class="row border-bottom">
             {{render_form(form,"/events/{0}/comment".format(event.id))}}
             <!-- {% for comment in event.comments %}
@@ -288,18 +289,24 @@ event images section
             <hr> -->
 
             <!-- Comments List -->
+            # loops over event.comments and shows each comment card
+            # the {% else %} block shows a message when there are no comments
             <div class="comments-section">
                 {% for comment in event.comments %}
                 <div class="card mb-3 mx-auto" style="max-width: 93%;">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
+                            # comment author
                             <h6 class="card-subtitle mb-2">{{ comment.user.username }}</h6>
+                            # comment timestamp 
                             <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
                         </div>
+                        # comment body text
                         <h6 class="card-subtitle mb-2 mt-2">{{ comment.text }}</h6>
                     </div>
                 </div>
                 {% else %}
+                # empty state if there are no comments yet
                 <p class="text-muted text-center py-3">No comments yet. Be the first to comment!</p>
                 {% endfor %}
             </div>
