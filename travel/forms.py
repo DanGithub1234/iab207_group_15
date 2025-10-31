@@ -1,10 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import TextAreaField,SubmitField, StringField, PasswordField, SelectField, DateField, TimeField, SelectField, IntegerField, DecimalField
-from wtforms.validators import InputRequired, Email, EqualTo, Length, NumberRange
+from wtforms.fields import TextAreaField,SubmitField, StringField, PasswordField, SelectField, DateField, TimeField, SelectField, IntegerField, DecimalField, EmailField
+from wtforms.validators import InputRequired, Email, EqualTo, Length, NumberRange, Regexp, ValidationError
 from flask_wtf.file import FileRequired, FileField, FileAllowed
-
-
-# ALLOWED_FILE = {'PNG','JPG','png','jpg'}
+import datetime
 
 
 # class EventForm(FlaskForm):
@@ -26,25 +24,25 @@ from flask_wtf.file import FileRequired, FileField, FileAllowed
 
 
 class LoginForm(FlaskForm):
-  username = StringField('Username', validators=[InputRequired()])
+  email = EmailField('Email Address', validators=[InputRequired(),Email(), Length(max=100) ])
   password = PasswordField('Password', validators=[InputRequired()])
   submit = SubmitField("Login")
 
 
 class RegisterForm(FlaskForm):
-  username = StringField('Username', validators=[InputRequired('Enter username...'), Length(max=50)])
-  email = StringField('Email', validators=[InputRequired(),Email(), Length(max=100) ])
+  fullname = StringField('Full Name', validators=[InputRequired('Enter full name...'), Length(max=50)])
+  email = EmailField('Email Address', validators=[InputRequired(),Email(), Length(max=100) ])
   password = PasswordField('Password', validators=[InputRequired('Enter password...')])
   confirm = PasswordField('Confirm Password', 
           validators=[EqualTo('password', message='Re-enter same as Password')])
   
 
-  contactNumber = IntegerField('Contact Number', validators=[InputRequired('Enter phone number...') ])
-  streetAddress = StringField('Street Address', validators=[InputRequired('Enter street address...')])
+  contactNumber = StringField('Contact Number', validators=[InputRequired('Enter phone number...'), Regexp('^[0-9]*$', message='Number should only contain digits.') ])
+  streetAddress = StringField('Street Address', validators=[InputRequired('Enter street address...'), Length(max=100)])
   submit = SubmitField("Register")
 
 class CommentForm(FlaskForm):
-  text = TextAreaField('Comment', validators=[InputRequired("Enter comment...")])
+  text = TextAreaField('Comment', validators=[InputRequired("Enter comment..."), Length(max=250)])
   submit = SubmitField("Submit")
 
 
@@ -52,6 +50,12 @@ class CommentForm(FlaskForm):
 
 ALLOWED_FILE = {'PNG','JPG','png','jpg'}
 
+
+
+def datecheck(form, field):
+  chosen_date = field.data
+  if chosen_date <= datetime.date.today():
+    raise ValidationError("Event date must be in the future.")
 
 class EventForm(FlaskForm):
 # Event info
@@ -63,13 +67,15 @@ class EventForm(FlaskForm):
         ('pop','Pop'),
         ('rap','Rap'),
         ('country','Country'),
+        ('edm','EDM'),
+        ('rnb','RNB'),
         ('other','Other')
     ], validators=[InputRequired()])
     genre_other = StringField('Custom Genre (if Other)', validators=[Length(max=60)])
 
     # Location and timing
     location = StringField('Location', validators=[InputRequired(), Length(max=200)])
-    event_date = DateField('Date', validators=[InputRequired()])
+    event_date = DateField('Date', validators=[InputRequired(), datecheck])
     start_time = TimeField('Start Time', validators=[InputRequired()])
     end_time = TimeField('End Time', validators=[InputRequired()])
 

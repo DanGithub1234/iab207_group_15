@@ -9,7 +9,7 @@ from flask_login import current_user, login_required
 
 destbp = Blueprint('event', __name__, url_prefix='/events')
 
-MAX_PER_ORDER = 10
+MAX_PER_ORDER = 10 
 
 
 # @destbp.route('/bookinghistory')
@@ -30,8 +30,9 @@ def show(id):
 
 
 
+
+#  ASK ABOUT THIS
 @destbp.route('/<int:id>/buyTickets', methods=['GET', 'POST'])
-@login_required
 @login_required
 def buyTickets(id):
     event = db.session.scalar(db.select(Event).where(Event.id == id))
@@ -114,6 +115,7 @@ def buyTickets(id):
 
 
         event.tickets_available -= quantity
+        event.statusUpdate()
         db.session.add(booking)
         db.session.commit()
 
@@ -130,13 +132,12 @@ def buyTickets(id):
     # GET
     remaining = event.tickets_available or 0
     qty_max = min(MAX_PER_ORDER, remaining) if remaining else MAX_PER_ORDER
-    return render_template('events/buyTickets.html', event=event, qty_max=qty_max)
+    return render_template('events/buyTickets.html', event=event, qty_max=qty_max, total_price=total_price)
 
 @destbp.route('/categorise')
 def categorise():
 
     events = db.session.scalars(db.select(Event)).all()
-    event.statusUpdate()
     
     genre = request.args.get('genre', 'All')
     if genre == "All":
@@ -146,8 +147,8 @@ def categorise():
        events = db.session.scalars(db.select(Event).where(Event.genre==genre)).all()
 
     for event in events:
-      event.statusUpdate()
-    db.session.commit() 
+
+        db.session.commit() 
 
     return render_template('index.html', events=events, genre=genre)
 
@@ -246,9 +247,12 @@ def create(id=None):
 
     if event:
       db_file_path = check_upload_file(form)
+
       event.name = form.name.data
       event.description = form.description.data 
+
       event.image = db_file_path
+
       event.genre = form.genre.data 
       event.location = form.location.data 
       event.event_date = form.event_date.data 

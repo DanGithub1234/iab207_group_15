@@ -34,6 +34,11 @@ h1 h2 h3 h4 h5{
 }
 
 
+.gradient-line{
+    border-bottom: 20px solid;  /* Chrome 10-25, Safari 5.1-6 */ /* fallback for old browsers */
+    border-image: linear-gradient(to right, #4B1248, #F0C27B) 1;
+}
+
 
 .custom-footer
 {
@@ -90,7 +95,7 @@ h1 h2 h3 h4 h5{
     color: white;
 }
 
-.custom-button-categories-active {
+.custom-button-categories.active {
 
     color: rgb(255, 255, 255);
     background-color: #4B1248;
@@ -156,7 +161,6 @@ h1 h2 h3 h4 h5{
     align-items: center;
     border-bottom: 20px solid;  /* Chrome 10-25, Safari 5.1-6 */ /* fallback for old browsers */
     border-image: linear-gradient(to right, #4B1248, #F0C27B) 1;
-
 
 }
 
@@ -368,6 +372,7 @@ hr.rounded {
 
 .card-header.custom-card-ticket-header{
     background-color: #F0C27B;
+    font-size: 22px;
 
 }
 
@@ -380,6 +385,18 @@ hr.rounded {
 
     color: black;
     background-color: white;
+    border: 2px solid #4B1248;
+    transition: all 0.4s ease;
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+}
+
+
+.custom-button-categories-small.active {
+
+    color: rgb(255, 255, 255);
+    background-color: #4B1248;
     border: 2px solid #4B1248;
     transition: all 0.4s ease;
     border-radius: 50px;
@@ -536,6 +553,17 @@ hr.rounded {
 
 
 .flash-info {
-    background-color: #F0C27B;
+    color: white;
+    background-color: #6f4b6e;
+    border: 2px solid #4B1248;
+    border-radius: 10px;
+    padding: 1rem 1rem;
+    font-weight: 500;
 }
 
+
+.footer-style {
+    color: white;
+    text-decoration: none;
+
+}

@@ -8,28 +8,26 @@
 <div class="py-5">
     <div class="myjumbotron2 d-flex justify-content-center align-items-center">
 
-
         <img src="{{event.image}}" class="img-fluid" alt="..." style="box-shadow: 20px; max-width: 80%; height: auto;">
-
-
 
     </div>
 
 </div>
 
 
-<!-- event details -->
+<!-- Event details -->
 {% if current_user.is_authenticated and current_user.id == event.user_id %}
 {% set is_bookable = (event.event_status == 'Open') and (event.tickets_available or 0) > 0 %}
 
 
 <div class="p-5 row">
+    <h5 class="align-item-center justify-content-center d-flex">
+        As the owner of this event you edit event details or cancel this event:</h5>
     <div class="d-flex justify-content-center gap-3 p-3">
 
         <form action="{{url_for('event.create', id=event.id)}}" method="POST">
-            <button type="submit" class="custom-button-categories">Edit</button>
+            <button type="submit" class="custom-button-categories">Edit Event</button>
         </form>
-
 
         <form action="{{url_for('event.cancel', id=event.id)}}" method="POST">
             <button type="submit" class="custom-button-categories">Cancel</button>
@@ -37,6 +35,8 @@
     </div>
 
 </div>
+
+<div class="gradient-line"></div>
 
 {% endif %}
 
@@ -49,13 +49,13 @@
             <p class="card-text mb-1" style="color: black;"> {{event.description}}</p>
             <p class="card-text mb-1" style="color: black;"><strong>Genre:</strong> {{event.genre|capitalize}}</p>
             <p class="card-text mb-1" style="color: black;"><strong>Location:</strong> {{event.location}}</p>
-            <p class="card-text mb-1" style="color: black;"><strong>Date:</strong> {{event.event_date}}</p>
-            <p class="card-text mb-1" style="color: black;"><strong>Time:</strong> {{event.start_time}} to
-                {{event.end_time}}</p>
+            <p class="card-text mb-1" style="color: black;"><strong>Date:</strong> {{event.event_date.strftime("%d %B, %Y")}}</p>
+            <p class="card-text mb-1" style="color: black;"><strong>Time:</strong> {{event.start_time.strftime("%I:%M %p")}} to
+                {{event.end_time.strftime("%I:%M %p")}}</p>
 
 
 
-            <h4 class="my-5">Event by {{event.user.username}}</h4>
+            <h4 class="my-5">Event by {{event.user.fullname}}</h4>
         </div>
 
     </div>
@@ -78,13 +78,13 @@
 
                 <a type="button"
                 class="custom-button-booking-disabled mt-2 p-3">
-                <strong>Book now</strong> </a>
+                <strong>Not Available</strong> </a>
 
                 {% else %}
 
                 <a href="{{url_for('event.buyTickets', id=event.id)}}" type="button"
                     class="custom-button-booking mt-2 p-3">
-                    <strong>Book now</strong> </a>
+                    <strong>Book Now</strong> </a>
 
                 {% endif %}
 
@@ -236,7 +236,7 @@ event images section
 
                 <div>
 
-                    <h5 class="card-title mt-3">{{user.username}}</h5>
+                    <h5 class="card-title mt-3">{{user.fullname}}</h5>
                     <h5 class="card-body" style="font-size: 1rem;">{{user.email}}</h5>
 
                 </div>
@@ -249,15 +249,7 @@ event images section
         #  display the comment submission form for this event
         <div class="row border-bottom">
             {{render_form(form,"/events/{0}/comment".format(event.id))}}
-            <!-- {% for comment in event.comments %}
-            <div class="col-md-12">
-                <b style="color: black;">{{comment.user.username}} <span
-                        class="ml-2 text-muted">{{comment.created_at.strftime("%d %b %Y %H:
-                        %M")}}</span></b> -->
-                <!-- comment time and dates -->
-                <!-- <p style="color: black;">{{comment.text}}</p>
-            </div>
-            {% endfor %} -->
+        
         </div>
 
 
@@ -267,27 +259,6 @@ event images section
 
     </div>
 
-    <!-- Comment Section -->
-    <!-- <div class="card">
-        <div class="card-header">
-            <h4>Comments ({{ comments|length }})</h4>
-        </div>
-        <div class="card-body">
-            {% if current_user.is_authenticated %}
-            <form method="POST" action="{{ url_for('event.comment', id=event.id) }}">
-                {{ form.hidden_tag() }}
-                <div class="mb-3">
-                    {{ form.text.label(class="form-label") }}
-                    {{ form.text(class="form-control", rows=3, placeholder="Share your thoughts about this event...") }}
-                </div>
-                <button type="submit" class="btn btn-primary">Post Comment</button>
-            </form>
-            {% else %}
-            <p><a href="{{ url_for('auth.login') }}">Login</a> to post a comment.</p>
-            {% endif %}
-
-            <hr> -->
-
             <!-- Comments List -->
             # loops over event.comments and shows each comment card
             # the {% else %} block shows a message when there are no comments
@@ -296,10 +267,15 @@ event images section
                 <div class="card mb-3 mx-auto" style="max-width: 93%;">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
+<<<<<<< HEAD
                             # comment author
                             <h6 class="card-subtitle mb-2">{{ comment.user.username }}</h6>
                             # comment timestamp 
                             <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+=======
+                            <h6 class="card-subtitle mb-2">{{ comment.user.fullname }}</h6>
+                            <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %I:%M %p') }}</small>
+>>>>>>> 40f58a7 (Polish and checklist points)
                         </div>
                         # comment body text
                         <h6 class="card-subtitle mb-2 mt-2">{{ comment.text }}</h6>
@@ -317,6 +293,8 @@ event images section
 
 </main>
 
+
+<!-- NOT SURE WHO ADDED THIS BUT PLEASE CLARIFY WHAT IT DOES -->
 <!-- {% if not is_bookable %}
 <style>
   .modal-backdrop.show {
@@ -351,36 +329,7 @@ event images section
 </div>
 {% endif %} -->
 
-<!-- footer -->
 
-<!-- <footer class="text-center mt-5">
-    <div class="text-center p-5 mb-2 custom-footer text-secondary-emphasis opacity-70" style="width: 100%;">
-
-        <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center">
-
-            <h5 class="mx-4">Home</h5>
-            <h5 class="mx-4">Features</h5>
-            <h5 class="mx-4">News</h5>
-            <h5 class="mx-4">About Us</h5>
-
-        </div>
-
-
-        <hr class="solid" style="color: rgb(203, 203, 203);">
-
-
-
-        <div class="d-flex justify-content-center">
-            <p> <i class="bi bi-cloudy-fill"></i> © 2025 musicCloud, Inc</p>
-
-
-
-        </div>
-
-
-
-    </div>
-</footer> -->
 </body>
 
 </html>

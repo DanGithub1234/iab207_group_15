@@ -19,19 +19,31 @@ def index():
 @mainbp.route('/search')
 def search():
     if request.args['search'] and request.args['search'] != "":
+        user_query = request.args['search']
         print(request.args['search'])
         query = "%" + request.args['search'] + "%"
         events = db.session.scalars(db.select(Event).where(Event.name.like(query))).all()
-        return render_template('index.html', events=events)
+
+        if not events:#this returns true when user is not None
+          flash(f'There are no events with the the title: "{user_query}".')
+          return render_template('index.html', events=events)
+
+        else:
+            flash(f'Showing events for: "{user_query}".')
+            return render_template('index.html', events=events)
     else:
         return redirect(url_for('main.index'))
 
 
 @mainbp.route('/bookingHistory')
 def booking_history():
-    # from .models import Booking
-    # event = db.session.scalar(db.select(Event).where(Event.id==id))
+    events = db.session.scalars(db.select(Event)).all()
 
+    for event in events:
+        event.statusUpdate()
+
+    db.session.commit()
+    
     bookings = Booking.query.filter_by(user_id=current_user.id).order_by(Booking.id.desc()).all()
 
     totalBookings = len(bookings)

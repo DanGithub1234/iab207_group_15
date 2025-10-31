@@ -5,8 +5,7 @@
 
   <div class="row">
 
-    <!-- jumbotron -->
-
+    <!-- Jumobotron for website -->
     <div class="p-5 col-md-12">
       <div class="myjumbotron1 p-5 mb-2 rounded-3 text-secondary-emphasis opacity-70">
 
@@ -26,6 +25,8 @@
 
 </div>
 
+
+<!-- Events section -->
 <div class="home-content" id="eventSection">
 
   <p class="p-2 h1 text-center mb-0" style="color: #000000"><strong>Upcoming & Trending events</strong></p>
@@ -36,485 +37,498 @@
 {% endblock %}
 
 {% block content %}
+
+<!-- Event categorisation by genre -->
 <div class="d-flex flex-wrap justify-content-center gap-3">
-  <a class="custom-button-categories-small" style="text-decoration: none;"
+  <a class="custom-button-categories-small {% if genre == 'All'%} active {% endif %}" style="text-decoration: none;"
     href="{{ url_for('event.categorise', genre='All') }}">Show All</a>
-  <a class="custom-button-categories-small" style="text-decoration: none;"
+
+  <a class="custom-button-categories-small {% if genre == 'pop'%} active {% endif %}" style="text-decoration: none;"
     href="{{ url_for('event.categorise', genre='pop') }}">Pop</a>
-  <a class="custom-button-categories-small" style="text-decoration: none;"
+
+  <a class="custom-button-categories-small {% if genre == 'rap'%} active {% endif %}" style="text-decoration: none;"
     href="{{ url_for('event.categorise', genre='rap') }}">Rap</a>
-  <a class="custom-button-categories-small" style="text-decoration: none;"
+
+  <a class="custom-button-categories-small {% if genre == 'country'%} active {% endif %}" style="text-decoration: none;"
     href="{{ url_for('event.categorise', genre='country') }}">Country</a>
 
+  <a class="custom-button-categories-small {% if genre == 'edm'%} active {% endif %}" style="text-decoration: none;"
+    href="{{ url_for('event.categorise', genre='edm') }}">EDM</a>
+
+  <a class="custom-button-categories-small {% if genre == 'rnb'%} active {% endif %}" style="text-decoration: none;"
+    href="{{ url_for('event.categorise', genre='rnb') }}">RNB</a>
+
+
 </div>
-  <!-- <button type="button" class="custom-button-categories" data-genre="Electronic">Electronic</button>
+<!-- <button type="button" class="custom-button-categories" data-genre="Electronic">Electronic</button>
    <button type="button" class="custom-button-categories" data-genre="RNB">RNB</button>
    <button type="button" class="custom-button-categories" data-genre="Indie/Alt">Indie/Alt</button>  -->
 
+<!--  Search bar  -->
 <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
   <h5 class="my-3">Search:</h5>
 
-  <form class="form-inline d-flex flex-nowrap" action="{{ url_for('main.search') }}" >
-    <input placeholder="Search events" type="text" name="search" class="form-control flex-grow-1 my-1 mr-sm-2" id="SearchForm">
+  <form class="form-inline d-flex flex-nowrap" action="{{ url_for('main.search') }}">
+    <input placeholder="Search events" type="text" name="search" class="form-control flex-grow-1 my-1 mr-sm-2"
+      id="SearchForm">
     <div class="mx-2">
       <button type="submit" class="custom-submit flex-shrink-1 my-1">Submit</button>
     </div>
-    
+
   </form>
 
 </div>
 
+<div>
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %} <!-- check if there are any messages -->
 
 
-  <!-- need to include image, status -->
+  <div class="container-fluid d-flex justify-content-center">
+    <div class="row mt-3" style="min-width: 40%;">
+      <div class="col-md-12">
 
-  <!-- need to include day and month of event -->
-
-  <!-- genre, location, time, price -->
-
-  <!-- possibly just add the variables in the placeholder spots -->
-
-  <!-- <section class="mt-3">
-    {% if events|length > 0 %}
-    <div class="row">
-      {% for event in events %}
-      <div class="card col-md-4">
-        <img class="card-img-top" src="{{event.image}}" alt="Card image">
-        <div class="card-body">
-          <h4 class="card-title">{{event.name}}</h4>
-          <p class="card-text" style="color: #000000;">{{event.description}}</p>
-          <p class="card-text" style="color: #000000;">{{event.genre}}</p>
-        </div>
-        <div class="card-footer"><a href="#" class="btn btn-primary">Details</a></div>
       </div>
+      {% for message in messages %} <!--loop through the messages-->
+
+
+      <div class="d-flex align-item-center justify-content-center" style="color:#4B1248">{{message}}</div> <!--display as alert-->
       {% endfor %}
     </div>
-    {% endif %}
-
-  </section> -->
-
-  <!-- <div class="p-5 row"> -->
-
-  <!-- CARD1 -->
-  <section class="pb-5">
-    {% if events|length > 0 %}
-    <div class="p-5 row g-3">
-      {% for event in events %}
-        <div class="col-12 col-md-6 col-lg-3" data-genre="Pop">
-        <a href="{{url_for('event.show', id=event.id)}}" alt="wjknjkewf" style="text-decoration: none;">
-          <div class="custom-card" height="30" width="400">
-
-            <div class="position-relative">
-              <img src="{{event.image}}" class="card-img-top" alt="..." style="height: 250px;">
-
-              {% if event.event_status == 'Open' %}
-                <span class="badge text-bg-success position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
-              {% endif %}
-
-              {% if event.event_status == 'Inactive' %}
-                <span class="badge text-bg-secondary position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
-              {% endif %}
-
-              {% if event.event_status == 'Sold Out' %}
-                <span class="badge text-bg-danger position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
-              {% endif %}
-
-              {% if event.event_status == 'Cancelled' %}
-                <span class="badge text-bg-info position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
-              {% endif %}
-            </div>
-
-            <div class="p-3 custom-card-body">
-
-              <div class="d-flex">
-
-                <div class="date text-center">
-                  <div class="day-font">{{event.event_date.strftime('%d')}}</div>
-                  <div class="month-font">{{event.event_date.strftime('%b').upper()}}</div>
-                </div>
-
-
-                <div>
-
-                  <h5 class="card-title mb-2">{{event.name}}</h5>
-
-                  <p class="card-text mb-1"><strong>Genre:</strong> {{event.genre|capitalize}}</p>
-                  <p class="card-text mb-1"><strong></strong> {{event.location}}</p>
-                  <p class="card-text mb-1"><strong></strong> {{event.start_time}}</p>
-                  <p class="ticket-font mb-1">${{event.ticket_price}}</p>
-
-                </div>
-              </div>
-
-
-            </div>
-
-          </div>
-        </a>
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
-  </section>
-
-  <main class="pb-5">
-
-    <!-- ROW 1 -->
-    <div class="p-5 row">
-
-
-      <!-- CARD1 -->
-
-      <div class="col-12 col-md-6 col-lg-3" data-genre="Pop">
-        <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
-          <div class="custom-card" height="30" width="400">
-
-            <div class="position-relative">
-              <img src="{{ url_for('static', filename='img/concert1.jpg')}}" class="card-img-top" alt="..."
-                style="height: 250px;">
-              <span class="badge text-bg-success position-absolute m-2 top-0 start-0 fs-5">Open</span>
-            </div>
-
-            <div class="p-3 custom-card-body">
-
-              <div class="d-flex">
-
-                <div class="date text-center">
-                  <div class="day-font">22</div>
-                  <div class="month-font">AUG</div>
-                </div>
-
-
-                <div>
-
-                  <h5 class="card-title mb-2">Coldplay: Music of the Spheres World Tour</h5>
-
-                  <p class="card-text mb-1"><strong>Genre:</strong> Pop</p>
-                  <p class="card-text mb-1"><strong></strong> Brisbane, Australia</p>
-                  <p class="card-text mb-1"><strong></strong> 9:00PM</p>
-                  <p class="ticket-font mb-1">Price: $120</p>
-
-                </div>
-              </div>
-
-
-            </div>
-
-          </div>
-        </a>
-      </div>
-
-
-      <!-- CARD2 -->
-
-
-      <div class="col-12 col-md-6 col-lg-3" data-genre="EDM">
-        <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
-          <div class="custom-card" height="30" width="400">
-
-            <div class="position-relative">
-              <img src="{{ url_for('static', filename='img/edmconcert.jpg')}}" class="card-img-top" alt="..."
-                style="height: 250px;">
-              <span class="badge text-bg-danger position-absolute m-2 top-0 start-0 fs-5">Sold Out</span>
-            </div>
-
-            <div class="p-3 custom-card-body">
-
-              <div class="d-flex">
-
-                <div class="date text-center">
-                  <div class="day-font">27</div>
-                  <div class="month-font">SEP</div>
-                </div>
-
-
-                <div>
-
-                  <h5 class="card-title mb-2">Zedd: Moment of Clarity Tour</h5>
-
-                  <p class="card-text mb-1"><strong>Genre:</strong> EDM</p>
-                  <p class="card-text mb-1"><strong></strong> New York, USA</p>
-                  <p class="card-text mb-1"><strong></strong> 10:00PM</p>
-                  <p class="ticket-font mb-1">Price: $100</p>
-
-                </div>
-              </div>
-
-
-            </div>
-
-          </div>
-        </a>
-      </div>
-
-
-      <!-- CARD 3 -->
-
-
-      <div class="col-12 col-md-6 col-lg-3" data-genre="Pop">
-        <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
-          <div class="custom-card" height="30" width="400">
-
-            <div class="position-relative">
-              <img src="{{ url_for('static', filename='img/rockconcert.jpg')}}" class="card-img-top" alt="..."
-                style="height: 250px;">
-              <span class="badge text-bg-secondary position-absolute m-2 top-0 start-0 fs-5">Inactive</span>
-            </div>
-
-            <div class="p-3 custom-card-body">
-
-              <div class="d-flex">
-
-                <div class="date text-center">
-                  <div class="day-font">13</div>
-                  <div class="month-font">MAY</div>
-                </div>
-
-
-                <div>
-
-                  <h5 class="card-title mb-2">U2: Vertigo Tour</h5>
-
-                  <p class="card-text mb-1"><strong>Genre:</strong> Rock</p>
-                  <p class="card-text mb-1"><strong></strong> Rome, Italy</p>
-                  <p class="card-text mb-1"><strong></strong> 11:00PM</p>
-                  <p class="ticket-font mb-1">Price: $130</p>
-
-                </div>
-              </div>
-
-
-            </div>
-
-          </div>
-        </a>
-      </div>
-
-
-      <div class="col-12 col-md-6 col-lg-3" data-genre="Pop">
-        <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
-          <div class="custom-card" height="30" width="400">
-
-            <div class="position-relative">
-              <img src="{{ url_for('static', filename='img/concert1.jpg')}}" class="card-img-top" alt="..."
-                style="height: 250px;">
-              <span class="badge text-bg-info position-absolute m-2 top-0 start-0 fs-5">Cancelled</span>
-            </div>
-
-            <div class="p-3 custom-card-body">
-
-              <div class="d-flex">
-
-                <div class="date text-center">
-                  <div class="day-font">22</div>
-                  <div class="month-font">AUG</div>
-                </div>
-
-
-                <div>
-
-                  <h5 class="card-title mb-2">Coldplay: Music of the Spheres World Tour</h5>
-
-                  <p class="card-text mb-1"><strong>Genre:</strong> Pop</p>
-                  <p class="card-text mb-1"><strong></strong> Brisbane, Australia</p>
-                  <p class="card-text mb-1"><strong></strong> 9:00PM</p>
-                  <p class="ticket-font mb-1">Price: $120</p>
-
-                </div>
-              </div>
-
-
-            </div>
-
-          </div>
-        </a>
-      </div>
-
-
-
-    </div>
+  </div>
 </div>
 
-<div class="p-5 row">
-  <!-- ROW 2 -->
 
-  <!-- CARD 5 -->
-
-  <div class="col-12 col-md-6 col-lg-3" data-genre="EDM">
-    <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
-      <div class="custom-card" height="30" width="400">
-
-        <div class="position-relative">
-          <img src="{{ url_for('static', filename='img/concert1.jpg')}}" class="card-img-top" alt="..." style="height: 250px;">
-          <span class="badge text-bg-danger position-absolute m-2 top-0 start-0 fs-5">Sold Out</span>
-        </div>
-
-        <div class="p-3 custom-card-body">
-
-          <div class="d-flex">
-
-            <div class="date text-center">
-              <div class="day-font">27</div>
-              <div class="month-font">SEP</div>
-            </div>
-
-
-            <div>
-
-              <h5 class="card-title mb-2">Zedd: Moment of Clarity Tour</h5>
-
-              <p class="card-text mb-1"><strong>Genre:</strong> EDM</p>
-              <p class="card-text mb-1"><strong></strong> New York, USA</p>
-              <p class="card-text mb-1"><strong></strong> 10:00PM</p>
-              <p class="ticket-font mb-1">Price: $100</p>
-
-            </div>
-          </div>
-
-
-        </div>
-
-      </div>
-    </a>
-  </div>
-  <!-- CARD 6 -->
-
-  <div class="col-12 col-md-6 col-lg-3" data-genre="Pop">
-    <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
-      <div class="custom-card" height="30" width="400">
-
-        <div class="position-relative">
-          <img src="{{ url_for('static', filename='img/rockconcert.jpg')}}" class="card-img-top" alt="..." style="height: 250px;">
-          <span class="badge text-bg-danger position-absolute m-2 top-0 start-0 fs-5">Sold Out</span>
-        </div>
-
-        <div class="p-3 custom-card-body">
-
-          <div class="d-flex">
-
-            <div class="date text-center">
-              <div class="day-font">13</div>
-              <div class="month-font">DEC</div>
-            </div>
-
-
-            <div>
-
-              <h5 class="card-title mb-2">U2: Vertigo Tour</h5>
-
-              <p class="card-text mb-1"><strong>Genre:</strong> Rock</p>
-              <p class="card-text mb-1"><strong></strong> Rome, Italy</p>
-              <p class="card-text mb-1"><strong></strong> 11:00PM</p>
-              <p class="ticket-font mb-1">Price: $130</p>
-
-            </div>
-          </div>
-
-
-        </div>
-
-
-      </div>
-    </a>
-  </div>
-
-  <!-- CARD 7 -->
-
-  <div class="col-12 col-md-6 col-lg-3" data-genre="Pop">
-    <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
-      <div class="custom-card" height="30" width="400">
-
-        <div class="position-relative">
-          <img src="{{ url_for('static', filename='img/concert1.jpg')}}" class="card-img-top" alt="..." style="height: 250px;">
-          <span class="badge text-bg-danger position-absolute m-2 top-0 start-0 fs-5">Sold Out</span>
-        </div>
-
-        <div class="p-3 custom-card-body">
-
-          <div class="d-flex">
-
-            <div class="date text-center">
-              <div class="day-font">22</div>
-              <div class="month-font">AUG</div>
-            </div>
-
-
-            <div>
-
-              <h5 class="card-title mb-2">Coldplay: Music of the Spheres World Tour</h5>
-
-              <p class="card-text mb-1"><strong>Genre:</strong> Pop</p>
-              <p class="card-text mb-1"><strong></strong> Brisbane, Australia</p>
-              <p class="card-text mb-1"><strong></strong> 9:00PM</p>
-              <p class="ticket-font mb-1">Price: $120</p>
-
-            </div>
-          </div>
-
-
-        </div>
-
-      </div>
-    </a>
-  </div>
-
-  <!-- CARD 8 -->
-
-  <div class="col-12 col-md-6 col-lg-3" data-genre="EDM">
-    <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
-      <div class="custom-card" height="30" width="400">
-
-        <div class="position-relative">
-          <img src="{{ url_for('static', filename='img/edmconcert.jpg')}}" class="card-img-top" alt="..." style="height: 250px;">
-          <span class="badge text-bg-danger position-absolute m-2 top-0 start-0 fs-5">Sold Out</span>
-        </div>
-
-        <div class="p-3 custom-card-body">
-
-          <div class="d-flex">
-
-            <div class="date text-center">
-              <div class="day-font">27</div>
-              <div class="month-font">SEP</div>
-            </div>
-
-
-            <div>
-
-              <h5 class="card-title mb-2">Zedd: Moment of Clarity Tour</h5>
-
-              <p class="card-text mb-1"><strong>Genre:</strong> EDM</p>
-              <p class="card-text mb-1"><strong></strong> New York, USA</p>
-              <p class="card-text mb-1"><strong></strong> 10:00PM</p>
-              <p class="ticket-font mb-1">Price: $100</p>
-
-            </div>
-          </div>
-
-
-        </div>
-
-      </div>
-    </a>
-  </div>
-
-  <hr class="mt-5 solid" style="color: rgb(203, 203, 203);">
-
-  <!-- <div class="d-flex justify-content-center align-item-center mt-5">
-    <button class="custom-button-categories" style="width: 500px;">Show more...</button>
-  </div> -->
+{% endif %}
+{% endwith %}
 
 
 </div>
+
+
+
+<!-- Event cards -->
+<section class="pb-5">
+  {% if events|length > 0 %}
+  <div class="p-5 row g-3">
+    {% for event in events %}
+    <div class="col-12 col-md-6 col-lg-3">
+      <a href="{{url_for('event.show', id=event.id)}}" alt="wjknjkewf" style="text-decoration: none;">
+        <div class="custom-card" height="30" width="400">
+
+          <div class="position-relative">
+            <img src="{{event.image}}" class="card-img-top" alt="..." style="height: 250px;">
+
+            <!--  Event status coloring logic -->
+            {% if event.event_status == 'Open' %}
+            <span class="badge text-bg-success position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
+            {% endif %}
+
+            {% if event.event_status == 'Inactive' %}
+            <span class="badge text-bg-secondary position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
+            {% endif %}
+
+            {% if event.event_status == 'Sold Out' %}
+            <span class="badge text-bg-danger position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
+            {% endif %}
+
+            {% if event.event_status == 'Cancelled' %}
+            <span class="badge text-bg-info position-absolute m-2 top-0 start-0 fs-5">{{event.event_status}}</span>
+            {% endif %}
+          </div>
+
+          <!-- Adding dynamic information to the event card -->
+          <div class="p-3 custom-card-body">
+
+            <div class="d-flex">
+
+              <div class="date text-center">
+                <div class="day-font">{{event.event_date.strftime('%d')}}</div>
+                <div class="month-font">{{event.event_date.strftime('%b').upper()}}</div>
+              </div>
+
+
+              <div>
+
+                <h5 class="card-title mb-2">{{event.name}}</h5>
+
+                <p class="card-text mb-1"><strong>Genre:</strong> {{event.genre|capitalize}}</p>
+                <p class="card-text mb-1"><strong></strong> {{event.location}}</p>
+                <p class="card-text mb-1"><strong></strong> {{event.start_time}}</p>
+                <p class="ticket-font mb-1">${{event.ticket_price}}</p>
+
+              </div>
+            </div>
+
+
+          </div>
+
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</section>
+
+
+<main class="pb-5">
+
+  <!-- REMOVE THIS AFTER TESTING RESPONSIVENESS -->
+  <!-- ROW 1 -->
+  <div class="p-5 row">
+
+    <!-- CARD1 -->
+
+    <div class="col-12 col-md-6 col-lg-3" data-genre="Pop">
+      <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
+        <div class="custom-card" height="30" width="400">
+
+          <div class="position-relative">
+            <img src="static/img/concert1.jpg" class="card-img-top" alt="..." style="height: 250px;">
+            <span class="badge text-bg-success position-absolute m-2 top-0 start-0 fs-5">Open</span>
+          </div>
+
+          <div class="p-3 custom-card-body">
+
+            <div class="d-flex">
+
+              <div class="date text-center">
+                <div class="day-font">22</div>
+                <div class="month-font">AUG</div>
+              </div>
+
+
+              <div>
+
+                <h5 class="card-title mb-2">Coldplay: Music of the Spheres World Tour</h5>
+
+                <p class="card-text mb-1"><strong>Genre:</strong> Pop</p>
+                <p class="card-text mb-1"><strong></strong> Brisbane, Australia</p>
+                <p class="card-text mb-1"><strong></strong> 9:00PM</p>
+                <p class="ticket-font mb-1">Price: $120</p>
+
+              </div>
+            </div>
+
+
+          </div>
+
+        </div>
+      </a>
+    </div>
+
+
+    <!-- CARD2 -->
+
+
+    <div class="col-12 col-md-6 col-lg-3" data-genre="EDM">
+      <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
+        <div class="custom-card" height="30" width="400">
+
+          <div class="position-relative">
+            <img src="static/img/edmconcert.jpg" class="card-img-top" alt="..." style="height: 250px;">
+            <span class="badge text-bg-danger position-absolute m-2 top-0 start-0 fs-5">Sold Out</span>
+          </div>
+
+          <div class="p-3 custom-card-body">
+
+            <div class="d-flex">
+
+              <div class="date text-center">
+                <div class="day-font">27</div>
+                <div class="month-font">SEP</div>
+              </div>
+
+
+              <div>
+
+                <h5 class="card-title mb-2">Zedd: Moment of Clarity Tour</h5>
+
+                <p class="card-text mb-1"><strong>Genre:</strong> EDM</p>
+                <p class="card-text mb-1"><strong></strong> New York, USA</p>
+                <p class="card-text mb-1"><strong></strong> 10:00PM</p>
+                <p class="ticket-font mb-1">Price: $100</p>
+
+              </div>
+            </div>
+
+
+          </div>
+
+        </div>
+      </a>
+    </div>
+
+
+    <!-- CARD 3 -->
+
+
+    <div class="col-12 col-md-6 col-lg-3" data-genre="Pop">
+      <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
+        <div class="custom-card" height="30" width="400">
+
+          <div class="position-relative">
+            <img src="static/img/rockconcert.jpg" class="card-img-top" alt="..." style="height: 250px;">
+            <span class="badge text-bg-secondary position-absolute m-2 top-0 start-0 fs-5">Inactive</span>
+          </div>
+
+          <div class="p-3 custom-card-body">
+
+            <div class="d-flex">
+
+              <div class="date text-center">
+                <div class="day-font">13</div>
+                <div class="month-font">MAY</div>
+              </div>
+
+
+              <div>
+
+                <h5 class="card-title mb-2">U2: Vertigo Tour</h5>
+
+                <p class="card-text mb-1"><strong>Genre:</strong> Rock</p>
+                <p class="card-text mb-1"><strong></strong> Rome, Italy</p>
+                <p class="card-text mb-1"><strong></strong> 11:00PM</p>
+                <p class="ticket-font mb-1">Price: $130</p>
+
+              </div>
+            </div>
+
+
+          </div>
+
+        </div>
+      </a>
+    </div>
+
+
+    <div class="col-12 col-md-6 col-lg-3" data-genre="Pop">
+      <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
+        <div class="custom-card" height="30" width="400">
+
+          <div class="position-relative">
+            <img src="static/img/concert1.jpg" class="card-img-top" alt="..." style="height: 250px;">
+            <span class="badge text-bg-info position-absolute m-2 top-0 start-0 fs-5">Cancelled</span>
+          </div>
+
+          <div class="p-3 custom-card-body">
+
+            <div class="d-flex">
+
+              <div class="date text-center">
+                <div class="day-font">22</div>
+                <div class="month-font">AUG</div>
+              </div>
+
+
+              <div>
+
+                <h5 class="card-title mb-2">Coldplay: Music of the Spheres World Tour</h5>
+
+                <p class="card-text mb-1"><strong>Genre:</strong> Pop</p>
+                <p class="card-text mb-1"><strong></strong> Brisbane, Australia</p>
+                <p class="card-text mb-1"><strong></strong> 9:00PM</p>
+                <p class="ticket-font mb-1">Price: $120</p>
+
+              </div>
+            </div>
+
+
+          </div>
+
+        </div>
+      </a>
+    </div>
+
+
+
+  </div>
+  </div>
+
+  <div class="p-5 row">
+    <!-- ROW 2 -->
+
+    <!-- CARD 5 -->
+
+    <div class="col-12 col-md-6 col-lg-3" data-genre="EDM">
+      <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
+        <div class="custom-card" height="30" width="400">
+
+          <div class="position-relative">
+            <img src="static/img/edmconcert.jpg" class="card-img-top" alt="..." style="height: 250px;">
+            <span class="badge text-bg-danger position-absolute m-2 top-0 start-0 fs-5">Sold Out</span>
+          </div>
+
+          <div class="p-3 custom-card-body">
+
+            <div class="d-flex">
+
+              <div class="date text-center">
+                <div class="day-font">27</div>
+                <div class="month-font">SEP</div>
+              </div>
+
+
+              <div>
+
+                <h5 class="card-title mb-2">Zedd: Moment of Clarity Tour</h5>
+
+                <p class="card-text mb-1"><strong>Genre:</strong> EDM</p>
+                <p class="card-text mb-1"><strong></strong> New York, USA</p>
+                <p class="card-text mb-1"><strong></strong> 10:00PM</p>
+                <p class="ticket-font mb-1">Price: $100</p>
+
+              </div>
+            </div>
+
+
+          </div>
+
+        </div>
+      </a>
+    </div>
+    <!-- CARD 6 -->
+
+    <div class="col-12 col-md-6 col-lg-3" data-genre="Pop">
+      <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
+        <div class="custom-card" height="30" width="400">
+
+          <div class="position-relative">
+            <img src="static/img/rockconcert.jpg" class="card-img-top" alt="..." style="height: 250px;">
+            <span class="badge text-bg-danger position-absolute m-2 top-0 start-0 fs-5">Sold Out</span>
+          </div>
+
+          <div class="p-3 custom-card-body">
+
+            <div class="d-flex">
+
+              <div class="date text-center">
+                <div class="day-font">13</div>
+                <div class="month-font">DEC</div>
+              </div>
+
+
+              <div>
+
+                <h5 class="card-title mb-2">U2: Vertigo Tour</h5>
+
+                <p class="card-text mb-1"><strong>Genre:</strong> Rock</p>
+                <p class="card-text mb-1"><strong></strong> Rome, Italy</p>
+                <p class="card-text mb-1"><strong></strong> 11:00PM</p>
+                <p class="ticket-font mb-1">Price: $130</p>
+
+              </div>
+            </div>
+
+
+          </div>
+
+
+        </div>
+      </a>
+    </div>
+
+    <!-- CARD 7 -->
+
+    <div class="col-12 col-md-6 col-lg-3" data-genre="Pop">
+      <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
+        <div class="custom-card" height="30" width="400">
+
+          <div class="position-relative">
+            <img src="static/img/concert1.jpg" class="card-img-top" alt="..." style="height: 250px;">
+            <span class="badge text-bg-danger position-absolute m-2 top-0 start-0 fs-5">Sold Out</span>
+          </div>
+
+          <div class="p-3 custom-card-body">
+
+            <div class="d-flex">
+
+              <div class="date text-center">
+                <div class="day-font">22</div>
+                <div class="month-font">AUG</div>
+              </div>
+
+
+              <div>
+
+                <h5 class="card-title mb-2">Coldplay: Music of the Spheres World Tour</h5>
+
+                <p class="card-text mb-1"><strong>Genre:</strong> Pop</p>
+                <p class="card-text mb-1"><strong></strong> Brisbane, Australia</p>
+                <p class="card-text mb-1"><strong></strong> 9:00PM</p>
+                <p class="ticket-font mb-1">Price: $120</p>
+
+              </div>
+            </div>
+
+
+          </div>
+
+        </div>
+      </a>
+    </div>
+
+    <!-- CARD 8 -->
+
+    <div class="col-12 col-md-6 col-lg-3" data-genre="EDM">
+      <a href="event.html" alt="wjknjkewf" style="text-decoration: none;">
+        <div class="custom-card" height="30" width="400">
+
+          <div class="position-relative">
+            <img src="static/img/edmconcert.jpg" class="card-img-top" alt="..." style="height: 250px;">
+            <span class="badge text-bg-danger position-absolute m-2 top-0 start-0 fs-5">Sold Out</span>
+          </div>
+
+          <div class="p-3 custom-card-body">
+
+            <div class="d-flex">
+
+              <div class="date text-center">
+                <div class="day-font">27</div>
+                <div class="month-font">SEP</div>
+              </div>
+
+
+              <div>
+
+                <h5 class="card-title mb-2">Zedd: Moment of Clarity Tour</h5>
+
+                <p class="card-text mb-1"><strong>Genre:</strong> EDM</p>
+                <p class="card-text mb-1"><strong></strong> New York, USA</p>
+                <p class="card-text mb-1"><strong></strong> 10:00PM</p>
+                <p class="ticket-font mb-1">Price: $100</p>
+
+              </div>
+            </div>
+
+
+          </div>
+
+        </div>
+      </a>
+    </div>
+
+
+  </div>
+
+</main>
+
+<hr class="rounded">
+
+</div>
+
+<!-- Spotlight section for popular events with images -->
 
 <div class="p-2 home-content text-center">
-  <p class="h1 text-center" style="color: #000000"><strong>Event: Spotlight</strong></p>
+  <p id="spotlight" class="h1 text-center" style="color: #000000"><strong>Event: Spotlight</strong></p>
   <p style="color: #000000;">The events that everyone is talking about...</p>
 
 </div>
 
 
-<!-- promotional images carousel -->
+<!-- Promotional images carousel -->
 <div id="carouselExampleCaptions" class="carousel slide mx-auto" style="max-width: 1200px; max-height: 500px;">
   <div class="carousel-indicators mx-auto">
     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
@@ -523,31 +537,31 @@
     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
   </div>
 
+  <!-- Events that are trending examples -->
   <div class="carousel-inner rounded-3">
     <div class="carousel-item active">
-      <img src="{{ url_for('static', filename='img/concert1.jpg')}}" class="d-block w-100" alt="..." style="max-width: 1200px; max-height: 500px;">
+      <img src="{{ url_for('static', filename='img/concert1.jpg')}}" class="d-block w-100" alt="..."
+        style="max-width: 1200px; max-height: 500px;">
       <div class="carousel-caption d-none d-md-block">
 
-        <!-- <div class="d-flex flex-column align-items-center"> -->
 
         <h5><strong>Pop</strong> &bull; Coldplay: Music of the Spheres World Tour in Japan</h5>
 
-
-        <!-- </div> -->
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="{{ url_for('static', filename='img/concert2.jpg')}}" class="d-block w-100" alt="..."
+        style="max-width: 1200px; max-height: 500px;">
+      <div class="carousel-caption d-none d-md-block">
+        <h5><strong>Rock</strong> &bull; U2: Vertigo Tour in Australia</h5>
 
       </div>
     </div>
     <div class="carousel-item">
-      <img src="{{ url_for('static', filename='img/concert2.jpg')}}" class="d-block w-100" alt="..." style="max-width: 1200px; max-height: 500px;">
+      <img src="{{ url_for('static', filename='img/edmconcert.jpg')}}" class="d-block w-100" alt="..."
+        style="max-width: 1200px; max-height: 500px;">
       <div class="carousel-caption d-none d-md-block">
-        <h5><strong>Pop</strong> &bull; Coldplay: Music of the Spheres World Tour in Australia</h5>
-
-      </div>
-    </div>
-    <div class="carousel-item">
-      <img src="{{ url_for('static', filename='img/concert3.jpg')}}" class="d-block w-100" alt="..." style="max-width: 1200px; max-height: 500px;">
-      <div class="carousel-caption d-none d-md-block">
-        <h5><strong>Pop</strong> &bull; Coldplay: Music of the Spheres World Tour in New Zealand</h5>
+        <h5><strong>EDM</strong> &bull; Zedd: Telos Tour in New Zealand</h5>
       </div>
     </div>
   </div>

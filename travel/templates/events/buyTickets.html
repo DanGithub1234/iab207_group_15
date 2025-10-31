@@ -57,7 +57,7 @@
     <div class="col-md-6">
       <label for="ticket_type" class="form-label">Ticket Price: ${{event.ticket_price}}</label>
 
-      </select> -->
+      </select> 
     </div>
     <div class="col-md-6">
       <label for="quantity" class="form-label">Number of Tickets</label>
@@ -89,6 +89,8 @@
 
   <hr class="my-4">
 
+
+  <!-- *** Buyer inforamtion and address is already attached to the user, I'm not sure if you want to keep this  -->
   <!-- buyer information -->
   <h4 class="mb-3">Buyer Information</h4>
   <div class="row g-3">
@@ -144,10 +146,11 @@
       </div>
       <div class="modal-body custom-card-body text-center">
         <p>Your ticket has been successfully purchased.</p>
+        <p>Booking ID: {{event.id}}</p>
         <p>Thanks for using <strong>musicCloud</strong>!</p>
       </div>
       <div class="modal-footer">
-        <a href="{{ url_for('main.index') }}" class="custom-button-categories-small">Back to Home</a>
+        <a href="{{ url_for('main.index') }}" class="custom-button-categories-small" style="text-decoration: none;">Back to Home</a>
       </div>
     </div>
   </div>
