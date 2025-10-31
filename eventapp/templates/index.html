@@ -93,7 +93,8 @@
       {% for message in messages %} <!--loop through the messages-->
 
 
-      <div class="d-flex align-item-center justify-content-center" style="color:#4B1248">{{message}}</div> <!--display as alert-->
+      <div class="d-flex align-item-center justify-content-center" style="color:#4B1248">{{message}}</div>
+      <!--display as alert-->
       {% endfor %}
     </div>
   </div>
@@ -152,11 +153,19 @@
               <div>
 
                 <h5 class="card-title mb-2">{{event.name}}</h5>
+                <p class="card-text mb-1"><strong>Genre:</strong>
+                  {% if event.genre == "edm" %}
+                  EDM
+                  {% elif event.genre == "rnb" %}
+                  RNB
+                  {% else %}
+                  {{event.genre|capitalize}}
+                  {% endif %}
+                </p>
 
-                <p class="card-text mb-1"><strong>Genre:</strong> {{event.genre|capitalize}}</p>
                 <p class="card-text mb-1"><strong></strong> {{event.location}}</p>
                 <p class="card-text mb-1"><strong></strong> {{event.start_time}}</p>
-                <p class="ticket-font mb-1">${{event.ticket_price}}</p>
+                <p class="ticket-font mb-1">${{"{:.2f}".format(event.ticket_price | float)}}</p>
 
               </div>
             </div>

@@ -50,7 +50,7 @@ def register():
       new_user = User(fullname=fullname, password=passwordHash, email=email, contactNumber=contactNumber, streetAddress=streetAddress)
       db.session.add(new_user)
       db.session.commit()
-      flash("Registered user successfully")
+      flash("Registered user successfully, login to get started.")
       return redirect(url_for('auth.login'))
     else:
       return render_template('user.html', form=form, heading='Register')

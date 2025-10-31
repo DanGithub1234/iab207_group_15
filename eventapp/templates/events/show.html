@@ -49,8 +49,10 @@
             <p class="card-text mb-1" style="color: black;"> {{event.description}}</p>
             <p class="card-text mb-1" style="color: black;"><strong>Genre:</strong> {{event.genre|capitalize}}</p>
             <p class="card-text mb-1" style="color: black;"><strong>Location:</strong> {{event.location}}</p>
-            <p class="card-text mb-1" style="color: black;"><strong>Date:</strong> {{event.event_date.strftime("%d %B, %Y")}}</p>
-            <p class="card-text mb-1" style="color: black;"><strong>Time:</strong> {{event.start_time.strftime("%I:%M %p")}} to
+            <p class="card-text mb-1" style="color: black;"><strong>Date:</strong> {{event.event_date.strftime("%d %B,
+                %Y")}}</p>
+            <p class="card-text mb-1" style="color: black;"><strong>Time:</strong> {{event.start_time.strftime("%I:%M
+                %p")}} to
                 {{event.end_time.strftime("%I:%M %p")}}</p>
 
 
@@ -76,9 +78,8 @@
 
                 {% if event.event_status in ['Sold Out', 'Cancelled', 'Inactive'] %}
 
-                <a type="button"
-                class="custom-button-booking-disabled mt-2 p-3">
-                <strong>Not Available</strong> </a>
+                <a type="button" class="custom-button-booking-disabled mt-2 p-3">
+                    <strong>Not Available</strong> </a>
 
                 {% else %}
 
@@ -216,7 +217,7 @@ event images section
 
     <div class="align-items-center p-5">
 
-        # prompt line: shows what event the user is commenting on
+        <!-- # prompt line: shows what event the user is commenting on -->
         <div class="d-flex align-items-center col-md-8 gap-3 my-3">
 
             <p class="mb-0" style="color: black;">Share your thoughts about this event: <strong> {{event.name}}</strong>
@@ -225,11 +226,11 @@ event images section
         </div>
 
 
-        # shows current user's username and emai
+        <!-- # shows current user's username and emai -->
         <div class="custom-card-body">
 
             <div class="d-flex">
-                
+
                 <div class="date text-center">
                     <div class="day-font"><i class="bi bi-person-circle" style="font-size: 3rem;"></i></div>
                 </div>
@@ -246,49 +247,33 @@ event images section
 
         </div>
 
-        #  display the comment submission form for this event
+<!-- Comments input -->
+
         <div class="row border-bottom">
             {{render_form(form,"/events/{0}/comment".format(event.id))}}
-        
+
         </div>
-
-
-
-
-
 
     </div>
 
-            <!-- Comments List -->
-            # loops over event.comments and shows each comment card
-            # the {% else %} block shows a message when there are no comments
-            <div class="comments-section">
-                {% for comment in event.comments %}
-                <div class="card mb-3 mx-auto" style="max-width: 93%;">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-<<<<<<< HEAD
-                            # comment author
-                            <h6 class="card-subtitle mb-2">{{ comment.user.username }}</h6>
-                            # comment timestamp 
-                            <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
-=======
-                            <h6 class="card-subtitle mb-2">{{ comment.user.fullname }}</h6>
-                            <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %I:%M %p') }}</small>
->>>>>>> 40f58a7 (Polish and checklist points)
-                        </div>
-                        # comment body text
-                        <h6 class="card-subtitle mb-2 mt-2">{{ comment.text }}</h6>
-                    </div>
+    <!-- Comments List -->
+    <div class="comments-section">
+        {% for comment in event.comments %}
+        <div class="card mb-3 mx-auto" style="max-width: 93%;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="card-subtitle mb-2">{{ comment.user.fullname }}</h6>
+                    <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
                 </div>
-                {% else %}
-                # empty state if there are no comments yet
-                <p class="text-muted text-center py-3">No comments yet. Be the first to comment!</p>
-                {% endfor %}
+                <h6 class="card-subtitle mb-2 mt-2">{{ comment.text }}</h6>
             </div>
         </div>
+        {% else %}
+        <p class="text-muted text-center py-3">No comments yet. Be the first to comment!</p>
+        {% endfor %}
     </div>
-
+    </div>
+    </div>
 
 
 </main>

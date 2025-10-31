@@ -567,3 +567,20 @@ hr.rounded {
     text-decoration: none;
 
 }
+
+#submit {
+    color: white;
+    background-color: #6f4b6e;
+    border: 2px solid #4B1248;
+    transition: all 0.4s ease;
+    border-radius: 10px;
+    padding: 0.5rem 2rem;
+    font-weight: 700;
+}
+
+#submit:hover {
+    background-color: #4B1248;
+    color: white;
+}
+
+

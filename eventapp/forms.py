@@ -23,16 +23,19 @@ import datetime
 
 
 
+
 class LoginForm(FlaskForm):
   email = EmailField('Email Address', validators=[InputRequired(),Email(), Length(max=100) ])
   password = PasswordField('Password', validators=[InputRequired()])
   submit = SubmitField("Login")
 
 
+
 class RegisterForm(FlaskForm):
   fullname = StringField('Full Name', validators=[InputRequired('Enter full name...'), Length(max=50)])
   email = EmailField('Email Address', validators=[InputRequired(),Email(), Length(max=100) ])
-  password = PasswordField('Password', validators=[InputRequired('Enter password...')])
+  password = PasswordField('Password', validators=[InputRequired('Enter password...'), Length(min=2, message="Length must be at least 8 characters."), 
+  Regexp(r'.*[!@#%&*()\{\}\[\]?<>~].*', message="Password should have special character.")])
   confirm = PasswordField('Confirm Password', 
           validators=[EqualTo('password', message='Re-enter same as Password')])
   

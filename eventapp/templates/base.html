@@ -7,7 +7,7 @@
    <!-- App title -->
    <title>MusicCloud</title>
 
-   <!-- ADD APP App logo --> 
+   <!-- ADD APP App logo -->
    <link rel="icon" type="image" href="...">
 
    <!-- Import bootstrap -->
@@ -38,25 +38,22 @@
    <!-- Header -->
    <header>
       <nav class="py-3 navbar sticky-top navbar-expand-lg custom-navbar">
-         <div class="container-fluid d-flex justify-content-between align-item-center">
-
-            <!-- MusicCloud Logo and title -->
-            <a class="px-3 navbar-brand" href="#" style="color: white;">
-               <i class="bi bi-cloudy-fill" style="color: white;"></i></i> musicCloud</a>
-
-            <!-- IN CASE WE HAVE A LOGO -->
-            <!-- <a img src="{{ url_for('static', filename='img/logo.png')}}" alt="logo" class="logo" height="50"
-               width="50"></a> -->
+         <div class="container-fluid d-flex">
 
             <!-- Nav bar and collapsable burger menu -->
-            <button class="custom-toggler navbar-toggler" type="button" data-bs-toggle="collapse"
+            <button class="custom-toggler navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
                data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
                aria-label="Toggle navigation">
                <span class="navbar-toggler-icon"></span>
             </button>
 
+            <!-- MusicCloud Logo and title -->
+            <!-- <a class="px-3 navbar-brand" href="#" style="color: white;"> -->
+            <a class="px-3 navbar-brand" href="#" style="color: white; position: absolute; left: 5; top: 15;">
+               <i class="bi bi-cloudy-fill" style="color: white;"></i></i> musicCloud</a>
 
-            <!-- Nav included in burger menu -->
+       
+
             <div class="collapse navbar-collapse flex-column" id="navbarNavDropdown">
                <ul class="navbar-nav mx-auto gap-3">
                   <li class="nav-item">
@@ -81,8 +78,6 @@
 
                   {% endif %}
 
-
-
                   <!-- Show welcome, logout is user is logged in  -->
                   {% if current_user.is_authenticated %}
                   <li><a class="nav-item nav-link disabled text-muted" href="#" style="color:rgb(255, 255, 255)"><span
@@ -98,24 +93,13 @@
                   {% endif %}
                </ul>
 
-
-
-
             </div>
 
-            <!-- ONLY THING KEEPING IT BEING OFF CENTER -->
-            <!-- <form class="d-flex" role="search">
-                  <input class="form-control me-2" type="search" placeholder="Search events" aria-label="Search" />
-                  <button class="btn btn-outline-light" type="submit" aria-label="search"><i
-                        class="bi bi-search"></i></button>
-               </form> -->
-
-
          </div>
-         </div>
+
       </nav>
 
-      </div>
+
 
       {% block header %}
 

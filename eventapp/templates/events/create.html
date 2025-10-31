@@ -71,7 +71,7 @@ l{% extends "base.html" %}
               {{ form.location(class="form-control", placeholder="Eg. Brisbane, Australia at Suncorp Stadium") }}
             </div>
 
-            <div class="my-3" style="max-width: 950px;">
+            <div class="align-item-start my-3" style="max-width: 550px;">
               <img src="{{ url_for('static', filename='img/map.jpg') }}" class="img-fluid rounded-3" alt="">
             </div>
 
@@ -101,14 +101,14 @@ l{% extends "base.html" %}
             <!-- Poster image -->
             <p class="h3"><strong>Poster Image</strong></p>
             <div class="d-flex align-items-center my-3">
-              <p class="h4 mx-2">Select Image</p>
+              <p class="h4">Select Image</p>
               <!-- <button type="button" class="custom-button-categories-small" onclick="document.getElementById('posterInput').click()">Upload</button> -->
             </div>
-            <div class="mx-2">
+    
               <label class="form-label">Upload input file for poster image</label>
               {{ form.image(class="form-control", id="posterInput") }}
-            </div>
-            <div class="mx-auto my-3" style="max-width: 950px;">
+
+            <div class="align-item-start my-3" style="max-width: 550px;">
               <img src="{{ url_for('static', filename='img/concert2.jpg') }}" class="img-fluid rounded-3" alt="">
             </div>
 
@@ -150,23 +150,6 @@ l{% extends "base.html" %}
           </div>
 
 
-
-          <!-- Optional images
-          <div id="images" class="tabs">
-          <p class="h3"><strong>Optional: Event Images</strong></p>
-          <p style="color: black;">Upload more than one image to reveal a carousel of event images.</p>
-          <div class="d-flex align-items-center my-3">
-            <p class="h4 mx-2">Select Image</p>
-            <button type="button" class="custom-button-categories-small" onclick="document.getElementById('img2').click()">Upload</button>
-          </div>
-          <div class="mx-2">
-            <label class="form-label">Upload Image 1 of 3</label>
-            {{ form.image2(class="form-control", id="img2") }}
-            {{ form.image3(class="form-control mt-2") }}
-          </div>
-          <div class="mx-auto my-3" style="max-width: 950px;">
-            <img src="{{ url_for('static', filename='img/concert2.jpg') }}" class="img-fluid rounded-3" alt="">
-          </div> -->
         </div>
 
         <!-- Submit -->
