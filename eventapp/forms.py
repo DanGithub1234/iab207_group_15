@@ -45,7 +45,9 @@ class RegisterForm(FlaskForm):
   submit = SubmitField("Register")
 
 class CommentForm(FlaskForm):
+  # Text area where user enters their comment
   text = TextAreaField('Comment', validators=[InputRequired("Enter comment..."), Length(max=250)])
+  # Submit button
   submit = SubmitField("Submit")
 
 
