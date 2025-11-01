@@ -30,75 +30,67 @@ def show(id):
 
 
 
-
-#  ASK ABOUT THIS
 @destbp.route('/<int:id>/buyTickets', methods=['GET', 'POST'])
 @login_required
 def buyTickets(id):
     event = db.session.scalar(db.select(Event).where(Event.id == id))
     if not event:
-        return render_template('events/unavailable_modal.html',
-                               title="Not found",
-                               message="This event no longer exists.",
-                               redirect_url=url_for('event.categorise'))
-
+        flash("That event no longer exists.", "warning")
+        return redirect(url_for('event.categorise', genre='All'))
+    
+    # If event staus is Open and there are tickets available, user can book tickets
     status_is_open = (getattr(event, "event_status", "Open") == "Open")
     has_tickets    = (event.tickets_available or 0) > 0
     is_bookable    = status_is_open and has_tickets
 
-    # If user tries to book tickets for unavailable event this modal appears
-    if request.method == 'GET' and not is_bookable:
-        return render_template('events/unavailable_modal.html',
-                               title="Not available",
-                               message=f"Sorry, “{event.name}” is not available for booking.",
-                               redirect_url=url_for('event.categorise'))
-
-    if request.method == 'POST':
+    # If event is not bookable, redirects user back to events page
+    if request.method == 'GET':
         if not is_bookable:
-            return render_template('events/unavailable_modal.html',
-                                   title="Not available",
-                                   message=f"Sorry, “{event.name}” is not available for booking.",
-                                   redirect_url=url_for('event.categorise'))
-            
-    if request.method == 'POST':
-        # fields users need to fill in to buy a ticket
-        # full_name = request.form.get('full_name')
-        # email = request.form.get('email')
-        # phone = request.form.get('buyer_phone')
-        quantity = int(request.form.get('quantity', 1))
-        billing_address = request.form.get('billing_address', '')
-        
-        if quantity > event.tickets_available:#this returns true when user is not None
-          flash('Exceeded tickets available. Please order less tickets.')
-          return redirect(url_for('event.buyTickets', id=id))
-
-        
-
-        # adds an order limit to prevent overbooking and negative booking
+            flash("Sorry, this event is not available for booking.", "warning")
+            return redirect(url_for('event.show', id=id))
         remaining = event.tickets_available or 0
-        qty_error = None
-        if quantity < 1:
-            qty_error = "Please enter at least 1 ticket."
-        elif quantity > MAX_PER_ORDER:
-            qty_error = f"You can buy a maximum of {MAX_PER_ORDER} tickets per order."
-        elif quantity > remaining:
-            qty_error = f"Only {remaining} ticket(s) remaining."
+        qty_max = min(MAX_PER_ORDER, remaining) if remaining else MAX_PER_ORDER
+        return render_template('events/buyTickets.html', event=event, qty_max=qty_max)
 
-        if qty_error:
-            qty_max = min(MAX_PER_ORDER, remaining) if remaining else MAX_PER_ORDER
-            return render_template(
-                'events/buyTickets.html',
-                event=event,
-                qty_error=qty_error,
-                qty_value=quantity,
-                qty_max=qty_max
-            )
-            
-        # Total = (ticket price × quantity) + $5 one-time booking fee
-        total_price = (float(event.ticket_price) * quantity) + 5.0
+    # re-check availability of event 
+    if not is_bookable:
+        flash("Sorry, this event is not available for booking.", "warning")
+        return redirect(url_for('event.show', id=id))
 
-        # save to user's booking to database
-        booking = Booking(
+    #  user needs to fill in these inputs to buy a ticket
+    quantity = int(request.form.get('quantity', 1))
+    billing_address = request.form.get('billing_address', '')
+
+    # to prevent overbooking, order limit is set at 10 tickets
+    if quantity > (event.tickets_available or 0):
+        flash('Exceeded tickets available. Please order fewer tickets.', 'warning')
+        return redirect(url_for('event.buyTickets', id=id))
+
+    # adds an order limit of 10 and a minimum of 1 to prevent overbooking and negative booking 
+    remaining = event.tickets_available or 0
+    qty_error = None
+    if quantity < 1:
+        qty_error = "Please enter at least 1 ticket."
+    elif quantity > MAX_PER_ORDER:
+        qty_error = f"You can buy a maximum of {MAX_PER_ORDER} tickets per order."
+    elif quantity > remaining:
+        qty_error = f"Only {remaining} ticket(s) remaining."
+
+    if qty_error:
+        qty_max = min(MAX_PER_ORDER, remaining) if remaining else MAX_PER_ORDER
+        return render_template(
+            'events/buyTickets.html',
+            event=event,
+            qty_error=qty_error,
+            qty_value=quantity,
+            qty_max=qty_max
+        )
+
+    # Total = (ticket price × quantity) + $5 one-time booking fee
+    total_price = (float(event.ticket_price) * quantity) + 5.0
+    
+# save user's booking to database
+    booking = Booking(
             # full_name=full_name,
             # email=email,
             # phone=phone,
@@ -113,27 +105,26 @@ def buyTickets(id):
             date_booked=datetime.now()
         )
 
-
-        event.tickets_available -= quantity
+    # decrease ticket stock as users book tickets
+    event.tickets_available -= quantity
+    
+    #  Updates event status according to ticket stock
+    if hasattr(event, "statusUpdate"):
         event.statusUpdate()
-        db.session.add(booking)
-        db.session.commit()
 
-        # re-render and open the modal
-        return render_template(
-            'events/buyTickets.html',
-            event=event,
-            show_modal=True,
-            # modal_name=full_name,
-            modal_qty=quantity,
-            modal_total=total_price,
-            booking_id=booking.id
-        )
+    db.session.add(booking)
+    db.session.commit()
 
-    # GET
-    remaining = event.tickets_available or 0
-    qty_max = min(MAX_PER_ORDER, remaining) if remaining else MAX_PER_ORDER
-    return render_template('events/buyTickets.html', event=event, qty_max=qty_max)
+    # re-render and open the success modal on the buy page
+    return render_template(
+        'events/buyTickets.html',
+        event=event,
+        show_modal=True,
+        modal_qty=quantity,
+        modal_total=total_price,
+        booking_id=booking.id
+    )
+
 
 @destbp.route('/categorise')
 def categorise():
