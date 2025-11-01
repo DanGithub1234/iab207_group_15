@@ -217,7 +217,7 @@ event images section
 
     <div class="align-items-center p-5">
 
-        <!-- # prompt line: shows what event the user is commenting on -->
+        <!-- prompt line: shows what event the user is commenting on -->
         <div class="d-flex align-items-center col-md-8 gap-3 my-3">
 
             <p class="mb-0" style="color: black;">Share your thoughts about this event: <strong> {{event.name}}</strong>
@@ -226,7 +226,7 @@ event images section
         </div>
 
 
-        <!-- # shows current user's username and emai -->
+        <!-- shows current user's username and emai -->
         <div class="custom-card-body">
 
             <div class="d-flex">
@@ -248,7 +248,8 @@ event images section
         </div>
 
 <!-- Comments input -->
-
+        <!-- The form posts to the event-specific comment route -->
+        <!-- Ensure this section is visible only to authenticated users -->
         <div class="row border-bottom">
             {{render_form(form,"/events/{0}/comment".format(event.id))}}
 
@@ -257,11 +258,13 @@ event images section
     </div>
 
     <!-- Comments List -->
+    <!-- Displays all comments for the current event -->
     <div class="comments-section">
         {% for comment in event.comments %}
         <div class="card mb-3 mx-auto" style="max-width: 93%;">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
+                    <!-- Comment author and submission time -->
                     <h6 class="card-subtitle mb-2">{{ comment.user.fullname }}</h6>
                     <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
                 </div>
@@ -269,6 +272,7 @@ event images section
             </div>
         </div>
         {% else %}
+        <!-- No comments yet message -->
         <p class="text-muted text-center py-3">No comments yet. Be the first to comment!</p>
         {% endfor %}
     </div>
