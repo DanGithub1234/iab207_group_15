@@ -1,10 +1,19 @@
+<!-- 500 Error Page Template
+  This page is displayed when the server encounters an unexpected error.
+  It inherits the base layout and provides a friendly message with a link back to the homepage.-->
+
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Main container for the 500 error message -->
 <div class="container py-5 text-center">
+  <!-- Error heading -->
   <h1>Server Error (500)</h1>
+  <!-- Brief user message -->
   <p>Oops! Something went wrong on our end.</p>
+  <!-- Optionally display the specific error message passed from Flask -->
   <p>{{ error }}</p>
+  <!-- Link back to the homepage (event categorisation route) -->
   <a href="{{ url_for('event.categorise') }}" class="btn btn-primary mt-3">Go Back Home</a>
 </div>
 {% endblock %}
