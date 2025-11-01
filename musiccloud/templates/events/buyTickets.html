@@ -4,30 +4,21 @@
 
 {% block content %}
     
-    <!-- event details -->
-
-    {% with messages = get_flashed_messages() %}
-  {% if messages %} <!-- check if there are any messages -->
-
-
-  <div class="container-fluid d-flex justify-content-center">
-    <div class="row mt-3" style="min-width: 40%;">
-      <div class="col-md-12">
-
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="container-fluid d-flex justify-content-center">
+      <div class="row mt-3" style="min-width: 40%;">
+        <div class="col-md-12">
+          {% for message in messages %}
+            <div class="alert alert-info flash-info">{{ message }}</div>
+          {% endfor %}
+        </div>
       </div>
-      {% for message in messages %} <!--loop through the messages-->
-
-
-      <div class="alert alert-info flash-info">{{message}}</div> <!--display as alert-->
-      {% endfor %}
     </div>
-  </div>
-</div>
-
-
-{% endif %}
+  {% endif %}
 {% endwith %}
 
+ <!-- Event details -->
     <div class="p-5 row">
 
         <div class="col-md-7 p-5">
@@ -49,21 +40,20 @@
   <div class="card-body custom-card-body">
 
 <!-- ticket purchase form -->
-<form method="POST" action="#" onsubmit="showThankYouModal(event)">
+    <form method="POST" action="{{ url_for('event.buyTickets', id=event.id) }}">
 
   <!--ticket details -->
   <h4 class="mb-3">Ticket Details</h4>
   <div class="row g-3">
     <div class="col-md-6">
       <label for="ticket_type" class="form-label">Ticket Price: ${{event.ticket_price}}</label>
-
-      </select> 
     </div>
+
     <div class="col-md-6">
       <label for="quantity" class="form-label">Number of Tickets</label>
-{# Compute a safe max (also passed from view) #}
-{# qty_max is provided by the route; fallback to 10 if missing #}
-{% set qty_max_val = qty_max if qty_max is defined else 10 %}
+        <!-- sets limit to ticket order to prevent overbooking and negative booking -->
+        {# qty_max is provided by the route; fallback to 10 if missing #}
+        {% set qty_max_val = qty_max if qty_max is defined else 10 %}
 
 <input
   type="number"
@@ -77,42 +67,18 @@
 >
 
 {% if qty_error %}
-  <!-- if there's an error in quantity it shows under the field -->
+        <!-- if there's an error in quantity it shows under the field -->
   <div class="invalid-feedback d-block">
     {{ qty_error }}
   </div>
 {% else %}
   <div class="form-text">Max {{ qty_max_val }} per order.</div>
-{% endif %}    </div>
+{% endif %}
+</div>
   </div>    
 
 
   <hr class="my-4">
-
-
-  <!-- *** Buyer inforamtion and address is already attached to the user, I'm not sure if you want to keep this  -->
-  <!-- buyer information -->
-
-
-  <!-- <h4 class="mb-3">Buyer Information</h4>
-  <div class="row g-3">
-    <div class="col-md-6">
-      <label for="full_name" class="form-label">Full Name</label>
-      <input type="text" id="full_name" name="full_name" class="form-control" required>
-    </div>
-    <div class="col-md-6">
-      <label for="email" class="form-label">Email</label>
-      <input type="email" id="email" name="email" class="form-control" required placeholder="e.g. johnsmith@gmail.com">
-    </div>
-    <div class="col-md-6">
-      <label for="phone" class="form-label">Phone </label>
-      <input type="tel" id="phone" name="buyer_phone" class="form-control" required placeholder="e.g. 0412 345 678">
-    </div>
-  </div>
-
-  <hr class="my-4"> -->
-
-
 
   <!-- billing information -->
   <h4 class="mb-3">Billing Information</h4>
@@ -137,36 +103,39 @@
     <button type="submit" class="custom-button-categories-small">Confirm &amp; Pay</button>
   </div>
 </form>
+      
   </div>
 </div>
 
-<!-- Confirmation modal after purchasing ticket -->
-<div class="modal fade" id="thankYouModal" tabindex="-1" aria-hidden="true">
+<!-- Thank You Confirmation modal after user successfully books a ticket  -->
+<div id="thankYouModal"
+     class="modal fade {% if show_modal %}show{% endif %}"
+     tabindex="-1"
+     aria-hidden="{% if show_modal %}false{% else %}true{% endif %}"
+     {% if show_modal %}style="display:block;"{% endif %}>
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content custom-card-ticket">
       <div class="modal-header custom-card-ticket-header">
         <h5 class="modal-title">Thank you!</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <a href="{{ url_for('main.index') }}" class="btn-close" aria-label="Close"></a>
       </div>
       <div class="modal-body custom-card-body text-center">
         <p>Your ticket has been successfully purchased.</p>
-        <p>Booking ID: {{booking_id}}</p>
+        {% if booking_id %}<p>Booking ID: {{ booking_id }}</p>{% endif %}
         <p>Thanks for using <strong>musicCloud</strong>!</p>
       </div>
       <div class="modal-footer">
-        <a href="{{ url_for('main.index') }}" class="custom-button-categories-small" style="text-decoration: none;">Back to Home</a>
+        <a href="{{ url_for('main.index') }}" class="custom-button-categories-small" style="text-decoration: none;">
+          Back to Home
+        </a>
       </div>
     </div>
   </div>
 </div>
 
 {% if show_modal %}
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var modal = new bootstrap.Modal(document.getElementById('thankYouModal'));
-    modal.show();
-  });
-</script>
+  <div class="modal-backdrop fade show"></div>
+  <style> html, body { overflow: hidden; } </style>
 {% endif %}
 
     <!-- footer -->
