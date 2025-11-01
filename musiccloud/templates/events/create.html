@@ -2,7 +2,9 @@ l{% extends "base.html" %}
 {% block title %}Create Event | musicCloud{% endblock %}
 {% block content %}
 
+<!-- Handles event creation form submission to Flask backend -->
 <form method="post" enctype="multipart/form-data">
+  <!-- Displays validation errors if any fields are invalid -->
   {% if form.errors %}
   <div class="alert alert-danger">
     <strong>Please fix the errors below.</strong>
@@ -15,16 +17,18 @@ l{% extends "base.html" %}
     </ul>
   </div>
   {% endif %}
+  <!-- CSRF token ensures secure form submission -->
   {{ form.csrf_token }}
 
   <!-- Event creation container -->
   <div class="container-fluid">
     <div class="row">
 
-      <!-- Left side nav -->
+      <!-- Left side, sidebar navigation with links -->
       <div class="tabsContainer col-md-3 p-0">
         <h3 class="p-5"><strong>Create an Event</strong></h3>
         <ul class="nav nav-pills flex-column">
+          <!-- Each nav link scrolls to its matching section on the right -->
           <li class="stepper-active nav-item"><a class="navtext nav-link" href="#details">Enter Event Details</a></li>
           <li class="stepper-active nav-item"><a class="navtext nav-link" href="#poster">Choose a Poster Image</a></li>
           <li class="stepper-active nav-item"><a class="navtext nav-link" href="#tickets">Enter Ticket Information</a></li>
@@ -32,12 +36,14 @@ l{% extends "base.html" %}
         </ul>
       </div>
 
+      <!-- Main content area: event form fields -->
       <!-- Right side form content -->
       <div class="col-md-9 mt-3 create-event-section">
         <div class="p-4 mt-0">
           <div id="details" class="tabs">
             <p class="h3"><strong>Event Details</strong></p>
 
+            <!-- Event title input -->
             <div class="text-section">
               <h5>Event Title</h5>
               <p>Add a descriptive title outlining the <strong>artist(s)</strong> involved.</p>
@@ -49,6 +55,7 @@ l{% extends "base.html" %}
               {% endfor %}
             </div>
 
+            <!-- Event description input -->
             <h5>Description</h5>
             <p class="description-font">Summarise the event into few paragraphs, ensure to include all relevant details
               about the music and artists.</p>
@@ -56,6 +63,7 @@ l{% extends "base.html" %}
               {{ form.description(class="form-control", placeholder="Description") }}
             </div>
 
+            <!-- Genre selection -->
             <h5>Genre</h5>
             <p class="description-font">Which category or categories best describes the event.</p>
             <div class="row g-3 mb-3">
@@ -64,16 +72,19 @@ l{% extends "base.html" %}
               </div>
             </div>
 
+            <!-- Location input -->
             <h5>Location</h5>
             <p class="description-font">Provide the exact location of the event.</p>
             <div class="input-group" style="max-width: 950px;">
               {{ form.location(class="form-control", placeholder="Eg. Brisbane, Australia at Suncorp Stadium") }}
             </div>
 
+            <!-- Example map image -->
             <div class="align-item-start my-3" style="max-width: 550px;">
               <img src="{{ url_for('static', filename='img/map.jpg') }}" class="img-fluid rounded-3" alt="">
             </div>
 
+              <!-- Date and time inputs -->
             <h5>Date</h5>
             <p class="description-font">When the event will occur.</p>
             <div class="input-group mb-4">
@@ -94,7 +105,7 @@ l{% extends "base.html" %}
             <hr class="rounded">
           </div>
 
-
+          <!-- Poster upload section -->
           <div id="poster" class="tabs">
 
             <!-- Poster image -->
@@ -106,7 +117,7 @@ l{% extends "base.html" %}
     
               <label class="form-label">Upload input file for poster image</label>
               {{ form.image(class="form-control", id="posterInput") }}
-
+            <!-- Example placeholder image -->
             <div class="align-item-start my-3" style="max-width: 550px;">
               <img src="{{ url_for('static', filename='img/concert2.jpg') }}" class="img-fluid rounded-3" alt="">
             </div>
@@ -151,7 +162,7 @@ l{% extends "base.html" %}
 
         </div>
 
-        <!-- Submit -->
+        <!-- Form submission button that sends data to the Flask route -->
         <div class="d-flex justify-content-center mb-4">
           {{ form.submit(class="custom-button-categories", style="width: 300px;") }}
         </div>
