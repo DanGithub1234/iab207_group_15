@@ -17,7 +17,7 @@
 
         <div class="col-md-6">
 
-            <!-- user information -->
+            <!-- User information -->
             <div class="p-3 custom-card-body">
 
                 <div class="d-flex">
@@ -25,7 +25,8 @@
                     <div class="date text-center">
                         <div class="day-font"><i class="bi bi-person-circle" style="font-size: 3rem;"></i></div>
                     </div>
-
+                    
+                    <!-- Shows current users username and email -->
                     <div>
 
                         <h5 class="card-title mt-3">{{user.username}}</h5>
@@ -37,7 +38,7 @@
                 </div>
 
                 <div class="mx-4">
-                    <!-- show the number of bookings user has for events -->
+                    <!-- Show the number of bookings user has for events -->
                     <p>You have <strong>{{totalBookings}}</strong> bookings for events.</p>
 
                 </div>
@@ -50,9 +51,11 @@
     </div>
 
     <!-- Booking information cards  -->
+    <!-- Displays a list of all user bookings, displaying event details for each -->
+    <!-- If no bookings are found, this section will not appear -->
     <section>
         <div class="row py-5">
-            <!-- show all of users bookings dynamically-->
+            <!-- Show all of users bookings dynamically -->
             {% if bookings|length > 0 %}
 
             {% for booking in bookings %}
@@ -88,23 +91,26 @@
 
 
                         </div>
-
+                        <!-- Left column: displays the event image -->
                         <div class="row g-0">
                             <div class="col-12 col-sm-6 col-lg-5 d-flex rounded-start align-item-center justify-content-center"
                                 style="background-color: black;">
                                 <img src="{{booking.event.image}}" class="img-fluid" style="object-fit:contain;"
                                     alt="...">
                             </div>
+                            <!-- Right column: displays event and booking details -->
                             <div class="col-12 col-sm-6 col-lg-5">
                                 <div class="card-body">
                                     <h5 class="card-title">{{booking.event.name}}</h5>
 
+                                    <!-- Event details -->
                                     <p class="card-text mb-1" style="color: black;"><strong>Genre:</strong>
                                         {{booking.event.genre}}</p>
                                     <p class="card-text mb-1" style="color: black;"><strong>Location:</strong>
                                         {{booking.event.location}}</p>
                                     <p class="card-text mb-1" style="color: black;"><strong>Date:</strong>
                                         {{booking.event.event_date}} ({{booking.event.start_time}})</p>
+                                    <!-- Ticket price displayed - two decimals -->
                                     <p class="card-text mb-1" style="color: black;"><strong>Ticket Price:</strong>
                                         ${{"{:.2f}".format(booking.event.ticket_price | float)}}
                                     </p>
@@ -113,9 +119,11 @@
                                     </p>
 
                                     <div>
+                                        <!-- Booking ID infomation -->
                                         <p class="card-text mb-0" style="color: black;"><strong>Booking ID:</strong>
                                             {{booking.id}}
                                         </p>
+                                        <!-- Display the booking date and time -->
                                         <p class="card-text mb-0" style="color: black;">Ticket was purchased on:
                                             {{booking.date_booked.strftime("%d %b %Y")}}</p>
                                         <p class="card-text mb-0" style="color: black;">Purchase Time:
