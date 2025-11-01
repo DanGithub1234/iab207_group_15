@@ -1,5 +1,5 @@
-from eventapp import db, create_app
-from eventapp.models import db, Event, Booking
+from musiccloud import db, create_app
+from musiccloud.models import db, Event, Booking
 from sqlalchemy import inspect
 
 app = create_app()

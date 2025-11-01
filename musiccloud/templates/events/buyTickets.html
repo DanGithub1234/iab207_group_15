@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block content %}
+    
+    <!-- event details -->
+
+    {% with messages = get_flashed_messages() %}
+  {% if messages %} <!-- check if there are any messages -->
+
+
+  <div class="container-fluid d-flex justify-content-center">
+    <div class="row mt-3" style="min-width: 40%;">
+      <div class="col-md-12">
+
+      </div>
+      {% for message in messages %} <!--loop through the messages-->
+
+
+      <div class="alert alert-info flash-info">{{message}}</div> <!--display as alert-->
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+
+{% endif %}
+{% endwith %}
+
+    <div class="p-5 row">
+
+        <div class="col-md-7 p-5">
+            <div class="home-content">
+        
+                <p class="h1">{{event.name}}</p>
+                <p class="card-text mb-1" style="color: black;">{{event.description}}</p>
+                <p class="card-text mb-1" style="color: black;"><strong>Genre:</strong> {{event.genre}}</p>
+                <p class="card-text mb-1" style="color: black;"><strong>Location:</strong> {{event.location}}</p>
+                <p class="card-text mb-1" style="color: black;"><strong>Date:</strong> {{event.event_date}}</p>
+                <p class="card-text mb-1" style="color: black;"><strong>Time:</strong> Start: {{event.start_time}}, End: {{event.end_time}}</p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card custom-card-ticket">
+  <div class="card-header custom-card-ticket-header"><strong>Complete your purchase</strong></div>
+  <div class="card-body custom-card-body">
+
+<!-- ticket purchase form -->
+<form method="POST" action="#" onsubmit="showThankYouModal(event)">
+
+  <!--ticket details -->
+  <h4 class="mb-3">Ticket Details</h4>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label for="ticket_type" class="form-label">Ticket Price: ${{event.ticket_price}}</label>
+
+      </select> 
+    </div>
+    <div class="col-md-6">
+      <label for="quantity" class="form-label">Number of Tickets</label>
+{# Compute a safe max (also passed from view) #}
+{# qty_max is provided by the route; fallback to 10 if missing #}
+{% set qty_max_val = qty_max if qty_max is defined else 10 %}
+
+<input
+  type="number"
+  id="quantity"
+  name="quantity"
+  class="form-control {% if qty_error %}is-invalid{% endif %}"
+  min="1"
+  max="{{ qty_max_val }}"
+  value="{{ qty_value if qty_value is defined else 1 }}"
+  required
+>
+
+{% if qty_error %}
+  <!-- if there's an error in quantity it shows under the field -->
+  <div class="invalid-feedback d-block">
+    {{ qty_error }}
+  </div>
+{% else %}
+  <div class="form-text">Max {{ qty_max_val }} per order.</div>
+{% endif %}    </div>
+  </div>    
+
+
+  <hr class="my-4">
+
+
+  <!-- *** Buyer inforamtion and address is already attached to the user, I'm not sure if you want to keep this  -->
+  <!-- buyer information -->
+
+
+  <!-- <h4 class="mb-3">Buyer Information</h4>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label for="full_name" class="form-label">Full Name</label>
+      <input type="text" id="full_name" name="full_name" class="form-control" required>
+    </div>
+    <div class="col-md-6">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" id="email" name="email" class="form-control" required placeholder="e.g. johnsmith@gmail.com">
+    </div>
+    <div class="col-md-6">
+      <label for="phone" class="form-label">Phone </label>
+      <input type="tel" id="phone" name="buyer_phone" class="form-control" required placeholder="e.g. 0412 345 678">
+    </div>
+  </div>
+
+  <hr class="my-4"> -->
+
+
+
+  <!-- billing information -->
+  <h4 class="mb-3">Billing Information</h4>
+  <input type="text" id="billing_address" name="billing_address" class="form-control" placeholder="Billing address (optional)">
+
+  <hr class="my-4">
+
+  <!-- final confirmation -->
+  <h4 class="mb-3">Final Confirmation</h4>
+  <p class="mb-2" style="color:black;">
+ 
+      <!-- calculates transaction total -->
+      <strong>Total:</strong> (Ticket Price × Quantity) + $5 One Time Booking Fee
+</p>
+
+  <div class="form-check mb-3">  <!-- user must tick this box to agree to the terms and conditions to complete boking -->
+    <input class="form-check-input" type="checkbox" id="agree" name="agree" required>
+    <label class="form-check-label" for="agree">I agree to Terms &amp; Conditions / Refund Policy</label>
+  </div>
+
+  <div class="d-flex justify-content-center mt-3">
+    <button type="submit" class="custom-button-categories-small">Confirm &amp; Pay</button>
+  </div>
+</form>
+  </div>
+</div>
+
+<!-- Confirmation modal after purchasing ticket -->
+<div class="modal fade" id="thankYouModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content custom-card-ticket">
+      <div class="modal-header custom-card-ticket-header">
+        <h5 class="modal-title">Thank you!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body custom-card-body text-center">
+        <p>Your ticket has been successfully purchased.</p>
+        <p>Booking ID: {{booking_id}}</p>
+        <p>Thanks for using <strong>musicCloud</strong>!</p>
+      </div>
+      <div class="modal-footer">
+        <a href="{{ url_for('main.index') }}" class="custom-button-categories-small" style="text-decoration: none;">Back to Home</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if show_modal %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var modal = new bootstrap.Modal(document.getElementById('thankYouModal'));
+    modal.show();
+  });
+</script>
+{% endif %}
+
+    <!-- footer -->
+</body>
+
+</html>
+{% endblock %}

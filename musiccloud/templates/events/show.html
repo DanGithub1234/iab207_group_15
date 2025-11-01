@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block content %}
+
+<!-- Jumbotron for event image display only -->
+<div class="py-5">
+    <div class="myjumbotron2 d-flex justify-content-center align-items-center">
+
+        <img src="{{event.image}}" class="img-fluid" alt="..." style="box-shadow: 20px; max-width: 80%; height: auto;">
+    </div>
+</div>
+
+
+<!-- Event details -->
+
+<!-- Only make this available for the owner of the event  -->
+{% if current_user.is_authenticated and current_user.id == event.user_id %}
+{% set is_bookable = (event.event_status == 'Open') and (event.tickets_available or 0) > 0 %}
+
+
+<div class="p-5 row">
+    <h5 class="align-item-center justify-content-center d-flex">
+        As the owner of this event you edit event details or cancel this event:</h5>
+    <div class="d-flex justify-content-center gap-3 p-3">
+
+        <!-- enable edit/update event -->
+        <form action="{{url_for('event.create', id=event.id)}}" method="POST">
+            <button type="submit" class="custom-button-categories">Edit Event</button>
+        </form>
+
+        <!-- cancel event button, event status then reflects this -->
+        <form action="{{url_for('event.cancel', id=event.id)}}" method="POST">
+            <button type="submit" class="custom-button-categories">Cancel</button>
+        </form>
+    </div>
+
+</div>
+
+<div class="gradient-line"></div>
+
+{% endif %}
+
+<!-- Main event information section (right side) -->
+<div class="p-5 row">
+
+    <div class="col-md-7 p-5">
+        <div class="home-content">
+
+            <p class="h1">{{event.name}}</p>
+            <p class="card-text mb-1" style="color: black;"> {{event.description}}</p>
+            <p class="card-text mb-1" style="color: black;"><i class="bi bi-music-note-beamed"></i></i><strong> Genre:</strong> {{event.genre|capitalize}}</p>
+            <p class="card-text mb-1" style="color: black;"><i class="bi bi-geo-alt-fill"></i><strong> Location:</strong> {{event.location}}</p>
+            
+            <!-- Appropriate formatting of the date and time using strftime -->
+            <p class="card-text mb-1" style="color: black;"><strong>Date:</strong> {{event.event_date.strftime("%d %B,
+                %Y")}}</p>
+            <p class="card-text mb-1" style="color: black;"><strong>Time:</strong> {{event.start_time.strftime("%I:%M
+                %p")}} -
+                {{event.end_time.strftime("%I:%M %p")}}</p>
+
+            <h4 class="my-5">Event by {{event.user.fullname}}</h4>
+        </div>
+
+    </div>
+
+
+    <!-- Ticket information section (left side) -->
+    <div class="col-md-5 p-5">
+
+        <div class="card custom-card-ticket mb-3 rounded-3 text-center" style="max-width: 30rem;">
+            <!-- indicator of event status -->
+            <div class="card-header custom-card-ticket-header"><strong>{{event.event_status}}:</strong>
+                {{event.tickets_available}}</div>
+            <div class="card-body custom-card-ticket-header">
+
+                <!-- main ticket details section -->
+                <h5 class="card-title">{{event.name}} Tickets</h5>
+
+                <h1 style="font-weight: 600; font-size: 50px;">${{"{:.2f}".format(event.ticket_price | float)}}</h1>
+
+
+                <!-- If the event has been sold out, cancelled or inactive (date pass) then show disabled button and message -->
+                {% if event.event_status in ['Sold Out', 'Cancelled', 'Inactive'] %}
+
+                <a type="button" class="custom-button-booking-disabled mt-2 p-3">
+                    <strong>Not Available</strong> </a>
+
+                {% else %}
+
+                <!-- otherwise user can book a tikcket as usual -->
+                <a href="{{url_for('event.buyTickets', id=event.id)}}" type="button"
+                    class="custom-button-booking mt-2 p-3">
+                    <strong>Book Now</strong> </a>
+
+                {% endif %}
+
+                <p class="card-text text-start">
+                    {{event.ticket_details}}
+                </p>
+                
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<hr class="rounded">
+
+<!-- comment section -->
+<main class="container my-5">
+
+    <div class="align-items-center p-5">
+
+        <!-- # prompt line: shows what event the user is commenting on -->
+        <div class="d-flex align-items-center col-md-8 gap-3 my-3">
+
+            <p class="mb-0" style="color: black;">Share your thoughts about this event: <strong> {{event.name}}</strong>
+            </p>
+
+        </div>
+
+
+        <!-- # shows current user's username and emai -->
+        <div class="custom-card-body">
+
+            <div class="d-flex align-items-center">
+
+                <div class="">
+                    <div class="px-3"><i class="bi bi-person-circle" style="font-size: 3rem;"></i></div>
+                </div>
+
+                <div>
+
+                    <h5 class="card-title mt-3">{{user.fullname}}</h5>
+                    <h5 class="card-body" style="font-size: 1rem;">{{user.email}}</h5>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <!-- Comments input -->
+
+        <div class="row border-bottom">
+            {{render_form(form,"/events/{0}/comment".format(event.id))}}
+
+        </div>
+
+    </div>
+
+    <!-- Comments List -->
+    <div class="comments-section">
+        <!-- shows all commments associated with event -->
+        {% for comment in event.comments %}
+        <div class="card mb-3 mx-auto" style="max-width: 93%;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <!-- within comment displays full name, comment time/date and comment -->
+                    <h6 class="card-subtitle mb-2">{{ comment.user.fullname }}</h6>
+                    <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                </div>
+                <h6 class="card-subtitle mb-2 mt-2">{{ comment.text }}</h6>
+            </div>
+        </div>
+
+        <!-- for when there are no comments yet, displays apppropriate message -->
+        {% else %}
+        <p class="text-muted text-center py-3">No comments yet. Be the first to comment!</p>
+        {% endfor %}
+    </div>
+    </div>
+    </div>
+
+
+</main>
+
+
+<!-- NOT SURE WHO ADDED THIS BUT PLEASE CLARIFY WHAT IT DOES -->
+<!-- {% if not is_bookable %}
+<style>
+  .modal-backdrop.show {
+    background-color: rgba(0,0,0,.55) !important;
+    backdrop-filter: blur(3px) saturate(90%);
+  }
+  .mc-modal .modal-content { border:0; border-radius:1rem; box-shadow:0 20px 50px rgba(0,0,0,.25); }
+  .mc-modal .modal-header { background:linear-gradient(135deg,#ffffff,#ffffff); border:0; border-top-left-radius:1rem; border-top-right-radius:1rem; }
+  .mc-modal .modal-title { font-weight:800; letter-spacing:.2px; }
+  .mc-modal .modal-body { padding:1.5rem 1.75rem; font-size:1.05rem; }
+  .mc-modal .modal-footer { border:0; padding:1rem 1.75rem 1.5rem; }
+</style>
+
+<div class="modal fade mc-modal" id="notAvail" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content custom-card-ticket">
+      <div class="modal-header custom-card-ticket-header">
+        <h5 class="modal-title">Not available</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body custom-card-body text-center">
+        <div class="mb-3"><i class="bi bi-exclamation-octagon" style="font-size:2rem;"></i></div>
+        <p class="mb-0">Sorry, “{{ event.name }}” is not available for booking.</p>
+      </div>
+      <div class="modal-footer d-flex justify-content-center gap-2">
+        <a href="{{ url_for('event.categorise', genre='All') }}" class="custom-button-categories-small px-4">
+          Back to Events
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %} -->
+
+
+</body>
+
+</html>
+{% endblock %}
