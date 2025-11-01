@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block content %}
+
+
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %} <!-- check if there are any messages -->
+
+
+  <div class="container-fluid d-flex justify-content-center">
+    <div class="row mt-3" style="min-width: 40%;">
+      <div class="col-md-12">
+
+      </div>
+      {% for message in messages %} <!--loop through the messages-->
+
+
+      <div class="alert alert-info flash-info">{{message}}</div> <!--display as alert-->
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+
+{% endif %}
+{% endwith %}
+
+<div class="m-4 align-item-center justify-content-center d-flex">
+
+  <div class="custom-auth-card p-4">
+
+    <div>
+      <div class="mb-3">
+        <h2>{{heading}}</h2>
+        <h5>{{description}}</h4>
+      </div>
+
+      <!-- Form rendering is simple and easy if using bootstrap -->
+
+      <div class="col-12" style="min-width: 500;">
+        {{render_form(form)}}
+
+
+        <!-- When you have login form, then do show the user a link to register -->
+
+        {% if heading|lower == 'login' %}
+        <div class="mb-2 mt-3">
+          <p style="color: black;">New user? <a href="{{ url_for('auth.register') }}">Register Now!</a>.</p>
+        </div>
+        {% endif %}
+      </div>
+
+
+
+
+    </div>
+
+  </div>
+
+
+  <!-- flashes any messages to the user -->
+  
+
+
+
+
+</div>
+{% endblock %}
