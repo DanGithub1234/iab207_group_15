@@ -4,7 +4,9 @@ l{% extends "base.html" %}
 {% block content %}
 
 <!-- Main form for creating an event -->
+<!-- Handles event creation form submission to Flask backend -->
 <form method="post" enctype="multipart/form-data">
+  <!-- Displays validation errors if any fields are invalid -->
   {% if form.errors %}
   <div class="alert alert-danger">
     <strong>Please fix the errors below.</strong>
@@ -17,6 +19,7 @@ l{% extends "base.html" %}
     </ul>
   </div>
   {% endif %}
+  <!-- ensures secure form submission -->
   {{ form.csrf_token }}
 
 <!-- Container for the entire page layout -->
@@ -27,7 +30,7 @@ l{% extends "base.html" %}
       <div class="tabsContainer col-md-3 p-0">
         <h3 class="p-5"><strong>Create an Event</strong></h3>
         <ul class="nav nav-pills flex-column">
-          <!-- Each nav link scrolls smoothly to its matching section on the right -->
+          <!-- Each nav link scrolls to its matching section on the right -->
           <li class="stepper-active nav-item"><a class="navtext nav-link" href="#details">Enter Event Details</a></li>
           <li class="stepper-active nav-item"><a class="navtext nav-link" href="#poster">Choose a Poster Image</a></li>
           <li class="stepper-active nav-item"><a class="navtext nav-link" href="#tickets">Enter Ticket Information</a></li>
@@ -164,7 +167,7 @@ l{% extends "base.html" %}
 
         </div>
 
-        <!-- Submit button -->
+        <!-- Form submission button that sends data to the Flask route -->
         <div class="d-flex justify-content-center mb-4">
           {{ form.submit(class="custom-button-categories", style="width: 300px;") }}
         </div>
