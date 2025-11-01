@@ -20,8 +20,7 @@
 
  <!-- Event details -->
     <div class="p-5 row">
-
-        <div class="col-md-7 p-5">
+        <div class="col-md-7 px-4 pt-4 pb-2">
             <div class="home-content">
         
                 <p class="h1">{{event.name}}</p>
@@ -35,7 +34,7 @@
         </div>
     </div>
 
-    <div class="card custom-card-ticket">
+<div class="card custom-card-ticket mx-auto mt-1" style="max-width: 1400px; width: 93%;">
   <div class="card-header custom-card-ticket-header"><strong>Complete your purchase</strong></div>
   <div class="card-body custom-card-body">
 
@@ -43,17 +42,19 @@
     <form method="POST" action="{{ url_for('event.buyTickets', id=event.id) }}">
 
   <!--ticket details -->
-  <h4 class="mb-3">Ticket Details</h4>
-  <div class="row g-3">
-    <div class="col-md-6">
-      <label for="ticket_type" class="form-label">Ticket Price: ${{event.ticket_price}}</label>
-    </div>
+<h4 class="mb-3">Ticket Details</h4>
+<div class="row g-4 align-items-end">
+  <div class="col-md-6">
+    <div class="text-uppercase small text-muted mb-1">Ticket Price</div>
+    <div class="display-6 fw-bold lh-1">${{ event.ticket_price }}</div>
+    <div class="small text-muted">per ticket (AUD)</div>
+  </div>
 
-    <div class="col-md-6">
-      <label for="quantity" class="form-label">Number of Tickets</label>
-        <!-- sets limit to ticket order to prevent overbooking and negative booking -->
-        {# qty_max is provided by the route; fallback to 10 if missing #}
-        {% set qty_max_val = qty_max if qty_max is defined else 10 %}
+  <div class="col-md-6">
+    <label for="quantity" class="form-label">Number of Tickets</label>
+    <!-- sets limit to ticket order to prevent overbooking and negative booking -->
+    {# qty_max is provided by the route; fallback to 10 if missing #}
+    {% set qty_max_val = qty_max if qty_max is defined else 10 %}
 
 <input
   type="number"
